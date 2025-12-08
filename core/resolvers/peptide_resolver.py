@@ -1,4 +1,5 @@
-from constants import AMINO_ACID_SUB_SITES, PROTECTING_GROUPS, SPECIAL_CASES, AA_FULL, N_CAPS, C_CAPS, COUNTER_ACIDS, GREEK_LETTERS, PREFIX_MAP
+from utils.constants import AMINO_ACID_SUB_SITES, PROTECTING_GROUPS, SPECIAL_CASES, AA_FULL, N_CAPS, C_CAPS, COUNTER_ACIDS, GREEK_LETTERS, PREFIX_MAP
+from resolvers.opsin_resolver import name_to_smiles_opsin
 
 def generate_side_chain_protections():
     """Generate the complete side chain protections dictionary"""
@@ -151,7 +152,7 @@ def process_amino_acid_token(next_token, is_last, is_cyclic, stereo_prefix='l-')
         # Unknown token
         return f"{stereo_prefix}{next_token}"
 
-def shorthand_to_iupac(shorthand: str) -> str:
+def peptide_shorthand_to_iupac(shorthand: str) -> str:
     shorthand = shorthand.strip()
     shorthand = shorthand.strip('-')
     shorthand = shorthand.replace('--', '-')
@@ -275,3 +276,11 @@ def shorthand_to_iupac(shorthand: str) -> str:
         name += ' ' + counter_acid_suffix
         
     return name
+
+def name_to_smiles_peptide(peptides: list) -> list:
+
+    peptide_iupac_names = []
+    for peptide in peptides:
+        peptide_iupac_names.append(peptide_shorthand_to_iupac(peptide))
+
+    return name_to_smiles_opsin(peptide_iupac_names)

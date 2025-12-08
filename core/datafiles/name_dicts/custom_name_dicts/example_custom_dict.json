@@ -1,0 +1,7 @@
+{
+    "name_dict_name": "example_name_dict",
+    "name_dict": {
+        "example_name1": "example_smiles1",
+        "example_name2": "example_smiles2"
+    }
+}

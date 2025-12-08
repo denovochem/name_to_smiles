@@ -1,0 +1,5 @@
+loguru
+cirpy
+rdkit
+git+https://github.com/csnbritt/py2opsin.git
+git+https://github.com/csnbritt/PubChemPy.git
