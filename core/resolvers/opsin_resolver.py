@@ -52,4 +52,4 @@ def name_to_smiles_opsin(
         if msg:
             failure_message_dict[name] = msg
 
-    return chemical_name_dict
+    return chemical_name_dict, failure_message_dict

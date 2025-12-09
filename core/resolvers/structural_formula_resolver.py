@@ -30,15 +30,13 @@ Author: Structural Formula Parser v2
 from __future__ import annotations
 
 import re
-import logging
 from typing import Optional, List, Dict, Tuple, Set, Union, Any, NamedTuple
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from collections import defaultdict
 from abc import ABC, abstractmethod
 
-# Configure module logger
-logger = logging.getLogger(__name__)
+from utils.logging_config import logger
 
 
 # =============================================================================
@@ -1409,7 +1407,7 @@ class StructuralFormulaConverter:
         formula = self._preprocess(formula)
         if not formula:
             self.last_errors.append("Empty formula")
-            return None
+            return ''
         
         # Try registry first
         if self.use_registry:
@@ -1424,7 +1422,7 @@ class StructuralFormulaConverter:
         if tokenizer.errors:
             self.last_errors.extend(tokenizer.errors)
             if self.strict_mode:
-                return None
+                return ''
         
         # Parse
         parser = StructuralFormulaParser(tokens, formula)
@@ -1434,7 +1432,7 @@ class StructuralFormulaConverter:
             self.last_errors.extend(parser.errors)
         
         if graph is None:
-            return None
+            return ''
         
         # Generate SMILES
         generator = SMILESGenerator(graph)
@@ -1442,13 +1440,13 @@ class StructuralFormulaConverter:
         
         if not smiles:
             self.last_errors.append("Failed to generate SMILES")
-            return None
+            return ''
         
         # Validate with RDKit if available
         if self._rdkit_available and self.strict_mode:
             if not self._validate_smiles(smiles):
                 self.last_errors.append(f"Generated SMILES '{smiles}' failed RDKit validation")
-                return None
+                return ''
         
         return smiles
     

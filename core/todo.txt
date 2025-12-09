@@ -1,0 +1,17 @@
+# near term
+- add new resolvers:
+    - chemaxon python wrapper (marvin/api)
+    - chemspider python wrapper
+    - inoragnic shorthand for complexes
+
+- significantly more names in custom name dict
+- consistent code formatting
+- implement testing
+- docs page
+
+
+# mid term:
+- name correction?
+
+# long term:
+- fork opsin
