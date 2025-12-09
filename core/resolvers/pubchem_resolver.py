@@ -1,7 +1,7 @@
 import pubchempy as pcp
 from utils.string_utils import filter_latin1_compatible
 from utils.logging_config import logger
-from typing import List
+from typing import List, Dict
 
 def name_to_smiles_pubchem(compound_name_list: List[str]) -> Dict[str, str]:
     """
@@ -15,5 +15,12 @@ def name_to_smiles_pubchem(compound_name_list: List[str]) -> Dict[str, str]:
     """
     pubchem_compounds = pcp.get_compounds(filter_latin1_compatible(compound_name_list), 'name')
     pubchem_name_dict = {k:v.smiles if v is not None else '' for k,v in zip(compound_name_list, pubchem_compounds)}
+
+    if len(compound_name_list) != len(pubchem_name_dict):
+        logger.warning(
+            f"Mismatching lengths: "
+            f"compound_name_list ({len(compound_name_list)}), "
+            f"pubchem_name_dict ({len(pubchem_name_dict)})"
+        )
 
     return pubchem_name_dict

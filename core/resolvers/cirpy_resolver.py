@@ -23,6 +23,13 @@ def retrieve_cirpy_results(compound_identifier: str) -> str:
 
 def name_to_smiles_cirpy(chemical_name_list: List[str]) -> Dict[str, str]:
     """
+    Converts a list of chemical names to their corresponding SMILES strings using CIRpy.
+
+    Args:
+        chemical_name_list (List[str]): A list of chemical names to be converted.
+
+    Returns:
+        Dict[str, str]: A dictionary mapping each chemical name to its SMILES string.
     """
     name_to_smiles_dict = {}
     for chemical_name in chemical_name_list:

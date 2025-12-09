@@ -32,6 +32,7 @@ def clean_strings(string, chars_to_replace_dict=NON_LATIN1_REPLACEMENTS):
     """
     for char, replacement in chars_to_replace_dict.items():
         string = string.replace(char, replacement)
+    string = string.replace('\n', '')
     return string
 
 def is_latin1_compatible(s):
