@@ -1,20 +1,23 @@
 from setuptools import setup, find_packages
+import os
 
-with open('requirements.txt') as f:
-    requirements = f.read().splitlines()
+def read_file(filename):
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding='utf-8') as f:
+            return f.read()
+    return ""
 
 setup(
     name='placeholder_name',
     version='0.0.1',
     packages=find_packages(),
-    package_data={},
     include_package_data=True,
     zip_safe=False,
-    install_requires=requirements,
+    install_requires=read_file('requirements.txt').splitlines(),
     author='De Novo Chem Team',
     author_email='carson.britt@denovochem.com',
     description='Name-to-SMILES conversion',
-    long_description=open('README.md').read(),
+    long_description=read_file('README.md'),
     long_description_content_type='text/markdown',
     url='https://github.com/denovochem/name_to_smiles',
     classifiers=[
