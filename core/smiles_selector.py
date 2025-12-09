@@ -10,6 +10,7 @@ class SMILESSelector:
         {
             'MeOH.benzene': {
                 'smiles': '',
+                'SMILES_source': [],
                 'SMILES_dict': {
                     'CO.c1ccccc1': ['pubchem_default/pubchem_default', ...],
                     None: [...],
@@ -57,7 +58,7 @@ class SMILESSelector:
     def _strategy_consensus(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
         """
         Pick the SMILES string returned by the most resolvers.
-        Tie-breaker: lexicographical order (or could be extended).
+        Tie-breaker: lexicographical order.
         """
         counts = {smiles: len(resolvers) for smiles, resolvers in smiles_dict.items()}
         max_count = max(counts.values())
@@ -99,7 +100,6 @@ class SMILESSelector:
     def _strategy_weighted_consensus(self, smiles_dict: Dict[str, List[str]], default_weight: float = 1.0, **kwargs) -> str:
         """
         Assign weights to resolvers. Sum weights per SMILES. Pick highest total.
-        Weights example: {'pubchem_default': 2.0, 'cirpy_default': 1.5}
         Resolver strings like 'pubchem_default/cirpy_default' get average of both weights.
         """
         def extract_base_resolver(resolver_str: str) -> List[str]:
@@ -121,22 +121,37 @@ class SMILESSelector:
         return smiles, smiles_dict.get(smiles, '')
     
     def _strategy_random(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+        """
+        Pick a random SMILES.
+        """
         smiles = random.choice(list(smiles_dict.keys()))
         return smiles, smiles_dict.get(smiles, '')
 
     def _strategy_shortest_smiles(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+        """
+        Pick the shortest SMILES.
+        """
         smiles = min(list(smiles_dict.keys()))
         return smiles, smiles_dict.get(smiles, '')
     
     def _strategy_longest_smiles(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+        """
+        Pick the longest SMILES.
+        """
         smiles = max(list(smiles_dict.keys()))
         return smiles, smiles_dict.get(smiles, '')
 
     def _strategy_fewest_fragments(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+        """ 
+        Pick the smiles with the fewest fragments (separated by '.')
+        """
         smiles = min(smiles_dict, key=lambda k: k.count('.'))
         return smiles, smiles_dict.get(smiles, '')
     
     def _strategy_rdkit_standardized(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+        """
+        Pick the SMILES that is most standardized by RDKit.
+        """
         scores = defaultdict(float)
         for smiles, _ in smiles_dict.items():
             scores[smiles] += smiles.count('.')

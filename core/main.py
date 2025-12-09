@@ -13,6 +13,7 @@ from smiles_selector import SMILESSelector
 from utils.chem_utils import canonicalize_smiles
 from utils.logging_config import logger
 from utils.string_utils import clean_strings
+
 class ChemicalNameResolver(ABC):
     """
     Abstract base class for chemical name-to-SMILES resolvers.
@@ -71,7 +72,7 @@ class ChemicalNameResolver(ABC):
 
 class OpsinNameResolver(ChemicalNameResolver):
     """
-    Concrete resolver using OPSIN via py2opsin.
+    Resolver using OPSIN via py2opsin.
     """
 
     def __init__(self, resolver_name: str, allow_bad_stereo: bool = False, resolver_weight: float = 3):
@@ -105,6 +106,7 @@ class OpsinNameResolver(ChemicalNameResolver):
 
 class PubChemNameResolver(ChemicalNameResolver):
     """
+    Resolver using PubChem via PubChemPy.
     """
 
     def __init__(self, resolver_name: str, resolver_weight: float = 2):
@@ -128,6 +130,7 @@ class PubChemNameResolver(ChemicalNameResolver):
 
 class CIRPyNameResolver(ChemicalNameResolver):
     """
+    Resolver using Chemical Identity Resolver via CIRPy.
     """
 
     def __init__(self, resolver_name: str, resolver_weight: float = 1):
@@ -151,6 +154,7 @@ class CIRPyNameResolver(ChemicalNameResolver):
 
 class ManualNameResolver(ChemicalNameResolver):
     """
+    Resolver using manually curated names and corresponding SMILES. 
     """
 
     def __init__(self, resolver_name: str, provided_name_dict: dict = None, resolver_weight: float = 10):
@@ -185,6 +189,8 @@ class ManualNameResolver(ChemicalNameResolver):
 
 class PeptideNameResolver(ChemicalNameResolver):
     """
+    Resolver using peptide shorthand-to-IUPAC-like name, then resolved to SMILES
+    with OPSIN via py2opsin.
     """
 
     def __init__(self, resolver_name: str, resolver_weight: float = 3):
@@ -208,6 +214,7 @@ class PeptideNameResolver(ChemicalNameResolver):
 
 class StructuralFormulaNameResolver(ChemicalNameResolver):
     """
+    Resolver using structural chemical formula (e.g. CH3CH2CH2COOH).
     """
 
     def __init__(self, resolver_name: str, resolver_weight: float = 2):
@@ -264,6 +271,7 @@ def resolve_compounds_to_smiles(
         compounds = [compounds]
     if len(compounds) != len(set(compounds)):
         warnings.warn("Removing duplicate compound names from input compounds list.")
+        logger.info("Removing duplicate compound names from input compounds list.")
         compounds = list(set(compounds))
 
     if not isinstance(resolvers, list) or len(resolvers) == 0:

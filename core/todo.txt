@@ -2,16 +2,21 @@
 - add new resolvers:
     - chemaxon python wrapper (marvin/api)
     - chemspider python wrapper
-    - inoragnic shorthand for complexes
+    - inorganic shorthand for complexes
 
+- new smiles_selectors
+    - custom smiles selector functions?
 - significantly more names in custom name dict
-- consistent code formatting
+- return more info from SMILESSelector/OPSIN/others maybe?
+- consistent code formatting for peptide/structural formula resolution
+- standardize names throughout codebase
 - implement testing
 - docs page
-
+- log how long each resolver takes
+- make sure greek letters still work with peptides
 
 # mid term:
-- name correction?
+- simple name correction?
 
 # long term:
-- fork opsin
+- fork opsin and improve

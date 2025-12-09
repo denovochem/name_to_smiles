@@ -7,13 +7,20 @@ import json
 BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_MANUAL_NAME_DICT = BASE_DIR.parent / 'datafiles' / 'name_dicts' / 'manual_name_dict.json'
 
-CUSTOM_NAME_DICT_DIR = BASE_DIR.parent / 'datafiles' / 'name_dicts' / 'custom_name_dicts'
-
 def process_name_dict(
     compound_name_list: List[str], 
     name_dict: Dict[str, str], 
-):
+) -> Dict[str, str]:
     """
+    Process a dictionary of compound names to SMILES by matching the lowercased and stripped
+    compound names with their corresponding SMILES strings.
+
+    Args:
+        compound_name_list (List[str]): A list of compound names to process.
+        name_dict (Dict[str, str]): A dictionary of compound names to SMILES strings.
+
+    Returns:
+        Dict[str, str]: A dictionary of processed compound names to SMILES strings.
     """
     processed_name_dict = {}
     compound_name_dict_lower = {ele.lower().strip():ele for ele in compound_name_list}
@@ -28,8 +35,16 @@ def process_name_dict(
 def name_to_smiles_manual(
     compound_name_list: List[str], 
     provided_name_dict: Dict[str, str] = None
-):
+) -> Dict[str, str]:
     """
+    Convert a list of compound names to their corresponding SMILES strings using a manual name dictionary.
+
+    Args:
+        compound_name_list (List[str]): A list of compound names to convert.
+        provided_name_dict (Dict[str, str], optional): A manual name dictionary to use. Defaults to None.
+
+    Returns:
+        Dict[str, str]: A dictionary of converted compound names to SMILES strings.
     """
     manual_name_dict = {}
     compound_name_dict_lower = {ele.lower():ele for ele in compound_name_list}
