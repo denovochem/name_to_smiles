@@ -4,7 +4,7 @@ from placeholder_name.utils.logging_config import logger
 
 
 def name_to_smiles_opsin(
-    chemical_name_list: List[str],
+    compound_name_list: List[str],
     allow_acid: bool = False,
     allow_radicals: bool = True,
     allow_bad_stereo: bool = False,
@@ -14,7 +14,7 @@ def name_to_smiles_opsin(
     Convert a list of chemical names to their corresponding SMILES representations using OPSIN.
 
     Args:
-    chemical_name_list (List[str]): A list of IUPAC or common chemical names to be converted.
+    compound_name_list (List[str]): A list of IUPAC or common chemical names to be converted.
     allow_acid (bool): If True, allow interpretation of acids.
     allow_radicals (bool): If True, enable radical interpretation.
     allow_bad_stereo (bool): If True, allow OPSIN to ignore uninterpretable stereochem.
@@ -29,11 +29,11 @@ def name_to_smiles_opsin(
         This function uses the `py2opsin` library to interface with OPSIN.
         Newline characters in input names are stripped to avoid CLI parsing issues.
     """
-    chemical_name_dict: Dict[str, str] = {}
+    opsin_name_dict: Dict[str, str] = {}
     failure_message_dict: Dict[str, str] = {}
 
     # Strip newlines to prevent CLI parsing issues
-    sanitized_names = [name.replace('\n', '') for name in chemical_name_list]
+    sanitized_names = [compound_name.replace('\n', '') for compound_name in compound_name_list]
 
     smiles_strings, failure_messages = py2opsin(
         chemical_name=sanitized_names,
@@ -45,19 +45,19 @@ def name_to_smiles_opsin(
         wildcard_radicals=wildcard_radicals
     )
 
-    if len(smiles_strings) != len(chemical_name_list) or len(failure_messages) != len(chemical_name_list):
+    if len(smiles_strings) != len(compound_name_list) or len(failure_messages) != len(compound_name_list):
         logger.warning(
             f"Mismatching lengths: "
             f"smiles_strings ({len(smiles_strings)}), "
-            f"chemical_name_list ({len(chemical_name_list)}), "
+            f"compound_name_list ({len(compound_name_list)}), "
             f"failure_messages ({len(failure_messages)})"
         )
         return {}, {}
 
-    for name, smiles, msg in zip(chemical_name_list, smiles_strings, failure_messages):
+    for compound_name, smiles, msg in zip(compound_name_list, smiles_strings, failure_messages):
         if smiles:
-            chemical_name_dict[name] = smiles
+            opsin_name_dict[compound_name] = smiles
         if msg:
-            failure_message_dict[name] = msg
+            failure_message_dict[compound_name] = msg
 
-    return chemical_name_dict, failure_message_dict
+    return opsin_name_dict, failure_message_dict

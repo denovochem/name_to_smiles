@@ -33,11 +33,11 @@ def process_name_dict(
     processed_name_dict = {}
     compound_name_dict_lower = {ele.lower().strip():ele for ele in compound_name_list}
     name_dict_lower = {k.lower().strip():v for k,v in name_dict.items()}
-    for compound, smiles in name_dict_lower.items():
+    for compound_name, smiles in name_dict_lower.items():
         if not smiles:
             continue
-        if compound in compound_name_dict_lower:
-            processed_name_dict[compound_name_dict_lower[compound]] = smiles
+        if compound_name in compound_name_dict_lower:
+            processed_name_dict[compound_name_dict_lower[compound_name]] = smiles
 
     return processed_name_dict
 

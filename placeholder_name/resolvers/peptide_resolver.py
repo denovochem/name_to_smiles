@@ -3,6 +3,7 @@ from placeholder_name.resolvers.opsin_resolver import name_to_smiles_opsin
 from placeholder_name.utils.logging_config import logger
 from typing import List, Dict, Tuple
 
+
 def generate_side_chain_protections():
     """Generate the complete side chain protections dictionary"""
     protections = {}
@@ -30,10 +31,23 @@ def generate_side_chain_protections():
     
     return protections
 
+
 # Generate the complete dictionary
 SIDE_CHAIN_PROTECTIONS = generate_side_chain_protections()
 
-def split_peptide_shorthand(shorthand):
+
+def split_peptide_shorthand(shorthand: str) -> List[str]:
+    """
+    Split a peptide shorthand string into individual tokens.
+
+    Tokens are separated by hyphens (-) unless they are inside parentheses, in which case they are treated as a single token.
+
+    Args:
+        shorthand (str): A peptide shorthand string
+
+    Returns:
+        List of tokens
+    """
     tokens = []
     current_token = ""
     paren_depth = 0
@@ -58,8 +72,17 @@ def split_peptide_shorthand(shorthand):
     
     return tokens
 
-def parse_protected_residue(token):
-    """Parse a token that might contain side chain protection"""
+
+def parse_protected_residue(token: str):
+    """
+    Parse a protected residue token into its base amino acid and protection information.
+
+    Args:
+        token (str): The protected residue token to parse.
+
+    Returns:
+        tuple: (base_aa, protection) or (None, None) if the token cannot be parsed.
+    """
     if '(' in token and token.endswith(')'):
         if token.lower() in SIDE_CHAIN_PROTECTIONS:
             base_aa, protection = SIDE_CHAIN_PROTECTIONS[token.lower()]
@@ -72,13 +95,13 @@ def parse_protected_residue(token):
                 return AA_FULL[base][0], f"with {protection_part} protection"
     return None, None
 
-def extract_prefix_modifier(token, aa_dict):
+
+def extract_prefix_modifier(token: str):
     """
     Extract prefix modifiers from amino acid tokens.
     
     Args:
-        token: The amino acid token to process
-        aa_dict: Dictionary of amino acids to check against
+        token (str): The amino acid token to process
     
     Returns:
         tuple: (modifier_string, remaining_token) or (None, original_token)
@@ -92,14 +115,29 @@ def extract_prefix_modifier(token, aa_dict):
             remaining_lower = remaining.lower().strip().replace(' ', '')
             
             # Verify the remaining part is a valid amino acid
-            if remaining_lower in aa_dict:
+            if remaining_lower in AA_FULL:
                 return full_name, remaining, remaining_lower
     
     return None, token, token.lower().strip().replace(' ', '')
 
-def process_amino_acid_token(next_token, is_last, is_cyclic, stereo_prefix='l-'):
+
+def process_amino_acid_token(
+    next_token: str, 
+    is_last: bool, 
+    is_cyclic: bool, 
+    stereo_prefix: str = 'l-'
+) -> str:
     """
-    Process an amino acid token and return the properly formatted name.
+    Process an amino acid token from a peptide shorthand and return its IUPAC name.
+
+    Args:
+        next_token (str): The amino acid token to process.
+        is_last (bool): Whether this is the last token in the peptide.
+        is_cyclic (bool): Whether the peptide is cyclic.
+        stereo_prefix (str, optional): The stereochemistry prefix to add to the amino acid name. Defaults to 'l-'.
+
+    Returns:
+        str: The IUPAC name of the amino acid.
     """
     next_token_lower_stripped = next_token.lower().strip().replace(' ', '')
     
@@ -111,7 +149,7 @@ def process_amino_acid_token(next_token, is_last, is_cyclic, stereo_prefix='l-')
         next_token_lower_stripped = next_token.lower().strip().replace(' ', '')
 
     # Handle prefix modifiers (methyl, acetyl, etc.)
-    prefix_modifier, next_token, next_token_lower_stripped = extract_prefix_modifier(next_token, AA_FULL)
+    prefix_modifier, next_token, next_token_lower_stripped = extract_prefix_modifier(next_token)
 
     is_last_updated = is_last and not is_cyclic
     
@@ -154,7 +192,21 @@ def process_amino_acid_token(next_token, is_last, is_cyclic, stereo_prefix='l-')
         # Unknown token
         return f"{stereo_prefix}{next_token}"
 
+
 def peptide_shorthand_to_iupac(shorthand: str) -> str:
+    """
+    Converts a peptide shorthand into its IUPAC name.
+
+    The function processes the shorthand by first stripping whitespace and dashes, then
+    checking if it's a cyclic peptide. If not cyclic, it removes any counter acid
+    suffixes (if present) and processes the shorthand as a regular peptide.
+
+    Parameters:
+        shorthand (str): The peptide shorthand to process
+
+    Returns:
+        str: The IUPAC name of the peptide
+    """
     shorthand = shorthand.strip()
     shorthand = shorthand.strip('-')
     shorthand = shorthand.replace('--', '-')
@@ -279,25 +331,46 @@ def peptide_shorthand_to_iupac(shorthand: str) -> str:
         
     return name
 
-def name_to_smiles_peptide(peptides: List[str]) -> Tuple[Dict[str, str], Dict[str, str]]:
+
+def looks_like_peptide_shorthand(potential_peptide: str) -> bool:
+    """
+    Check if a given string looks like a peptide shorthand by checking if it contains
+    any of the standard amino acid abbreviations surrounded by hyphens.
+
+    Args:
+        potential_peptide (str): The string to check.
+
+    Returns:
+        bool: True if the string looks like a peptide shorthand, False otherwise.
+    """
+    for k,_ in AA_FULL.items():
+        if f'-{k}-' in potential_peptide.lower():
+            return True
+    return False
+
+
+def name_to_smiles_peptide(compound_name_list: List[str]) -> Tuple[Dict[str, str], Dict[str, str]]:
     """
     Converts a list of peptide shorthand names to their corresponding SMILES strings by first 
     converting the shorthand to an IUPAC-like name, then resolving that with OPSIN.
 
     Args:
-        peptides (List[str]): A list of peptide shorthand names to be converted.
+        compound_name_list (List[str]): A list of peptide shorthand names to be converted.
 
     Returns:
         Tuple[Dict[str, str], Dict[str, str]]: A tuple containing two dictionaries. The first dictionary maps each peptide shorthand name to its SMILES string, and the second dictionary maps each peptide shorthand name that failed conversion to its error message.
     """
     peptide_iupac_names = []
     peptide_iupac_to_shorthand_mapping = {}
-    for peptide in peptides:
-        peptide_iupac = peptide_shorthand_to_iupac(peptide)
+    for compound_name in compound_name_list:
+        if not looks_like_peptide_shorthand(compound_name):
+            continue
+        peptide_iupac = peptide_shorthand_to_iupac(compound_name)
         peptide_iupac_names.append(peptide_iupac)
-        peptide_iupac_to_shorthand_mapping[peptide_iupac] = peptide
+        peptide_iupac_to_shorthand_mapping[peptide_iupac] = compound_name
 
     chemical_name_dict, failure_message_dict = name_to_smiles_opsin(peptide_iupac_names)
     chemical_name_dict = {peptide_iupac_to_shorthand_mapping[k]:v for k,v in chemical_name_dict.items()}
+    failure_message_dict = {peptide_iupac_to_shorthand_mapping[k]:v for k,v in failure_message_dict.items()}
 
     return chemical_name_dict, failure_message_dict

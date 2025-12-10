@@ -3,7 +3,7 @@ from typing import Dict, List, Callable, Optional
 from rdkit import Chem
 
 class SMILESSelector:
-    def __init__(self, data: Dict[str, Dict], weight_dict: Dict[str, float]):
+    def __init__(self, data: Dict[str, Dict], weight_dict: Dict[str, float], custom_strategies: Optional[Dict[str, Callable]] = None):
         """
         Initialize with your compound dictionary.
         Example structure:
@@ -21,10 +21,14 @@ class SMILESSelector:
         """
         self.data = data
         self.weight_dict = weight_dict
+        self.custom_strategies = custom_strategies or {}
 
-    def select_smiles(self, compound_id: str, strategy: str = 'consensus', **kwargs) -> Optional[str]:
+    def select_smiles(self, compound_id: str, strategy: str | Callable = 'consensus', **kwargs) -> tuple[Optional[str], List[str]]:
         """
         Main entry point. Select best SMILES for given compound using specified strategy.
+        `strategy` can be:
+          - a string name of built-in or custom strategy
+          - a callable function that takes (smiles_dict, **kwargs) and returns (smiles: str, sources: List[str])
         """
         smiles_dict = self.data[compound_id]['SMILES_dict']
         
@@ -37,7 +41,14 @@ class SMILESSelector:
         if not filtered_smiles_dict:
             return '', []
 
-        strategy_fn = self._get_strategy(strategy)
+        # Handle both string and callable strategies
+        if isinstance(strategy, str):
+            strategy_fn = self._get_strategy(strategy)
+        elif callable(strategy):
+            strategy_fn = strategy
+        else:
+            raise TypeError(f"Strategy must be a string or callable, got {type(strategy)}")
+
         return strategy_fn(filtered_smiles_dict, **kwargs)
 
     def _get_strategy(self, strategy_name: str) -> Callable:
@@ -51,6 +62,9 @@ class SMILESSelector:
             'fewest_fragments': self._strategy_fewest_fragments,
             'rdkit_standardized': self._strategy_rdkit_standardized
         }
+
+        strategies.update(self.custom_strategies)
+
         if strategy_name not in strategies:
             raise ValueError(f"Unknown strategy: {strategy_name}. Available: {list(strategies.keys())}")
         return strategies[strategy_name]

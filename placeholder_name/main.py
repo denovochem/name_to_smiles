@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
-import re
-from typing import List, Tuple, Dict
-import warnings
+from typing import List, Tuple, Dict, Callable
 
 from placeholder_name.name_manipulation.split_names import get_delimiter_split_dict, resolve_delimiter_split_dict
 from placeholder_name.resolvers.manual_resolver import name_to_smiles_manual
@@ -119,7 +117,7 @@ class PubChemNameResolver(ChemicalNameResolver):
         Convert chemical names to SMILES using pubchem.
         """
         resolved_names = name_to_smiles_pubchem(chemical_name_list)
-        return resolved_names, None
+        return resolved_names, {}
 
 
 class CIRPyNameResolver(ChemicalNameResolver):
@@ -140,7 +138,7 @@ class CIRPyNameResolver(ChemicalNameResolver):
         Convert chemical names to SMILES using cirpy.
         """
         resolved_names = name_to_smiles_cirpy(chemical_name_list)
-        return resolved_names, None
+        return resolved_names, {}
 
 
 class ManualNameResolver(ChemicalNameResolver):
@@ -170,7 +168,7 @@ class ManualNameResolver(ChemicalNameResolver):
         if provided_name_dict is None:
             provided_name_dict = self._provided_name_dict
         resolved_names = name_to_smiles_manual(chemical_name_list, provided_name_dict)
-        return resolved_names, None
+        return resolved_names, {}
 
 
 class PeptideNameResolver(ChemicalNameResolver):
@@ -209,7 +207,7 @@ class StructuralFormulaNameResolver(ChemicalNameResolver):
         Convert chemical names to SMILES using structural formula converter.
         """
         resolved_names = name_to_smiles_structural_formula(chemical_name_list)
-        return resolved_names, None
+        return resolved_names, {}
 
 
 def clean_strings_and_return_mapping(compounds_list: List[str]) -> Tuple[List[str], Dict[str, str]]:
@@ -281,14 +279,12 @@ def resolve_compounds_using_resolvers(
     """
     resolvers_out_dict = {}
     for resolver in resolvers_list:
-        full_resolver_dict = {}
         for i in range(0, len(compounds_list), batch_size):
             chunk = compounds_list[i:i + batch_size]
-            out, _ = resolver.name_to_smiles(chunk)
-            full_resolver_dict.update(out)
-
+            out, info_messages = resolver.name_to_smiles(chunk)
         resolvers_out_dict[resolver.resolver_name] = {
-            "out": out
+            "out": out,
+            "info_messages": info_messages
         }
     return resolvers_out_dict
 
@@ -316,11 +312,15 @@ def assemble_compounds_resolution_dict(
         compounds_out_dict[compound] = {
             'SMILES': '',
             'SMILES_source': [],
-            'SMILES_dict': {}
+            'SMILES_dict': {},
+            'info_messages': {}
         }
 
         for resolver, resolution_dict in resolvers_out_dict.items():
             compound_smiles = resolution_dict['out'].get(compound_cleaned, '')
+            if resolution_dict['info_messages'].get(compound_cleaned, ''):
+                compound_resolver_info_message = resolution_dict['info_messages'].get(compound_cleaned, '')
+                compounds_out_dict[compound]['info_messages'][resolver] = compound_resolver_info_message
             canonical_compound_smiles = canonicalize_smiles(compound_smiles)
             if not canonical_compound_smiles:
                 continue
@@ -458,8 +458,7 @@ def resolve_compounds_to_smiles(
     if isinstance(compounds_list, str):
         compounds_list = [compounds_list]
     if len(compounds_list) != len(set(compounds_list)):
-        warnings.warn("Removing duplicate compound names from compounds_list.")
-        logger.info("Removing duplicate compound names from compounds_list.")
+        logger.warning("Removing duplicate compound names from compounds_list.")
         compounds_list = list(set(compounds_list))
 
     if not isinstance(resolvers_list, list) or len(resolvers_list) == 0:
@@ -473,8 +472,8 @@ def resolve_compounds_to_smiles(
             raise ValueError(f"Duplicate resolver name: {resolver.resolver_name}.")
         seen_resolvers.append(resolver.resolver_name)
 
-    if not isinstance(smiles_selection_mode, str):
-        raise ValueError("Invalid input: smiles_selection_mode must be a string.")
+    if not isinstance(smiles_selection_mode, (str, Callable)):
+        raise ValueError("Invalid input: smiles_selection_mode must be a string or function.")
     
     if not isinstance(detailed_name_dict, bool):
         raise ValueError("Invalid input: detailed_name_dict must be a bool.")
@@ -516,7 +515,3 @@ def resolve_compounds_to_smiles(
         return {k:v.get('SMILES', '') for k, v in compounds_out_dict.items()}
 
     return compounds_out_dict
-
-
-if __name__ == "__main__":    
-    print(resolve_compounds_to_smiles(['benzene', 'aspirin', 'stab', 'cyclo(Asp-Arg-Val-Tyr-Ile-His-Pro-Phe)', 'CH3CH2OH', 'CH3CH(OH)COOH', 'H₂O', 'H₂O.THF',], detailed_name_dict=True))
