@@ -1,7 +1,7 @@
 from utils.constants import AMINO_ACID_SUB_SITES, PROTECTING_GROUPS, SPECIAL_CASES, AA_FULL, N_CAPS, C_CAPS, COUNTER_ACIDS, GREEK_LETTERS, PREFIX_MAP
 from resolvers.opsin_resolver import name_to_smiles_opsin
 from utils.logging_config import logger
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 def generate_side_chain_protections():
     """Generate the complete side chain protections dictionary"""
