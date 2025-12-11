@@ -91,14 +91,6 @@ KNOWN_FRAGMENTS: Dict[str, FragmentDefinition] = {
         is_aromatic=True,
         description='phenyl'
     ),
-    # 1,2-phenylene (ortho-disubstituted benzene)
-    'C6H4': FragmentDefinition(
-        pattern='C6H4',
-        smiles='c1ccccc1',
-        attachment_points=[0, 1],  # Two adjacent attachment points
-        is_aromatic=True,
-        description='1,2-phenylene'
-    ),
     # Cyclopentadienyl
     'C5H5': FragmentDefinition(
         pattern='C5H5',
@@ -131,35 +123,11 @@ KNOWN_FRAGMENTS: Dict[str, FragmentDefinition] = {
         is_aromatic=True,
         description='1-naphthyl'
     ),
-    # Furyl (2-position)
-    'C4H3O': FragmentDefinition(
-        pattern='C4H3O',
-        smiles='c1ccoc1',
-        attachment_points=[1],  # Attach at C2
-        is_aromatic=True,
-        description='2-furyl'
-    ),
-    # Thienyl (2-position)
-    'C4H3S': FragmentDefinition(
-        pattern='C4H3S',
-        smiles='c1ccsc1',
-        attachment_points=[1],  # Attach at C2
-        is_aromatic=True,
-        description='2-thienyl'
-    ),
-    # Pyridyl (various positions can be added)
-    'C5H4N': FragmentDefinition(
-        pattern='C5H4N',
-        smiles='c1ccncc1',
-        attachment_points=[0],  # Attach at C2 (adjacent to N)
-        is_aromatic=True,
-        description='pyridyl'
-    ),
     # Carboxylic acid
     'COOH': FragmentDefinition(
         pattern='COOH',
         smiles='C(=O)O',
-        attachment_points=[0],  # Attach at C1
+        attachment_points=[0],
         is_aromatic=False,
         description='carboxylic'
     ),
@@ -167,7 +135,7 @@ KNOWN_FRAGMENTS: Dict[str, FragmentDefinition] = {
     'HOOC': FragmentDefinition(
         pattern='HOOC',
         smiles='C(=O)O',
-        attachment_points=[0],  # Attach at C1
+        attachment_points=[0],
         is_aromatic=False,
         description='carboxylic'
     ),
@@ -175,7 +143,7 @@ KNOWN_FRAGMENTS: Dict[str, FragmentDefinition] = {
     'CONH2': FragmentDefinition(
         pattern='CONH2',
         smiles='',
-        attachment_points=[0],  # Attach at C1
+        attachment_points=[0],
         is_aromatic=False,
         description='primary amide'
     ),
@@ -183,15 +151,31 @@ KNOWN_FRAGMENTS: Dict[str, FragmentDefinition] = {
     'COOCH3': FragmentDefinition(
         pattern='COOCH3',
         smiles='',
-        attachment_points=[0],  # Attach at C1
+        attachment_points=[0],
         is_aromatic=False,
         description='methyl ester'
+    ),
+    # Aldehyde
+    'COCH3': FragmentDefinition(
+        pattern='COCH3',
+        smiles='',
+        attachment_points=[0],
+        is_aromatic=False,
+        description='aldehyde'
+    ),
+    # Non-terminal aldehyde
+    'COCH2': FragmentDefinition(
+        pattern='COCH2',
+        smiles='',
+        attachment_points=[0,2],
+        is_aromatic=False,
+        description='non-terminal aldehyde'
     ),
     # Ethyl ester
     'COOCH2CH3': FragmentDefinition(
         pattern='COOCH2CH3',
         smiles='',
-        attachment_points=[0],  # Attach at C1
+        attachment_points=[0],
         is_aromatic=False,
         description='ethyl ester'
     ),
@@ -199,7 +183,7 @@ KNOWN_FRAGMENTS: Dict[str, FragmentDefinition] = {
     'COCl': FragmentDefinition(
         pattern='COCl',
         smiles='',
-        attachment_points=[0],  # Attach at C1
+        attachment_points=[0],
         is_aromatic=False,
         description='acyl chloride'
     ),
@@ -207,10 +191,48 @@ KNOWN_FRAGMENTS: Dict[str, FragmentDefinition] = {
     'COBr': FragmentDefinition(
         pattern='COBr',
         smiles='',
-        attachment_points=[0],  # Attach at C1
+        attachment_points=[0],
         is_aromatic=False,
         description='acyl bromide'
     ),
+    # 
+    'C2H5': FragmentDefinition(
+        pattern='C2H5',
+        smiles='',
+        attachment_points=[0],
+        is_aromatic=False,
+        description=''
+    ),
+    # 
+    'C3H7': FragmentDefinition(
+        pattern='C2H5',
+        smiles='',
+        attachment_points=[0],
+        is_aromatic=False,
+        description=''
+    ),
+    # 
+    'C4H9': FragmentDefinition(
+        pattern='C2H5',
+        smiles='',
+        attachment_points=[0],
+        is_aromatic=False,
+        description=''
+    ),
+    'NO2': FragmentDefinition(
+        pattern='NO2',
+        smiles='',
+        attachment_points=[0],
+        is_aromatic=False,
+        description=''
+    ),
+    'O2N': FragmentDefinition(
+        pattern='O2N',
+        smiles='',
+        attachment_points=[2],
+        is_aromatic=False,
+        description=''
+    )
 }
 
 
@@ -488,13 +510,19 @@ class BranchGroup:
     Represents a branch specification like (CH3)2 or (=O).
     
     Attributes:
-        content: The content inside the parentheses (as parsed structure)
+        content: The content inside the parentheses. Can be:
+                 - AtomGroup for simple single-group branches
+                 - int (attachment point index) for complex branches
         multiplier: How many times this branch appears
         bond_order: Bond order for attachment (for things like =O)
+        branch_atom_start: Start index of branch atoms (for copying)
+        branch_atom_end: End index of branch atoms (exclusive, for copying)
     """
-    content: Any  # Can be AtomGroup, list of groups, etc.
+    content: Any
     multiplier: int = 1
     bond_order: BondOrder = BondOrder.SINGLE
+    branch_atom_start: Optional[int] = None
+    branch_atom_end: Optional[int] = None
 
 
 class StructuralFormulaParser:
@@ -773,7 +801,6 @@ class StructuralFormulaParser:
             bond_order = BondOrder.TRIPLE
         
         # Parse the content
-        content_atoms: List[int] = []
         content_start_idx = self.graph.atom_count()
         
         # Simple case: single element like (O), (Cl), (=O)
@@ -802,33 +829,59 @@ class StructuralFormulaParser:
             # For elements C, N, O, S, try to parse as simple atom group
             # but only accept it if followed by RPAREN
             if element in ('C', 'N', 'O', 'S'):
-                # Save current position in case we need to backtrack
                 saved_pos = self.pos
                 
                 try:
-                    # Parse the atom group inside
                     group = self._parse_simple_atom_group()
                     
-                    # Only accept this as a simple group if immediately followed by RPAREN
                     if self._match(TokenType.RPAREN):
                         self._advance()  # consume ')'
                         multiplier = self._consume_number()
                         return BranchGroup(content=group, multiplier=multiplier, bond_order=bond_order)
                     else:
-                        # Not followed by RPAREN, so this is not a simple group
-                        # Reset position and fall through to complex parsing
                         self.pos = saved_pos
                 except Exception:
-                    # If parsing fails, reset and fall through
                     self.pos = saved_pos
         
-        # More complex content - parse as a sub-formula
-        # Save current graph state
-        saved_count = self.graph.atom_count()
+        # Handle single fragment inside parens: (C6H5), (C2H5)
+        if self._match(TokenType.FRAGMENT):
+            fragment_pattern = self._advance().value
+            
+            if self._match(TokenType.RPAREN):
+                self._advance()  # consume ')'
+                multiplier = self._consume_number()
+                
+                # Build the fragment and record its boundaries
+                fragment_start = self.graph.atom_count()
+                attachment_idx = self._add_fragment_to_graph(fragment_pattern)
+                fragment_end = self.graph.atom_count()
+                
+                if attachment_idx is None:
+                    return None
+                
+                return BranchGroup(
+                    content=attachment_idx,
+                    multiplier=multiplier,
+                    bond_order=bond_order,
+                    branch_atom_start=fragment_start,
+                    branch_atom_end=fragment_end
+                )
+            else:
+                # Fragment followed by more content - handle as complex branch
+                # First, add the fragment
+                fragment_start = self.graph.atom_count()
+                inner_prev_atom = self._add_fragment_to_graph(fragment_pattern)
+                inner_first_atom = inner_prev_atom
+                # Continue parsing below
+        else:
+            inner_first_atom = None
+            inner_prev_atom = None
         
-        # Parse inner content (recursive)
-        inner_first_atom = None
-        inner_prev_atom = None
+        # More complex content - parse as a sub-formula
+        saved_count = content_start_idx if inner_first_atom is None else self.graph.atom_count()
+        if inner_first_atom is None:
+            saved_count = self.graph.atom_count()
+        
         inner_bond_order = BondOrder.SINGLE
         
         while not self._at_end() and not self._match(TokenType.RPAREN):
@@ -853,8 +906,34 @@ class StructuralFormulaParser:
                     inner_bond_order = BondOrder.SINGLE
                 
                 inner_prev_atom = atom_idx
-            else:
-                break
+                continue
+            
+            # Handle FRAGMENT tokens inside complex branches
+            if self._match(TokenType.FRAGMENT):
+                fragment_pattern = self._advance().value
+                attachment_idx = self._add_fragment_to_graph(fragment_pattern)
+                
+                if attachment_idx is None:
+                    break
+                
+                if inner_first_atom is None:
+                    inner_first_atom = attachment_idx
+                
+                if inner_prev_atom is not None:
+                    self.graph.add_bond(inner_prev_atom, attachment_idx, inner_bond_order)
+                    inner_bond_order = BondOrder.SINGLE
+                
+                inner_prev_atom = attachment_idx
+                continue
+            
+            # Handle nested parentheses
+            if self._match(TokenType.LPAREN):
+                nested_branch = self._parse_parenthetical_branch()
+                if nested_branch is not None and inner_prev_atom is not None:
+                    self._attach_branch(inner_prev_atom, nested_branch)
+                continue
+            
+            break
         
         if not self._match(TokenType.RPAREN):
             self.errors.append("Unclosed parenthesis")
@@ -863,12 +942,19 @@ class StructuralFormulaParser:
         self._advance()  # consume ')'
         multiplier = self._consume_number()
         
-        # Return branch info
+        branch_end = self.graph.atom_count()
+        
+        # Use last atom as attachment point (not first!)
+        attachment_point = inner_prev_atom if inner_prev_atom is not None else inner_first_atom
+        
         return BranchGroup(
-            content=inner_first_atom,  # First atom of the inner chain
+            content=attachment_point,
             multiplier=multiplier,
-            bond_order=bond_order
+            bond_order=bond_order,
+            branch_atom_start=content_start_idx,
+            branch_atom_end=branch_end
         )
+
     
     def _parse_simple_atom_group(self) -> AtomGroup:
         """
@@ -956,7 +1042,7 @@ class StructuralFormulaParser:
         """
         Attach a branch to an atom.
         
-        Handles multipliers by creating multiple copies.
+        Handles multipliers by creating multiple copies of the entire branch structure.
         """
         for i in range(branch.multiplier):
             if isinstance(branch.content, AtomGroup):
@@ -964,13 +1050,67 @@ class StructuralFormulaParser:
                 self.graph.add_bond(attach_to, branch_idx, branch.bond_order)
             elif isinstance(branch.content, int):
                 if i == 0:
+                    # First instance: just bond to existing branch
                     self.graph.add_bond(attach_to, branch.content, branch.bond_order)
                 else:
-                    if branch.content < len(self.graph.atoms):
-                        atom = self.graph.atoms[branch.content]
-                        new_idx = self.graph.add_atom(atom.element, atom.implicit_h_count)
-                        self.graph.add_bond(attach_to, new_idx, branch.bond_order)
+                    # Subsequent instances: copy the entire branch structure
+                    if branch.branch_atom_start is not None and branch.branch_atom_end is not None:
+                        new_attachment = self._copy_branch_structure(
+                            branch.branch_atom_start,
+                            branch.branch_atom_end,
+                            branch.content  # Original attachment point
+                        )
+                        if new_attachment is not None:
+                            self.graph.add_bond(attach_to, new_attachment, branch.bond_order)
+                    else:
+                        # Fallback: just copy single atom (for backwards compatibility)
+                        if branch.content < len(self.graph.atoms):
+                            atom = self.graph.atoms[branch.content]
+                            new_idx = self.graph.add_atom(atom.element, atom.implicit_h_count)
+                            self.graph.add_bond(attach_to, new_idx, branch.bond_order)
+
+
+    def _copy_branch_structure(self, start_idx: int, end_idx: int, attachment_idx: int) -> Optional[int]:
+        """
+        Copy a range of atoms and their internal bonds from the graph.
+        
+        Args:
+            start_idx: Starting atom index (inclusive)
+            end_idx: Ending atom index (exclusive)
+            attachment_idx: Original attachment point index within the range
+            
+        Returns:
+            New attachment point index after copying, or None on failure
+        """
+        if start_idx >= end_idx:
+            return None
+        
+        if attachment_idx < start_idx or attachment_idx >= end_idx:
+            return None
+        
+        # Map from old indices to new indices
+        idx_map: Dict[int, int] = {}
+        
+        # Copy all atoms in the range
+        for old_idx in range(start_idx, end_idx):
+            atom = self.graph.atoms[old_idx]
+            new_idx = self.graph.add_atom(atom.element, atom.implicit_h_count, atom.charge)
+            idx_map[old_idx] = new_idx
+        
+        # Copy internal bonds (bonds where both atoms are within the copied range)
+        for bond in self.graph.bonds:
+            both_in_range = (start_idx <= bond.atom1_idx < end_idx and 
+                            start_idx <= bond.atom2_idx < end_idx)
+            if both_in_range:
+                new_atom1 = idx_map[bond.atom1_idx]
+                new_atom2 = idx_map[bond.atom2_idx]
+                # Only add if this bond doesn't already exist (avoid duplicates)
+                self.graph.add_bond(new_atom1, new_atom2, bond.order)
+        
+        # Return the new attachment point
+        return idx_map.get(attachment_idx)
     
+
     def _add_fragment_to_graph(self, fragment_pattern: str) -> Optional[int]:
         """
         Add a known fragment (e.g., C6H5 phenyl) to the molecular graph.
@@ -989,19 +1129,25 @@ class StructuralFormulaParser:
             return self._build_phenyl_ring()
         elif fragment_pattern == 'C6H11':
             # Cyclohexyl: 6 sp3 carbons in a ring
-            return self._build_cyclohexyl_ring()
+            return self._build_cycloalkyl_ring(6)
         elif fragment_pattern == 'C5H9':
             # Cyclopentyl: 5 sp3 carbons in a ring
             return self._build_cycloalkyl_ring(5)
         elif fragment_pattern in ['COOH', 'HOOC']:
             # Carboxylic acid
             return self._build_carboxylic_acid()
-        # elif fragment_pattern == 'CONH2':
-        #     # Primary amide
-        #     return self._build_primary_amide()
+        elif fragment_pattern == 'CONH2':
+            # Primary amide
+            return self._build_primary_amide()
         elif fragment_pattern == 'COOCH3':
             # Methyl ester
             return self._build_ester(n_carbon=1)
+        elif fragment_pattern == 'COCH3':
+            # Methyl ester
+            return self._build_aldehyde()
+        elif fragment_pattern == 'COCH2':
+            # Methyl ester
+            return self._build_non_terminal_aldehyde()
         elif fragment_pattern == 'COOCH2CH3':
             # Ethyl ester
             return self._build_ester(n_carbon=2)
@@ -1014,9 +1160,16 @@ class StructuralFormulaParser:
         elif fragment_pattern == 'COI':
             # Acyl iodide
             return self._build_acid_halide(halide='I')
-        else:
-            # For other fragments, try RDKit if available
-            return self._build_fragment_with_rdkit(fragment_def)
+        elif fragment_pattern == 'C2H5':
+            return self._build_alkyl_chain(2)
+        elif fragment_pattern == 'C3H7':
+            return self._build_alkyl_chain(3)
+        elif fragment_pattern == 'C4H9':
+            return self._build_alkyl_chain(4)
+        elif fragment_pattern == 'NO2':
+            return self._build_nitro()
+        elif fragment_pattern == 'O2N':
+            return self._build_nitro()
     
     def _build_phenyl_ring(self) -> int:
         """Build a phenyl (benzene) ring and return the attachment point index."""
@@ -1034,10 +1187,6 @@ class StructuralFormulaParser:
         # Return the first carbon as the attachment point
         return indices[0]
     
-    def _build_cyclohexyl_ring(self) -> int:
-        """Build a cyclohexyl ring and return the attachment point index."""
-        return self._build_cycloalkyl_ring(6)
-    
     def _build_cycloalkyl_ring(self, size: int) -> int:
         """Build a cycloalkyl ring of given size and return the attachment point."""
         indices = []
@@ -1051,6 +1200,30 @@ class StructuralFormulaParser:
             self.graph.add_bond(indices[i], indices[next_i], BondOrder.SINGLE)
         
         return indices[0]
+
+    def _build_alkyl_chain(self, length: int) -> int:
+        """
+        Build a straight-chain alkyl group and return the attachment point index.
+        
+        The chain is built as CH3-(CH2)n- where the last CH2 is the attachment point.
+        """
+        if length < 1:
+            return -1
+        
+        indices = []
+        for i in range(length):
+            # First carbon (terminal): 3 hydrogens
+            # Other carbons: 2 hydrogens each
+            h_count = 3 if i == 0 else 2
+            idx = self.graph.add_atom('C', h_count)
+            indices.append(idx)
+        
+        # Bond the carbons in sequence
+        for i in range(length - 1):
+            self.graph.add_bond(indices[i], indices[i + 1], BondOrder.SINGLE)
+        
+        # Attachment point is the last carbon
+        return indices[-1]
     
     def _build_carboxylic_acid(self) -> int:
         """Build a carboxylic acid functional group"""
@@ -1062,12 +1235,23 @@ class StructuralFormulaParser:
         self.graph.add_bond(idx1, idx3, BondOrder.SINGLE)
 
         return idx1
+
+    def _build_nitro(self) -> int:
+        """Build a carboxylic acid functional group"""
+        idx1 = self.graph.add_atom('N', 1)
+        idx2 = self.graph.add_atom('O', 0)
+        idx3 = self.graph.add_atom('O', -1)
+
+        self.graph.add_bond(idx1, idx2, BondOrder.DOUBLE)
+        self.graph.add_bond(idx1, idx3, BondOrder.DOUBLE)
+
+        return idx1
     
-    def _build_amide(self) -> int:
+    def _build_primary_amide(self) -> int:
         """Build a carboxylic acid functional group"""
         idx1 = self.graph.add_atom('C', 0)
         idx2 = self.graph.add_atom('O', 0)
-        idx3 = self.graph.add_atom('O', 1)
+        idx3 = self.graph.add_atom('N', 0)
 
         self.graph.add_bond(idx1, idx2, BondOrder.DOUBLE)
         self.graph.add_bond(idx1, idx3, BondOrder.SINGLE)
@@ -1091,6 +1275,28 @@ class StructuralFormulaParser:
 
         return idx1
     
+    def _build_aldehyde(self) -> int:
+        """Build a carboxylic acid functional group"""
+        idx1 = self.graph.add_atom('C', 0)
+        idx2 = self.graph.add_atom('O', 0) 
+        idx3 = self.graph.add_atom('C', 0) 
+
+        self.graph.add_bond(idx1, idx2, BondOrder.DOUBLE)
+        self.graph.add_bond(idx1, idx3, BondOrder.SINGLE)
+
+        return idx1
+
+    def _build_non_terminal_aldehyde(self) -> int:
+        """Build a carboxylic acid functional group"""
+        idx1 = self.graph.add_atom('C', 0)
+        idx2 = self.graph.add_atom('O', 0) 
+        idx3 = self.graph.add_atom('C', 0) 
+
+        self.graph.add_bond(idx1, idx2, BondOrder.DOUBLE)
+        self.graph.add_bond(idx1, idx3, BondOrder.SINGLE)
+
+        return [idx1,idx3]
+    
     def _build_acid_halide(self, halide='Cl') -> int:
         """Build an ester functional group"""
         idx1 = self.graph.add_atom('C', 0)
@@ -1101,49 +1307,6 @@ class StructuralFormulaParser:
         self.graph.add_bond(idx1, idx3, BondOrder.SINGLE)
 
         return idx1
-    
-    def _build_fragment_with_rdkit(self, fragment_def: FragmentDefinition) -> Optional[int]:
-        """Try to build a fragment using RDKit if available."""
-        try:
-            from rdkit import Chem
-            
-            mol = Chem.MolFromSmiles(fragment_def.smiles)
-            if mol is None:
-                self.errors.append(f"Invalid fragment SMILES: {fragment_def.smiles}")
-                return None
-            
-            rdkit_to_graph: Dict[int, int] = {}
-            
-            for atom in mol.GetAtoms():
-                rdkit_idx = atom.GetIdx()
-                element = atom.GetSymbol()
-                graph_idx = self.graph.add_atom(element, 0)
-                rdkit_to_graph[rdkit_idx] = graph_idx
-            
-            for bond in mol.GetBonds():
-                begin_idx = bond.GetBeginAtomIdx()
-                end_idx = bond.GetEndAtomIdx()
-                bond_type = bond.GetBondType()
-                if bond_type == Chem.BondType.AROMATIC:
-                    order = BondOrder.AROMATIC
-                elif bond_type == Chem.BondType.DOUBLE:
-                    order = BondOrder.DOUBLE
-                elif bond_type == Chem.BondType.TRIPLE:
-                    order = BondOrder.TRIPLE
-                else:
-                    order = BondOrder.SINGLE
-                self.graph.add_bond(rdkit_to_graph[begin_idx], rdkit_to_graph[end_idx], order)
-            
-            if fragment_def.attachment_points:
-                return rdkit_to_graph.get(fragment_def.attachment_points[0])
-            return rdkit_to_graph.get(0)
-            
-        except ImportError:
-            self.errors.append(f"Fragment {fragment_def.pattern} requires RDKit")
-            return None
-        except Exception as e:
-            self.errors.append(f"Error adding fragment {fragment_def.pattern}: {e}")
-            return None
 
 
 # =============================================================================
@@ -1152,210 +1315,169 @@ class StructuralFormulaParser:
 
 class SMILESGenerator:
     """
-    Generates SMILES strings from molecular graphs using DFS traversal.
+    Generates SMILES strings from molecular graphs using RDKit.
+    
+    This is a drop-in replacement for the custom DFS-based SMILES generator.
+    It builds an RDKit molecule from the molecular graph and uses RDKit's
+    SMILES generation for more robust and standardized output.
     """
     
     def __init__(self, graph: MolecularGraph):
+        """
+        Initialize the generator with a molecular graph.
+        
+        Args:
+            graph: The molecular graph to convert to SMILES.
+        """
         self.graph = graph
-        self.visited: Set[int] = set()
-        self.ring_closures: Dict[Tuple[int, int], Tuple[int, BondOrder]] = {}
-        self.atom_ring_closures: Dict[int, List[Tuple[int, BondOrder]]] = defaultdict(list)
-        self.next_ring_num: int = 1
     
     def generate(self) -> str:
-        """Generate SMILES string."""
+        """
+        Generate a SMILES string from the molecular graph.
+        
+        Returns:
+            Canonical SMILES string, or empty string if generation fails.
+        """
         if self.graph.is_empty():
             return ""
         
-        self.visited.clear()
-        self.ring_closures.clear()
-        self.atom_ring_closures.clear()
-        self.next_ring_num = 1
-        
-        start = self._find_start_atom()
-        self._find_ring_closures(start, -1)
-        self.visited.clear()
-        return self._dfs(start, -1, BondOrder.SINGLE)
-    
-    def _find_start_atom(self) -> int:
-        """Find a good starting atom for SMILES generation."""
-        # Prefer terminal atoms (degree 1), but deprioritize oxygen (often =O)
-        terminal_atoms = []
-        for i, atom in enumerate(self.graph.atoms):
-            neighbors = self.graph.get_neighbors(i)
-            if len(neighbors) == 1:
-                terminal_atoms.append((i, atom.element))
-        
-        if terminal_atoms:
-            # Prefer C > other > O for starting (so we don't start from =O)
-            def start_priority(item):
-                idx, elem = item
-                if elem == 'C':
-                    return (0, idx)
-                elif elem == 'O':
-                    return (2, idx)
-                else:
-                    return (1, idx)
+        try:
+            mol = self._build_rdkit_mol()
+            if mol is None:
+                return ""
             
-            terminal_atoms.sort(key=start_priority)
-            return terminal_atoms[0][0]
-        
-        return 0
-    
-    def _find_ring_closures(self, atom_idx: int, parent_idx: int) -> None:
-        """First DFS pass to identify ring-closing bonds."""
-        self.visited.add(atom_idx)
-        
-        for neighbor_idx, bond_order in self.graph.get_neighbors(atom_idx):
-            if neighbor_idx == parent_idx:
-                continue
+            # Attempt sanitization with fallback strategies
+            if not self._sanitize_mol(mol):
+                logger.warning("Failed to sanitize molecule during SMILES generation")
+                return ""
             
-            if neighbor_idx in self.visited:
-                key = (min(atom_idx, neighbor_idx), max(atom_idx, neighbor_idx))
-                if key not in self.ring_closures:
-                    ring_num = self.next_ring_num
-                    self.next_ring_num += 1
-                    self.ring_closures[key] = (ring_num, bond_order)
-                    self.atom_ring_closures[atom_idx].append((ring_num, bond_order))
-                    self.atom_ring_closures[neighbor_idx].append((ring_num, bond_order))
-            else:
-                self._find_ring_closures(neighbor_idx, atom_idx)
+            # Generate canonical SMILES
+            return Chem.MolToSmiles(mol, canonical=True)
+            
+        except Exception as e:
+            logger.warning(f"SMILES generation failed: {e}")
+            return ""
     
-    def _is_aromatic_atom(self, atom_idx: int) -> bool:
-        """Check if an atom is part of an aromatic system."""
-        for _, bond_order in self.graph.get_neighbors(atom_idx):
-            if bond_order == BondOrder.AROMATIC:
-                return True
+    def _build_rdkit_mol(self) -> Optional[Chem.RWMol]:
+        """
+        Build an RDKit editable molecule (RWMol) from the molecular graph.
+        
+        Atoms are added in order to preserve index correspondence with the
+        original graph. Aromatic atoms are marked based on their participation
+        in aromatic bonds.
+        
+        Returns:
+            RWMol object with atoms and bonds added, or None on failure.
+        """
+        mol = Chem.RWMol()
+        
+        # Identify aromatic atoms based on their bonds
+        aromatic_atom_indices = self._find_aromatic_atoms()
+        
+        # Add atoms in order (preserving graph indices)
+        for atom in self.graph.atoms:
+            rd_atom = Chem.Atom(atom.element)
+            rd_atom.SetFormalCharge(atom.charge)
+            
+            # Mark atoms in aromatic systems
+            if atom.index in aromatic_atom_indices:
+                rd_atom.SetIsAromatic(True)
+            
+            # Note: We don't explicitly set hydrogen counts here.
+            # RDKit will calculate implicit hydrogens based on valence
+            # after sanitization, which matches the original behavior.
+            
+            mol.AddAtom(rd_atom)
+        
+        # Add bonds with appropriate bond types
+        for bond in self.graph.bonds:
+            bond_type = self._convert_bond_order(bond.order)
+            mol.AddBond(bond.atom1_idx, bond.atom2_idx, bond_type)
+        
+        return mol
+    
+    def _sanitize_mol(self, mol: Chem.RWMol) -> bool:
+        """
+        Attempt to sanitize the molecule using various strategies.
+        
+        Tries full sanitization first, then falls back to partial sanitization
+        if that fails (e.g., due to aromaticity perception conflicts with
+        explicitly set aromatic flags).
+        
+        Args:
+            mol: RDKit molecule to sanitize.
+            
+        Returns:
+            True if sanitization succeeded, False otherwise.
+        """
+        # Strategy 1: Full sanitization
+        try:
+            Chem.SanitizeMol(mol)
+            return True
+        except Exception:
+            pass
+        
+        # Strategy 2: Skip aromaticity perception since we set it explicitly
+        try:
+            Chem.SanitizeMol(
+                mol,
+                sanitizeOps=(
+                    Chem.SanitizeFlags.SANITIZE_ALL ^ 
+                    Chem.SanitizeFlags.SANITIZE_SETAROMATICITY
+                )
+            )
+            return True
+        except Exception:
+            pass
+        
+        # Strategy 3: Minimal sanitization as last resort
+        try:
+            Chem.SanitizeMol(
+                mol,
+                sanitizeOps=(
+                    Chem.SanitizeFlags.SANITIZE_FINDRADICALS |
+                    Chem.SanitizeFlags.SANITIZE_SETCONJUGATION |
+                    Chem.SanitizeFlags.SANITIZE_SETHYBRIDIZATION
+                )
+            )
+            return True
+        except Exception:
+            pass
+        
         return False
     
-    def _is_ring_closure_edge(self, atom1_idx: int, atom2_idx: int) -> bool:
-        """Check if the edge between two atoms is a ring-closing edge."""
-        key = (min(atom1_idx, atom2_idx), max(atom1_idx, atom2_idx))
-        return key in self.ring_closures
+    def _find_aromatic_atoms(self) -> Set[int]:
+        """
+        Identify atoms that participate in aromatic bonds.
+        
+        Returns:
+            Set of atom indices that have at least one aromatic bond.
+        """
+        aromatic = set()
+        for bond in self.graph.bonds:
+            if bond.order == BondOrder.AROMATIC:
+                aromatic.add(bond.atom1_idx)
+                aromatic.add(bond.atom2_idx)
+        return aromatic
     
-    def _dfs(self, atom_idx: int, parent_idx: int, incoming_bond: BondOrder) -> str:
-        """Second DFS pass to build SMILES string with ring closures."""
-        if atom_idx in self.visited:
-            return ""
+    @staticmethod
+    def _convert_bond_order(order: BondOrder) -> Chem.BondType:
+        """
+        Convert internal BondOrder enum to RDKit BondType.
         
-        self.visited.add(atom_idx)
-        atom = self.graph.get_atom(atom_idx)
-        
-        result = ""
-        
-        # Add bond symbol (except for first atom, single bonds, or aromatic bonds)
-        if parent_idx >= 0 and incoming_bond not in [BondOrder.SINGLE, BondOrder.AROMATIC]:
-            result += incoming_bond.to_smiles_symbol()
-        
-        # Determine if atom should be written as aromatic (lowercase)
-        is_aromatic = self._is_aromatic_atom(atom_idx)
-        
-        # Add atom symbol
-        result += self._format_atom(atom, is_aromatic)
-        
-        # Add ring closure numbers for this atom
-        for ring_num, ring_bond_order in self.atom_ring_closures.get(atom_idx, []):
-            if ring_num < 10:
-                result += str(ring_num)
-            else:
-                result += f"%{ring_num}"
-        
-        # Get neighbors for traversal (exclude parent and ring-closure edges)
-        neighbors = []
-        for neighbor_idx, bond_order in self.graph.get_neighbors(atom_idx):
-            if neighbor_idx == parent_idx:
-                continue
-            if self._is_ring_closure_edge(atom_idx, neighbor_idx):
-                continue
-            if neighbor_idx in self.visited:
-                continue
-            neighbors.append((neighbor_idx, bond_order))
-        
-        if not neighbors:
-            return result
-        
-        # Sort neighbors for consistent and chemically sensible output
-        def neighbor_priority(item):
-            n, bo = item
-            neighbor_atom = self.graph.get_atom(n)
-            elem = neighbor_atom.element
-            neighbor_is_aromatic = self._is_aromatic_atom(n)
+        Args:
+            order: The internal bond order representation.
             
-            # Priority levels (higher = main chain, lower = branch):
-            # 5: Aromatic bond continuation (ring traversal)
-            # 4: Single bond to aromatic atom (ring attachment point)
-            # 3: Regular carbon chain continuation
-            # 2: Other atoms
-            # 1: Double-bonded O (carbonyl - should be branch)
-            # 0: Halogens and H (terminal, should be branch)
-            
-            if bo == BondOrder.AROMATIC:
-                return (5, 0, elem)
-            
-            if neighbor_is_aromatic:
-                return (4, 0, elem)
-            
-            # Hydrogens go in branches
-            if elem == 'H':
-                return (0, 2, elem)
-            
-            # Halogens go in branches
-            if elem in ('F', 'Cl', 'Br', 'I'):
-                return (0, 1, elem)
-            
-            # Double-bonded O (carbonyl oxygen) should be a branch
-            if elem == 'O' and bo == BondOrder.DOUBLE:
-                return (1, 0, elem)
-            
-            # Double-bonded S (thioketone) should be a branch
-            if elem == 'S' and bo == BondOrder.DOUBLE:
-                return (1, 0, elem)
-            
-            # Carbon continues chain
-            if elem == 'C':
-                return (3, 0, elem)
-            
-            # Other atoms
-            return (2, 0, elem)
-        
-        neighbors.sort(key=neighbor_priority)
-        
-        # All but last go in branches (with parentheses)
-        for neighbor_idx, bond_order in neighbors[:-1]:
-            branch = self._dfs(neighbor_idx, atom_idx, bond_order)
-            if branch:
-                result += f"({branch})"
-        
-        # Last neighbor continues main chain (no parentheses)
-        last_neighbor, last_bond = neighbors[-1]
-        result += self._dfs(last_neighbor, atom_idx, last_bond)
-        
-        return result
-    
-    def _format_atom(self, atom: Atom, is_aromatic: bool = False) -> str:
-        """Format an atom for SMILES output."""
-        element = atom.element
-
-        if is_aromatic:
-            element = element.lower()
-        
-        # Check if we need brackets
-        needs_brackets = (
-            element.upper() not in ORGANIC_SUBSET or
-            atom.charge != 0 or
-            (element.upper() == 'H' and atom.implicit_h_count == 0)
-        )
-        
-        if needs_brackets:
-            result = f"[{element}"
-            if atom.charge > 0:
-                result += "+" if atom.charge == 1 else f"+{atom.charge}"
-            elif atom.charge < 0:
-                result += "-" if atom.charge == -1 else str(atom.charge)
-            result += "]"
-            return result
-        
-        return element
+        Returns:
+            Corresponding RDKit BondType.
+        """
+        conversion_map = {
+            BondOrder.SINGLE: Chem.BondType.SINGLE,
+            BondOrder.DOUBLE: Chem.BondType.DOUBLE,
+            BondOrder.TRIPLE: Chem.BondType.TRIPLE,
+            BondOrder.AROMATIC: Chem.BondType.AROMATIC,
+        }
+        return conversion_map.get(order, Chem.BondType.SINGLE)
 
 
 # =============================================================================
@@ -1414,7 +1536,6 @@ class StructuralFormulaConverter:
         self.last_errors = []
         
         # Preprocess
-        formula = self._preprocess(formula)
         if not formula:
             self.last_errors.append("Empty formula")
             return ''
@@ -1454,14 +1575,6 @@ class StructuralFormulaConverter:
         
         return smiles
     
-    def _preprocess(self, formula: str) -> str:
-        """Clean up the input formula."""
-        formula = formula.strip()
-        # Normalize some common variations
-        formula = formula.replace('−', '-')  # Unicode minus to hyphen
-        formula = formula.replace('–', '-')  # En-dash to hyphen
-        return formula
-    
     def _validate_smiles(self, smiles: str) -> bool:
         """Validate SMILES using RDKit."""
         try:
@@ -1474,10 +1587,6 @@ class StructuralFormulaConverter:
     def get_errors(self) -> List[str]:
         """Get errors from last conversion."""
         return list(self.last_errors)
-    
-    def register_pattern(self, formula: str, smiles: str) -> None:
-        """Register a custom formula pattern."""
-        self.registry.register(formula, smiles)
     
     def batch_convert(self, formulas: List[str]) -> Dict[str, Optional[str]]:
         """Convert multiple formulas."""
@@ -1521,27 +1630,25 @@ def run_tests():
         
         ("(CH3)3CCH2OH", "neopentyl alcohol", "CC(C)(C)CO"),
         ("(CH3)2CHCH2CH2OH", "isopentyl alcohol", "CC(C)CCO"),
-        # ("(CH3CH2)3COH", "3-ethyl-3-pentanol", "CCC(O)(CC)CC"),
+        ("(CH3CH2)3COH", "3-ethyl-3-pentanol", "CCC(O)(CC)CC"),
         ("(CH3)3COCH3", "methyl tert-butyl ether", "COC(C)(C)C"),
         ("CH3OCH2CH2OCH3", "1,2-dimethoxyethane", "COCCOC"),
-        # ("(C2H5)2O", "diethyl ether", "CCOCC"),
+        ("(C2H5)2O", "diethyl ether", "CCOCC"),
+        ("(CH3CH2)2O", "diethyl ether", "CCOCC"),
         ("HOCH2CH(OH)CH2OH", "glycerol", "OCC(O)CO"),
         
         ("C6H5CH2OH", "benzyl alcohol", "OCc1ccccc1"),
         ("C6H5NH2", "aniline", "Nc1ccccc1"),
-        # ("C6H5NO2", "nitrobenzene", "[O-][N+](=O)c1ccccc1"),
+        ("C6H5NO2", "nitrobenzene", "[O-][N+](=O)c1ccccc1"),
         ("C6H5CHO", "benzaldehyde", "O=Cc1ccccc1"),
-        # ("C6H5COCH3", "acetophenone", "CC(=O)c1ccccc1"),
+        ("C6H5COCH3", "acetophenone", "CC(=O)c1ccccc1"),
         ("C6H5OCH3", "anisole", "COc1ccccc1"),
         ("C6H5CH=CH2", "styrene", "C=Cc1ccccc1"),
         ("C6H5C≡CH", "phenylacetylene", "C#Cc1ccccc1"),
         ("C6H5CN", "benzonitrile", "N#Cc1ccccc1"),
         ("C6H5COOH", "benzoic acid", "OC(=O)c1ccccc1"),
-        # ("CH3C6H4OH", "p-cresol", "Cc1ccc(O)cc1"),
         ("C6H5C(CH3)3", "tert-butylbenzene", "CC(C)(C)c1ccccc1"),
-        # ("(C6H5)2CH2", "diphenylmethane", "c1ccc(Cc2ccccc2)cc1"),
-        # ("C6H4(OH)2", "catechol", "Oc1ccccc1O"),
-        # ("O2NC6H4NH2", "4-nitroaniline", "Nc1ccc([N+]([O-])=O)cc1"),
+        ("(C6H5)2CH2", "diphenylmethane", "c1ccc(Cc2ccccc2)cc1"),
         
         ("CHCl3", "chloroform", "ClC(Cl)Cl"),
         ("CCl4", "carbon tetrachloride", "ClC(Cl)(Cl)Cl"),
@@ -1558,16 +1665,16 @@ def run_tests():
         ("C6H5COOCH3", "methyl benzoate", "COC(=O)c1ccccc1"),
         # ("(CH3CO)2O", "acetic anhydride", "CC(=O)OC(C)=O"),
         ("CH3COCl", "acetyl chloride", "CC(=O)Cl"),
-        # ("CH3CONH2", "acetamide", "CC(N)=O"),
-        # ("C6H5CONH2", "benzamide", "NC(=O)c1ccccc1"),
+        ("CH3CONH2", "acetamide", "CC(N)=O"),
+        ("C6H5CONH2", "benzamide", "NC(=O)c1ccccc1"),
         ("HOOCCH2CH2COOH", "succinic acid", "OC(=O)CCC(=O)O"),
         # ("HOOC(CH2)4COOH", "adipic acid", "OC(=O)CCCCC(=O)O"),
         
-        # ("(C2H5)3N", "triethylamine", "CCN(CC)CC"),
+        ("(C2H5)3N", "triethylamine", "CCN(CC)CC"),
         ("(CH3)2NCHO", "N,N-dimethylformamide", "CN(C)C=O"),
         ("HOCH2CH2NH2", "ethanolamine", "NCCO"),
         # ("H2NCH2CH2NH2", "ethylenediamine", "NCCN"),
-        # ("(HOCH2CH2)3N", "triethanolamine", "OCCN(CCO)CCO"),
+        ("(HOCH2CH2)3N", "triethanolamine", "OCCN(CCO)CCO"),
         ("CH2=CHCN", "acrylonitrile", "C=CC#N"),
         ("(CH3)2NNH2", "1,1-dimethylhydrazine", "CN(C)N"),
         ("C6H5NHNH2", "phenylhydrazine", "NNc1ccccc1"),
@@ -1579,7 +1686,7 @@ def run_tests():
         ("CH3SSCH3", "dimethyl disulfide", "CSSC"),
         ("C6H5SH", "thiophenol", "Sc1ccccc1"),
         ("CH3SCH2CH2OH", "2-(methylthio)ethanol", "CSCCO"),
-        # ("(C2H5)2S", "diethyl sulfide", "CCSCC"),
+        ("(C2H5)2S", "diethyl sulfide", "CCSCC"),
         
         ("(CH3)4Si", "tetramethylsilane", "C[Si](C)(C)C"),
         ("(CH3)3SiCl", "trimethylsilyl chloride", "C[Si](C)(C)Cl"),
@@ -1589,20 +1696,20 @@ def run_tests():
         
         # ("(CH3O)3PO", "trimethyl phosphate", "COP(=O)(OC)OC"),
         # ("(C2H5O)3PO", "triethyl phosphate", "CCOP(=O)(OCC)OCC"),
-        # ("(C6H5)3P", "triphenylphosphine", "c1ccc(P(c2ccccc2)c2ccccc2)cc1"),
-        # ("(C6H5)3PO", "triphenylphosphine oxide", "O=P(c1ccccc1)(c1ccccc1)c1ccccc1"),
+        ("(C6H5)3P", "triphenylphosphine", "c1ccc(P(c2ccccc2)c2ccccc2)cc1"),
+        ("(C6H5)3PO", "triphenylphosphine oxide", "O=P(c1ccccc1)(c1ccccc1)c1ccccc1"),
         
         ("B(OH)3", "boric acid", "OB(O)O"),
         ("C6H5B(OH)2", "phenylboronic acid", "OB(O)c1ccccc1"),
         # ("(CH3O)3B", "trimethyl borate", "COB(OC)OC"),
         
         ("(CH3)2CHCHO", "isobutyraldehyde", "CC(C)C=O"),
-        # ("(CH3)2CHCOCH3", "3-methyl-2-butanone", "CC(C)C(C)=O"),
+        ("(CH3)2CHCOCH3", "3-methyl-2-butanone", "CC(C)C(C)=O"),
         # ("CH3COCH2COCH3", "acetylacetone", "CC(=O)CC(C)=O"),
         # ("CH3COCH2CH(CH3)2", "4-methyl-2-pentanone", "CC(C)CC(C)=O"),
-        # ("C6H5COCH2CH3", "propiophenone", "CCC(=O)c1ccccc1"),
+        ("C6H5COCH2CH3", "propiophenone", "CCC(=O)c1ccccc1"),
         # ("C6H5COC6H5", "benzophenone", "O=C(c1ccccc1)c1ccccc1"),
-        # ("(CH3)2C=CHCOCH3", "mesityl oxide", "CC(C)=CC(C)=O"),
+        ("(CH3)2C=CHCOCH3", "mesityl oxide", "CC(C)=CC(C)=O"),
         
         ("CH2=CHCH2OH", "allyl alcohol", "OCC=C"),
         ("CH3C≡CH", "propyne", "CC#C"),

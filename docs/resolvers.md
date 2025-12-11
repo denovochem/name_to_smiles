@@ -17,9 +17,18 @@ from placeholder_name import (
     CIRpyNameResolver
 )
 
-opsin_resolver = OpsinNameResolver('opsin')
-pubchem_resolver =  PubChemNameResolver('pubchem')
-cirpy_resolver = CIRpyNameResolver('cirpy')
+opsin_resolver = OpsinNameResolver(
+    resolver_name='opsin', 
+    resolver_weight=4
+)
+pubchem_resolver =  PubChemNameResolver(
+    resolver_name='pubchem', 
+    resolver_weight=3
+)
+cirpy_resolver = CIRpyNameResolver(
+    resolver_name='cirpy', 
+    resolver_weight=2
+)
 
 resolved_smiles = resolve_compounds_to_smiles(
     ['2-acetyloxybenzoic acid'],
@@ -139,6 +148,7 @@ ManualNameResolver can also be initialized with a custom dictionary mapping chem
 from placeholder_name import ManualNameResolver
 
 custom_name_dict = {'Foobar': 'c1ccccc1'}
+
 manual_resolver = ManualNameResolver(
     resolver_name='manual', 
     resolver_weight=10,

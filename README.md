@@ -13,12 +13,12 @@ This library uses the following existing name-to-SMILES resolvers:
 - [ChemSpiPy](https://github.com/mcs07/ChemSpiPy)
 
 This library implements the following new resolvers:
-- Manual database of common names not resolved by other resolvers
-- Structural formula resolver (e.g. CH3CH2CH2COOH)
-- Peptide shorthand resolver (e.g. Asp-Arg-Val-Tyr-Ile-His-Pro-Phe)
+- Manually curated dataset of common names not resolved by other resolvers
+- Structural formula resolver (e.g. 'CH3CH2CH2COOH')
+- Peptide shorthand resolver (e.g. 'cyclo(Asp-Arg-Val-Tyr-Ile-His-Pro-Phe)')
 
-The following string editing/manipulation strategies may be applied to any compounds
-- Splitting compounds on common delimiters (useful for mixtures of compounds, e.g. BH3•THF)
+The following string editing/manipulation strategies may be applied to compounds to assist with name-to-SMILES resolution:
+- Splitting compounds on common delimiters (useful for mixtures of compounds, e.g. 'BH3•THF')
 
 When different resolvers disagree on the SMILES for a given compound, different SMILES selection methods can be employed to determine the "best" SMILES for a given compound name. See the documentation for more details.
 
@@ -42,6 +42,7 @@ resolved_smiles = resolve_compounds_to_smiles(['aspirin'])
 See detailed information including which resolver returned which SMILES with detailed_name_dict=True:
 ```pycon
 from placeholder_name import resolve_compounds_to_smiles
+
 resolved_smiles = resolve_compounds_to_smiles(
     ['2-acetyloxybenzoic acid'], 
     detailed_name_dict=True
@@ -65,9 +66,18 @@ In this example, we resolve chemical names with OPSIN, PubChem, and CIRPy, and u
 from placeholder_name import resolve_compounds_to_smiles
 from placeholder_name import OpsinNameResolver, PubChemNameResolver, CIRpyNameResolver
 
-opsin_resolver = OpsinNameResolver('opsin', resolver_weight=4)
-pubchem_resolver =  PubChemNameResolver('pubchem', resolver_weight=3)
-cirpy_resolver = CIRpyNameResolver('cirpy', resolver_weight=2)
+opsin_resolver = OpsinNameResolver(
+    resolver_name='opsin', 
+    resolver_weight=4
+)
+pubchem_resolver =  PubChemNameResolver(
+    resolver_name='pubchem', 
+    resolver_weight=3
+)
+cirpy_resolver = CIRpyNameResolver(
+    resolver_name='cirpy', 
+    resolver_weight=2
+)
 
 resolved_smiles = resolve_compounds_to_smiles(
     ['2-acetyloxybenzoic acid'],
@@ -85,6 +95,8 @@ resolved_smiles = resolve_compounds_to_smiles(
     'info_messages': {}
 }}"
 ```
+
+See documentation for more details. 
 
 ## Documentation
 Full documentation is availible [here](https://denovochem.github.io/name_to_smiles/)

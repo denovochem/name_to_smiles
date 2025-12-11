@@ -54,21 +54,21 @@ def test_multiple_different_delimiters_accumulate_parts_in_order():
 
     split_dict = {}
 
+    # Each call should return only the parts for the name processed in that call,
+    # while the shared dict accumulates entries across calls.
     dict_after_1, list_after_1 = get_delimiter_split_dict(name1, split_dict)
     dict_after_2, list_after_2 = get_delimiter_split_dict(name2, dict_after_1)
     dict_after_3, list_after_3 = get_delimiter_split_dict(name3, dict_after_2)
 
+    # Dictionary should contain entries for all processed names with their respective parts
     assert dict_after_3[name1] == name1.split("/")
     assert dict_after_3[name2] == name2.split(":")
     assert dict_after_3[name3] == name3.split(".")
 
-    # Combined list should contain parts from all processed names, in the order added
-    expected_list = []
-    expected_list.extend(name1.split("/"))
-    expected_list.extend(name2.split(":"))
-    expected_list.extend(name3.split("."))
-
-    assert list_after_3 == expected_list
+    # Each returned list should only contain parts from the name for that specific call
+    assert list_after_1 == name1.split("/")
+    assert list_after_2 == name2.split(":" )
+    assert list_after_3 == name3.split(".")
 
 
 def test_existing_dict_is_updated_not_replaced():

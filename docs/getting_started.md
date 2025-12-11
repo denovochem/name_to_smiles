@@ -38,9 +38,18 @@ from placeholder_name import (
     CIRpyNameResolver
 )
 
-opsin_resolver = OpsinNameResolver('opsin', resolver_weight=4)
-pubchem_resolver =  PubChemNameResolver('pubchem', resolver_weight=3)
-cirpy_resolver = CIRpyNameResolver('cirpy', resolver_weight=2)
+opsin_resolver = OpsinNameResolver(
+    resolver_name='opsin', 
+    resolver_weight=4
+)
+pubchem_resolver =  PubChemNameResolver(
+    resolver_name='pubchem', 
+    resolver_weight=3
+)
+cirpy_resolver = CIRpyNameResolver(
+    resolver_name='cirpy', 
+    resolver_weight=2
+)
 
 resolved_smiles = resolve_compounds_to_smiles(
     ['2-acetyloxybenzoic acid'],
