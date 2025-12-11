@@ -27,7 +27,7 @@ setup(
     url='https://github.com/denovochem/name_to_smiles',
     classifiers=[
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Development Status :: 2 - Pre-Alpha',
@@ -35,5 +35,5 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Software Development :: Libraries',
     ],
-    python_requires='>=3.9',
+    python_requires='>=3.10',
 )

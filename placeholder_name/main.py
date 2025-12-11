@@ -13,6 +13,7 @@ from placeholder_name.resolvers.manual_resolver import name_to_smiles_manual
 from placeholder_name.resolvers.opsin_resolver import name_to_smiles_opsin
 from placeholder_name.resolvers.peptide_resolver import name_to_smiles_peptide
 from placeholder_name.resolvers.pubchem_resolver import name_to_smiles_pubchem
+from placeholder_name.resolvers.chemspipy_resolver import name_to_smiles_chemspipy
 from placeholder_name.resolvers.structural_formula_resolver import (
     name_to_smiles_structural_formula,
 )
@@ -153,6 +154,29 @@ class CIRpyNameResolver(ChemicalNameResolver):
         Convert chemical names to SMILES using cirpy.
         """
         resolved_names = name_to_smiles_cirpy(compound_name_list)
+        return resolved_names, {}
+
+
+class ChemSpiPyResolver(ChemicalNameResolver):
+    """
+    Resolver using chemspipy.
+    """
+
+    def __init__(self, resolver_name: str, chemspider_api_key: str, resolver_weight: float = 3):
+        super().__init__("cirpy", resolver_name, resolver_weight)
+        if chemspider_api_key:
+            if not isinstance(chemspider_api_key, str):
+                raise TypeError("Invalid input: chemspider_api_key must be a string.")
+        self._chemspider_api_key = chemspider_api_key
+
+    def name_to_smiles(
+        self,
+        compound_name_list: List[str],
+    ) -> Tuple[Dict[str, str], Dict[str, str]]:
+        """
+        Convert chemical names to SMILES using ChemSpiPy.
+        """
+        resolved_names = name_to_smiles_chemspipy(compound_name_list, self._chemspider_api_key)
         return resolved_names, {}
 
 

@@ -1,13 +1,37 @@
-placeholder_name uses a variety of resolvers to convert chemical names to SMILES. Resolvers can be initialized and passed to the function resolve_compounds_to_smiles to customize how compounds are resolved to SMILES:
+placeholder_name uses a variety of resolvers to convert chemical names to SMILES. Resolvers can be initialized and passed to the function resolve_compounds_to_smiles to customize how compounds are resolved to SMILES. If no resolvers are passed, the following default resolvers will be used:
+
+- PubChemNameResolver('pubchem_default', resolver_weight=2),
+- OpsinNameResolver('opsin_default', resolver_weight=3),
+- ManualNameResolver('manual_default', resolver_weight=10),
+- PeptideNameResolver('peptide_default', resolver_weight=3),
+- StructuralFormulaNameResolver('structural_formula_default', resolver_weight=2)
 
 ```
-from placeholder_name import OpsinNameResolver, PubChemNameResolver, CIRpyNameResolver
+from placeholder_name import resolve_compounds_to_smiles
+from placeholder_name import (
+    OpsinNameResolver, 
+    PubChemNameResolver, 
+    CIRpyNameResolver
+)
 
 opsin_resolver = OpsinNameResolver('opsin')
 pubchem_resolver =  PubChemNameResolver('pubchem')
 cirpy_resolver = CIRpyNameResolver('cirpy')
 
-resolved_smiles = resolve_compounds_to_smiles(['MeOH.benzene'], [opsin_resolver, pubchem_resolver, cirpy_resolver])
+resolved_smiles = resolve_compounds_to_smiles(
+    ['2-acetyloxybenzoic acid'],
+    [opsin_resolver, pubchem_resolver, cirpy_resolver],
+    detailed_name_dict=True
+)
+
+"{'2-acetyloxybenzoic acid': {
+    'SMILES': 'CC(=O)Oc1ccccc1C(=O)O',
+    'SMILES_source': ['opsin', 'pubchem', 'cirpy'],
+    'SMILES_dict': {
+        'CC(=O)Oc1ccccc1C(=O)O': ['opsin', 'pubchem', 'cirpy']
+    },
+    'info_messages': {}
+}}"
 ```
 
 ## OpsinNameResolver
@@ -64,6 +88,19 @@ cirpy_resolver = CIRpyNameResolver('cirpy')
 resolved_smiles = resolve_compounds_to_smiles(['acetone'], [cirpy_resolver])
 ```
 
+## ChemSpiPyNameResolver
+This resolver uses the python library [ChemSpiPy](https://github.com/mcs07/ChemSpiPy), a Python interface for the ChemSpider API by the RSC. This resolver must be initialized with a ChemSpider API key, which can be obtained [here](https://developer.rsc.org/getting-started).
+
+Default weight for 'weighted' SMILES selection method: 3
+
+```
+from placeholder_name import ChemSpiPyNameResolver
+
+chemspider_resolver = ChemSpiPyNameResolver('chemspider', 'CHEMSPIDER_API_KEY')
+
+resolved_smiles = resolve_compounds_to_smiles(['acetone'], [chemspider_resolver])
+```
+
 ## ManualNameResolver 
 This resolver uses a dataset of manually curated names and their corresponding SMILES, especially focused on common names that are incorrectly resolved by other resolvers (e.g. 'NaH').
 
@@ -75,7 +112,7 @@ from placeholder_name import ManualNameResolver
 manual_resolver = ManualNameResolver('manual')
 
 resolved_smiles = resolve_compounds_to_smiles(
-    ['NAH'], 
+    ['NaH'], 
     [manual_resolver]
 )
 ```

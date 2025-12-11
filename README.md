@@ -10,6 +10,7 @@ This library uses the following existing name-to-SMILES resolvers:
 - [py2opsin](https://github.com/csnbritt/py2opsin)
 - [PubChemPy](https://github.com/csnbritt/PubChemPy)
 - [CIRpy](https://github.com/mcs07/CIRpy)
+- [ChemSpiPy](https://github.com/mcs07/ChemSpiPy)
 
 This library implements the following new resolvers:
 - Manual database of common names not resolved by other resolvers
@@ -34,7 +35,8 @@ Resolve chemical names to SMILES by passing a string or a list of strings:
 ```pycon
 from placeholder_name import resolve_compounds_to_smiles
 resolved_smiles = resolve_compounds_to_smiles(['aspirin'])
-'{'aspirin': 'CC(=O)Oc1ccccc1C(=O)O'}'
+
+"{'aspirin': 'CC(=O)Oc1ccccc1C(=O)O'}"
 ```
 
 See detailed information including which resolver returned which SMILES with detailed_name_dict=True:
@@ -44,6 +46,7 @@ resolved_smiles = resolve_compounds_to_smiles(
     ['2-acetyloxybenzoic acid'], 
     detailed_name_dict=True
 )
+
 "{'2-acetyloxybenzoic acid': {
     'SMILES': 'CC(=O)Oc1ccccc1C(=O)O',
     'SMILES_source': ['pubchem_default', 'opsin_default'],
@@ -72,6 +75,7 @@ resolved_smiles = resolve_compounds_to_smiles(
     smiles_selection_mode='weighted',
     detailed_name_dict=True
 )
+
 "{'2-acetyloxybenzoic acid': {
     'SMILES': 'CC(=O)Oc1ccccc1C(=O)O',
     'SMILES_source': ['opsin', 'pubchem', 'cirpy'],

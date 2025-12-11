@@ -1,5 +1,6 @@
 loguru
 cirpy
+chemspipy
 rdkit
 py2opsin @ git+https://github.com/csnbritt/py2opsin.git
 PubChemPy @ git+https://github.com/csnbritt/PubChemPy.git
