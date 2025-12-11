@@ -6,6 +6,9 @@ placeholder_name uses a variety of resolvers to convert chemical names to SMILES
 - PeptideNameResolver('peptide_default', resolver_weight=3),
 - StructuralFormulaNameResolver('structural_formula_default', resolver_weight=2)
 
+## Passing Resolvers to resolve_compounds_to_smiles:
+
+Initialize resolvers with a name (required), and resolver_weight (optional):
 ```
 from placeholder_name import resolve_compounds_to_smiles
 from placeholder_name import (
@@ -49,7 +52,8 @@ Default weight for 'weighted' SMILES selection method: 3
 from placeholder_name import OpsinNameResolver
 
 opsin_resolver = OpsinNameResolver(
-    'opsin',
+    resolver_name='opsin',
+    resolver_weight=3,
     allow_acid=False,
     allow_radicals: True,
     allow_bad_stereo: False,
@@ -70,7 +74,10 @@ Default weight for 'weighted' SMILES selection method: 2
 ```
 from placeholder_name import PubChemNameResolver
 
-pubchem_resolver = PubChemNameResolver('pubchem')
+pubchem_resolver = PubChemNameResolver(
+    resolver_name='pubchem', 
+    resolver_weight=2
+)
 
 resolved_smiles = resolve_compounds_to_smiles(['acetone'], [pubchem_resolver])
 ```
@@ -83,7 +90,10 @@ Default weight for 'weighted' SMILES selection method: 1
 ```
 from placeholder_name import CIRpyNameResolver
 
-cirpy_resolver = CIRpyNameResolver('cirpy')
+cirpy_resolver = CIRpyNameResolver(
+    resolver_name='cirpy', 
+    resolver_weight=1
+)
 
 resolved_smiles = resolve_compounds_to_smiles(['acetone'], [cirpy_resolver])
 ```
@@ -96,7 +106,11 @@ Default weight for 'weighted' SMILES selection method: 3
 ```
 from placeholder_name import ChemSpiPyNameResolver
 
-chemspider_resolver = ChemSpiPyNameResolver('chemspider', 'CHEMSPIDER_API_KEY')
+chemspider_resolver = ChemSpiPyNameResolver(
+    resolver_name='chemspider', 
+    resolver_weight=3,
+    chemspider_api_key='CHEMSPIDER_API_KEY'
+)
 
 resolved_smiles = resolve_compounds_to_smiles(['acetone'], [chemspider_resolver])
 ```
@@ -109,7 +123,10 @@ Default weight for 'weighted' SMILES selection method: 10
 ```
 from placeholder_name import ManualNameResolver
 
-manual_resolver = ManualNameResolver('manual')
+manual_resolver = ManualNameResolver(
+    resolver_name='manual', 
+    resolver_weight=10
+)
 
 resolved_smiles = resolve_compounds_to_smiles(
     ['NaH'], 
@@ -122,7 +139,11 @@ ManualNameResolver can also be initialized with a custom dictionary mapping chem
 from placeholder_name import ManualNameResolver
 
 custom_name_dict = {'Foobar': 'c1ccccc1'}
-manual_resolver = ManualNameResolver('manual', provided_name_dict=custom_name_dict)
+manual_resolver = ManualNameResolver(
+    resolver_name='manual', 
+    resolver_weight=10,
+    provided_name_dict=custom_name_dict
+)
 
 resolved_smiles = resolve_compounds_to_smiles(['Foobar'], [manual_resolver])
 ```
@@ -135,7 +156,10 @@ Default weight for 'weighted' SMILES selection method: 3
 ```
 from placeholder_name import PeptideNameResolver
 
-peptide_shorthand_resolver = PeptideNameResolver('peptide')
+peptide_shorthand_resolver = PeptideNameResolver(
+    resolver_name='peptide', 
+    resolver_weight=3
+)
 
 resolved_smiles = resolve_compounds_to_smiles(
     ['cyclo(Asp-Arg-Val-Tyr-Ile-His-Pro-Phe)'], 
@@ -151,7 +175,10 @@ Default weight for 'weighted' SMILES selection method: 2
 ```
 from placeholder_name import StructuralFormulaNameResolver
 
-structural_formula_resolver = StructuralFormulaNameResolver('structural_formula')
+structural_formula_resolver = StructuralFormulaNameResolver(
+    resolver_name='structural_formula', 
+    resolver_weight=2
+)
 
 resolved_smiles = resolve_compounds_to_smiles(
     ['CH3CH2CH2COOH'], 
@@ -195,7 +222,10 @@ class MyCustomResolver(ChemicalNameResolver):
 
         return resolved_names_dict, info_messages_dict
 
-my_custom_resolver = MyCustomResolver('example', resolver_weight=1)
+my_custom_resolver = MyCustomResolver(
+    resolver_name='example', 
+    resolver_weight=1
+)
 
 resolved_smiles = resolve_compounds_to_smiles(
     ['benzene', 'aspirin'], 
