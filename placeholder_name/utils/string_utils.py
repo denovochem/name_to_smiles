@@ -1,4 +1,7 @@
-from placeholder_name.utils.constants import COMMON_CHARS_WHITELIST, NON_LATIN1_REPLACEMENTS
+from placeholder_name.utils.constants import (
+    COMMON_CHARS_WHITELIST,
+    NON_LATIN1_REPLACEMENTS,
+)
 
 def safe_str(x):
     """Tries to convert to string, returns none upon exception"""

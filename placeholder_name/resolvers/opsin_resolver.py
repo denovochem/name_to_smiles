@@ -1,5 +1,7 @@
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
+
 from py2opsin import py2opsin
+
 from placeholder_name.utils.logging_config import logger
 
 

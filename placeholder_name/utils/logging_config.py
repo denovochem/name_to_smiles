@@ -1,7 +1,7 @@
 import os
-import sys
 from pathlib import Path
-from typing import Dict, Any
+import sys
+from typing import Any, Dict
 
 from loguru import logger
 
@@ -29,7 +29,7 @@ LOG_LEVELS = {
     "development": "DEBUG",
     "testing": "INFO",
     "production": "WARNING",
-    "default": "DEBUG"  # Changed to DEBUG by default for better troubleshooting
+    "default": "production"
 }
 
 # Default log directory - using absolute path to project root
@@ -75,7 +75,7 @@ def configure_logging(
     
     # Determine log level from environment if not specified
     if level is None:
-        env = os.getenv("loguru_level", "development").lower()
+        env = os.getenv("loguru_level", "default").lower()
         level = LOG_LEVELS.get(env, LOG_LEVELS["default"])
     
     # Configure exception hook for uncaught exceptions

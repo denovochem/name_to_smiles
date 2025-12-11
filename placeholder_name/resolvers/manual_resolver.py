@@ -1,8 +1,9 @@
-from pathlib import Path
-from placeholder_name.utils.logging_config import logger
-from typing import Dict, List
-import json
 from importlib import resources
+import json
+from pathlib import Path
+from typing import Dict, List
+
+from placeholder_name.utils.logging_config import logger
 
 
 # Get the directory of the current file

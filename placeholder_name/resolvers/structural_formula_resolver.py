@@ -1,9 +1,9 @@
 from __future__ import annotations
-
-from typing import Optional, List, Dict, Tuple, Set, Any
+from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from collections import defaultdict
+from typing import Any, Dict, List, Optional, Set, Tuple
+
 from rdkit import Chem
 
 from placeholder_name.utils.logging_config import logger
@@ -977,7 +977,6 @@ class StructuralFormulaParser:
         Builds the fragment directly without requiring RDKit.
         Returns the index of the attachment point atom, or None on failure.
         """
-        print(f"Adding fragment: {fragment_pattern}")
         if fragment_pattern not in KNOWN_FRAGMENTS:
             self.errors.append(f"Unknown fragment pattern: {fragment_pattern}")
             return None

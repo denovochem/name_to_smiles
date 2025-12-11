@@ -1,22 +1,12 @@
 from __future__ import annotations
-
-import re
-import unicodedata
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from itertools import combinations, product
-from typing import (
-    ClassVar,
-    Dict,
-    FrozenSet,
-    List,
-    Optional,
-    Protocol,
-    Tuple,
-    Union,
-)
+import re
+from typing import ClassVar, Dict, FrozenSet, List, Optional, Protocol, Tuple, Union
+import unicodedata
 
 
 # =============================================================================

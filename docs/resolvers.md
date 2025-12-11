@@ -1,13 +1,11 @@
-## Resolvers
-
 placeholder_name uses a variety of resolvers to convert natural language chemical names to SMILES. Resolvers can be initialized and passed to the function resolve_compounds_to_smiles to customize how compounds are resolved to SMILES:
 
 ```
-from placeholder_name import OpsinNameResolver, PubChemNameResolver, CIRPyNameResolver
+from placeholder_name import OpsinNameResolver, PubChemNameResolver, CIRpyNameResolver
 
 opsin_resolver = OpsinNameResolver('opsin', resolver_weight=4)
 pubchem_resolver =  PubChemNameResolver('pubchem', resolver_weight=3)
-cirpy_resolver = CIRPyNameResolver('cirpy', resolver_weight=2)
+cirpy_resolver = CIRpyNameResolver('cirpy', resolver_weight=2)
 
 resolved_smiles = resolve_compounds_to_smiles(['MeOH.benzene'], [opsin_resolver, pubchem_resolver, cirpy_resolver])
 ```
@@ -48,20 +46,20 @@ pubchem_resolver = PubChemNameResolver('pubchem')
 resolved_smiles = resolve_compounds_to_smiles(['acetone'], [pubchem_resolver])
 ```
 
-## CIRPyNameResolver
+## CIRpyNameResolver
 This resolver uses the python library [CIRpy](https://github.com/mcs07/CIRpy), a Python interface for the Chemical Identifier Resolver (CIR) by the CADD Group at the NCI/NIH.
 
 Default weight for 'weighted' SMILES selection: 1
 
 ```
-from placeholder_name import CIRPyNameResolver
-cirpy_resolver = CIRPyNameResolver('cirpy')
+from placeholder_name import CIRpyNameResolver
+cirpy_resolver = CIRpyNameResolver('cirpy')
 
 resolved_smiles = resolve_compounds_to_smiles(['acetone'], [cirpy_resolver])
 ```
 
 ## ManualNameResolver 
-This resolver uses a dataset of manually curated names and their corresponding SMILES, especially focused on common names that are incorrectly resolved by other resolvers (e.g. 'NAH').
+This resolver uses a dataset of manually curated names and their corresponding SMILES, especially focused on common names that are incorrectly resolved by other resolvers (e.g. 'NaH').
 
 Default weight for 'weighted' SMILES selection: 10
 
@@ -104,4 +102,46 @@ from placeholder_name import StructuralFormulaNameResolver
 structural_formula_resolver = StructuralFormulaNameResolver('structural_formula')
 
 resolved_smiles = resolve_compounds_to_smiles(['CH3CH2CH2COOH'], [structural_formula_resolver])
+```
+
+## Custom Resolvers
+This library also supports using custom resolvers. To use a custom resolver import the base class ChemicalNameResolver, and create a subclass with the format shown below. The name_to_smiles method is used to resolve the names to SMILES. In this example, the method resolves names using a simple lookup dictionary, but it can be also used to call an API, use other name-to-SMILES libraries, run an algorithm, etc. This method must return a tuple of dictionaries, where the first dictionary maps chemical names (strings) to SMILES (strings). The second dictionary returns information to the detailed_name_dict by mapping chemical names (strings) to some info message (strings).
+
+```
+from placeholder_name import resolve_compounds_to_smiles
+from placeholder_name import ChemicalNameResolver
+
+class MyCustomResolver(ChemicalNameResolver):
+    """
+    My custom resolver.
+    """
+
+    def __init__(self, resolver_name: str, resolver_weight: float = 1):
+        super().__init__("example", resolver_name, resolver_weight)
+
+    def name_to_smiles(
+        self,
+        compound_name_list: List[str]
+    ) -> Tuple[Dict[str, str], Dict[str, str]]:
+        """
+        Lookup chemical names from a dict.
+        """
+        lookup_dict = {
+            'benzene': 'c1ccccc1'
+        }
+
+        resolved_names_dict = {}
+        info_messages_dict = {}
+        for compound_name in compound_name_list:
+            resolved_smiles = lookup_dict.get(compound_name, '')
+            resolved_names_dict[compound_name] = resolved_smiles
+            if not resolved_smiles:
+                info_messages_dict[compound_name] = 'Some info message.'
+
+        return resolved_names_dict, info_messages_dict
+
+my_custom_resolver = MyCustomResolver('example', resolver_weight=1)
+
+resolved_smiles = resolve_compounds_to_smiles(['benzene', 'aspirin'], [my_custom_resolver], detailed_name_dict=True)
+'{'benzene': {'SMILES': 'c1ccccc1', 'SMILES_source': ['example'], 'SMILES_dict': {'c1ccccc1': ['example']}, 'info_messages': {}}, 'aspirin': {'SMILES': '', 'SMILES_source': [], 'SMILES_dict': {}, 'info_messages': {'example': 'Some info message.'}}}'
 ```

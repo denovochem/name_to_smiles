@@ -1,6 +1,9 @@
+from typing import Dict, List
+
 import cirpy
+
 from placeholder_name.utils.logging_config import logger
-from typing import List, Dict
+
 
 def retrieve_cirpy_results(compound_name: str) -> str:
     """

@@ -1,7 +1,18 @@
-from placeholder_name.utils.constants import AMINO_ACID_SUB_SITES, PROTECTING_GROUPS, SPECIAL_CASES, AA_FULL, N_CAPS, C_CAPS, COUNTER_ACIDS, GREEK_LETTERS, PREFIX_MAP
+from typing import Dict, List, Tuple
+
 from placeholder_name.resolvers.opsin_resolver import name_to_smiles_opsin
+from placeholder_name.utils.constants import (
+    AA_FULL,
+    AMINO_ACID_SUB_SITES,
+    COUNTER_ACIDS,
+    C_CAPS,
+    GREEK_LETTERS,
+    N_CAPS,
+    PREFIX_MAP,
+    PROTECTING_GROUPS,
+    SPECIAL_CASES,
+)
 from placeholder_name.utils.logging_config import logger
-from typing import List, Dict, Tuple
 
 
 def generate_side_chain_protections():

@@ -1,5 +1,6 @@
 from collections import defaultdict
-from typing import Dict, List, Callable, Optional
+from typing import Callable, Dict, List, Optional
+
 from rdkit import Chem
 
 class SMILESSelector:

@@ -1,5 +1,3 @@
-## SMILES Selection
-
 When different resolvers disagree on the SMILES for a given compound, the SMILES selection method will be used to determine the "best" SMILES. The desired selection method can be set by passing the following arguments to smiles_selection_mode (Default: 'weighted'):
 
 - 'consensus': Pick the SMILES string returned by the most resolvers. Tie-breaker: lexicographical order.

@@ -1,7 +1,10 @@
+from typing import Dict, List
+
 import pubchempy as pcp
-from placeholder_name.utils.string_utils import filter_latin1_compatible
+
 from placeholder_name.utils.logging_config import logger
-from typing import List, Dict
+from placeholder_name.utils.string_utils import filter_latin1_compatible
+
 
 def name_to_smiles_pubchem(compound_name_list: List[str]) -> Dict[str, str]:
     """

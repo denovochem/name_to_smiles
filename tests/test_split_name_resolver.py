@@ -8,8 +8,8 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from core.resolvers.split_name_resolver import get_delimiter_split_dict  # noqa: E402
-from core.utils.constants import DELIMITERS  # noqa: E402
+from placeholder_name.name_manipulation.split_names import get_delimiter_split_dict  # noqa: E402
+from placeholder_name.utils.constants import DELIMITERS  # noqa: E402
 
 
 def test_no_delimiters_in_name_returns_empty_list_and_no_entry():

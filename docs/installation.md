@@ -1,5 +1,3 @@
-## Installation
-
 placeholder_name supports Python versions 3.9+. There are no required dependencies.
 
 ## Installation Option #1: Use pip (recommended)
