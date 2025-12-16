@@ -1,8 +1,6 @@
 import os
 import sys
 
-import pytest
-
 # Ensure project root is on sys.path so we can import core modules
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 if PROJECT_ROOT not in sys.path:
@@ -108,7 +106,9 @@ def test_name_to_smiles_chemspipy_respects_filter_latin1(monkeypatch):
             return self._items[index]
 
     class FakeChemSpider:
-        def __init__(self, api_key):  # pragma: no cover - behavior validated via side effects
+        def __init__(
+            self, api_key
+        ):  # pragma: no cover - behavior validated via side effects
             self.api_key = api_key
 
         def search(self, compound_name):
@@ -179,7 +179,9 @@ def test_name_to_smiles_chemspipy_skips_empty_results_and_missing_smiles(monkeyp
         return names
 
     class FakeChemSpider:
-        def __init__(self, api_key):  # pragma: no cover - construction side effects not needed
+        def __init__(
+            self, api_key
+        ):  # pragma: no cover - construction side effects not needed
             self.api_key = api_key
 
         def search(self, compound_name):
@@ -215,7 +217,9 @@ def test_name_to_smiles_chemspipy_init_failure_returns_empty(monkeypatch):
     """If ChemSpider construction fails, the function should return an empty dict."""
 
     class FailingChemSpider:
-        def __init__(self, api_key):  # pragma: no cover - behavior validated via return value
+        def __init__(
+            self, api_key
+        ):  # pragma: no cover - behavior validated via return value
             raise RuntimeError("Failed to initialize ChemSpider")
 
     monkeypatch.setattr(
@@ -225,7 +229,9 @@ def test_name_to_smiles_chemspipy_init_failure_returns_empty(monkeypatch):
     )
 
     # filter_latin1_compatible should not matter here, but keep behavior simple
-    def fake_filter_latin1_compatible(names):  # pragma: no cover - not reached when init fails
+    def fake_filter_latin1_compatible(
+        names,
+    ):  # pragma: no cover - not reached when init fails
         return names
 
     monkeypatch.setattr(

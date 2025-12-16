@@ -11,7 +11,9 @@ if PROJECT_ROOT not in sys.path:
 from placeholder_name.smiles_selector import SMILESSelector  # noqa: E402
 
 
-def _make_selector(smiles_dict, weight_dict=None, priority_order=None, custom_strategies=None):
+def _make_selector(
+    smiles_dict, weight_dict=None, priority_order=None, custom_strategies=None
+):
     data = {
         "compound1": {
             "SMILES_dict": smiles_dict,
@@ -194,7 +196,9 @@ def test_custom_strategy_registered_by_name():
     def custom_strategy(smiles_dict_arg, **kwargs):
         return "CCO", ["custom_source"]
 
-    selector = _make_selector(smiles_dict, custom_strategies={"custom": custom_strategy})
+    selector = _make_selector(
+        smiles_dict, custom_strategies={"custom": custom_strategy}
+    )
 
     smiles, sources = selector.select_smiles("compound1", strategy="custom")
 

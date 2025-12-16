@@ -10,7 +10,7 @@ def name_to_smiles_opsin(
     allow_acid: bool = False,
     allow_radicals: bool = True,
     allow_bad_stereo: bool = False,
-    wildcard_radicals: bool = False
+    wildcard_radicals: bool = False,
 ) -> Tuple[Dict[str, str], Dict[str, str]]:
     """
     Convert a list of chemical names to their corresponding SMILES representations using OPSIN.
@@ -35,7 +35,9 @@ def name_to_smiles_opsin(
     failure_message_dict: Dict[str, str] = {}
 
     # Strip newlines to prevent CLI parsing issues
-    sanitized_names = [compound_name.replace('\n', '') for compound_name in compound_name_list]
+    sanitized_names = [
+        compound_name.replace("\n", "") for compound_name in compound_name_list
+    ]
 
     smiles_strings, failure_messages = py2opsin(
         chemical_name=sanitized_names,
@@ -44,10 +46,12 @@ def name_to_smiles_opsin(
         allow_acid=allow_acid,
         allow_radicals=allow_radicals,
         allow_bad_stereo=allow_bad_stereo,
-        wildcard_radicals=wildcard_radicals
+        wildcard_radicals=wildcard_radicals,
     )
 
-    if len(smiles_strings) != len(compound_name_list) or len(failure_messages) != len(compound_name_list):
+    if len(smiles_strings) != len(compound_name_list) or len(failure_messages) != len(
+        compound_name_list
+    ):
         logger.warning(
             f"Mismatching lengths: "
             f"smiles_strings ({len(smiles_strings)}), "
@@ -56,7 +60,9 @@ def name_to_smiles_opsin(
         )
         return {}, {}
 
-    for compound_name, smiles, msg in zip(compound_name_list, smiles_strings, failure_messages):
+    for compound_name, smiles, msg in zip(
+        compound_name_list, smiles_strings, failure_messages
+    ):
         if smiles:
             opsin_name_dict[compound_name] = smiles
         if msg:

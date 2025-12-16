@@ -29,7 +29,7 @@ LOG_LEVELS = {
     "development": "DEBUG",
     "testing": "INFO",
     "production": "WARNING",
-    "default": "production"
+    "default": "production",
 }
 
 # Default log directory - using absolute path to project root
@@ -44,6 +44,7 @@ ERROR_LOG_FILE = LOG_DIR / "errors.log"
 LOG_FILE.touch()
 ERROR_LOG_FILE.touch()
 
+
 def configure_logging(
     level: str = None,
     log_file: Path = LOG_FILE,
@@ -51,11 +52,11 @@ def configure_logging(
     rotation: str = "10 MB",
     retention: str = "30 days",
     serialize: bool = False,
-    **kwargs: Dict[str, Any]
+    **kwargs: Dict[str, Any],
 ) -> None:
     """
     Configure logging for the application with enhanced error reporting.
-    
+
     Args:
         level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         log_file: Path to the main log file
@@ -72,28 +73,27 @@ def configure_logging(
     if error_log_file:
         error_log_file.parent.mkdir(parents=True, exist_ok=True)
         error_log_file.touch()
-    
+
     # Determine log level from environment if not specified
     if level is None:
         env = os.getenv("loguru_level", "default").lower()
         level = LOG_LEVELS.get(env, LOG_LEVELS["default"])
-    
+
     # Configure exception hook for uncaught exceptions
     def handle_exception(exc_type, exc_value, exc_traceback):
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_traceback)
             return
-        
+
         logger.opt(exception=(exc_type, exc_value, exc_traceback)).error(
-            "Uncaught exception",
-            exc_info=(exc_type, exc_value, exc_traceback)
+            "Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback)
         )
-    
+
     sys.excepthook = handle_exception
-    
+
     # Remove default handler
     logger.remove()
-    
+
     # Add console handler with enhanced error formatting
     logger.add(
         sys.stderr,
@@ -102,10 +102,10 @@ def configure_logging(
         colorize=True,
         backtrace=True,
         diagnose=True,  # Enable variable values in traceback
-        enqueue=True,   # Make logging thread-safe
-        catch=True      # Catch and log errors in logging system itself
+        enqueue=True,  # Make logging thread-safe
+        catch=True,  # Catch and log errors in logging system itself
     )
-    
+
     # Add file handler for all logs
     if log_file:
         logger.add(
@@ -118,9 +118,9 @@ def configure_logging(
             backtrace=True,
             diagnose=True,
             catch=True,
-            **kwargs
+            **kwargs,
         )
-    
+
     # Add file handler for error logs only with enhanced formatting
     if error_log_file:
         logger.add(
@@ -133,9 +133,9 @@ def configure_logging(
             backtrace=True,
             diagnose=True,
             catch=True,
-            **kwargs
+            **kwargs,
         )
-    
+
     # Add structured logging if enabled
     if serialize:
         logger.add(
@@ -146,8 +146,9 @@ def configure_logging(
             enqueue=True,
             backtrace=True,
             diagnose=True,
-            **kwargs
+            **kwargs,
         )
+
 
 # Export logger for easy access
 __all__ = ["logger", "configure_logging"]

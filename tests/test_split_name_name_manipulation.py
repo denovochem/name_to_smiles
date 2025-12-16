@@ -1,8 +1,6 @@
 import os
 import sys
 
-import pytest
-
 # Ensure project root is on sys.path so we can import core modules
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 if PROJECT_ROOT not in sys.path:
@@ -48,9 +46,9 @@ def test_multiple_same_delimiter_keeps_all_parts_and_records_once():
 def test_multiple_different_delimiters_accumulate_parts_in_order():
     # Use several delimiters from DELIMITERS to ensure coverage
     # For example: '/', ':', '.', '*'
-    name1 = "NaCl/H2O"     # uses '/'
+    name1 = "NaCl/H2O"  # uses '/'
     name2 = "CuSO4:5H2O"  # uses ':'
-    name3 = "Fe2O3.H2O"   # uses '.'
+    name3 = "Fe2O3.H2O"  # uses '.'
 
     split_dict = {}
 
@@ -67,7 +65,7 @@ def test_multiple_different_delimiters_accumulate_parts_in_order():
 
     # Each returned list should only contain parts from the name for that specific call
     assert list_after_1 == name1.split("/")
-    assert list_after_2 == name2.split(":" )
+    assert list_after_2 == name2.split(":")
     assert list_after_3 == name3.split(".")
 
 

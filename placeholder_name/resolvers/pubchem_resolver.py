@@ -16,8 +16,13 @@ def name_to_smiles_pubchem(compound_name_list: List[str]) -> Dict[str, str]:
     Returns:
         Dict[str, str]: Dictionary of compound names to SMILES.
     """
-    pubchem_compounds = pcp.get_compounds(filter_latin1_compatible(compound_name_list), 'name')
-    pubchem_name_dict = {k:v.smiles if v is not None else '' for k,v in zip(compound_name_list, pubchem_compounds)}
+    pubchem_compounds = pcp.get_compounds(
+        filter_latin1_compatible(compound_name_list), "name"
+    )
+    pubchem_name_dict = {
+        k: v.smiles if v is not None else ""
+        for k, v in zip(compound_name_list, pubchem_compounds)
+    }
 
     if len(compound_name_list) != len(pubchem_name_dict):
         logger.warning(

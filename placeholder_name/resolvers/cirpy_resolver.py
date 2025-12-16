@@ -16,13 +16,14 @@ def retrieve_cirpy_results(compound_name: str) -> str:
         str: The SMILES string of the compound, or an empty string if an exception occurs.
     """
     try:
-        smiles = cirpy.resolve(compound_name, 'smiles')
-        
+        smiles = cirpy.resolve(compound_name, "smiles")
+
     except Exception as e:
         logger.error(f"Exception in CIRpy query: {str(e)}")
-        return ''
-    
+        return ""
+
     return smiles
+
 
 def name_to_smiles_cirpy(compound_name_list: List[str]) -> Dict[str, str]:
     """

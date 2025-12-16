@@ -50,6 +50,7 @@ resolved_smiles = resolve_compounds_to_smiles(
 This resolver uses a fork of the [py2opsin](https://github.com/csnbritt/py2opsin) library that returns the error message from OPSIN if a name cannot be resolved. This resolver can be configured with the following arguments:
 
 Arguments:
+
 - allow_acid (bool, optional): Allow interpretation of acids. Defaults to False.
 - allow_radicals (bool, optional): Enable radical interpretation. Defaults to False.
 - allow_bad_stereo (bool, optional): Allow OPSIN to ignore uninterpreatable stereochem. Defaults to False.

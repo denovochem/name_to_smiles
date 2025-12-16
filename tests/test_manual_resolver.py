@@ -1,8 +1,6 @@
 import os
 import sys
 
-import pytest
-
 # Ensure project root is on sys.path so we can import core modules
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 if PROJECT_ROOT not in sys.path:
@@ -37,9 +35,12 @@ def test_process_name_dict_basic_behavior():
 
 def test_name_to_smiles_manual_with_provided_dict(monkeypatch):
     """name_to_smiles_manual should use the provided dict and not call the default loader."""
+
     # Ensure the default loader is not used when a dict is provided
     def fake_loader():  # pragma: no cover - validated by not being called
-        raise AssertionError("load_default_manual_name_dict should not be called when provided_name_dict is given")
+        raise AssertionError(
+            "load_default_manual_name_dict should not be called when provided_name_dict is given"
+        )
 
     monkeypatch.setattr(
         "placeholder_name.resolvers.manual_resolver.load_default_manual_name_dict",

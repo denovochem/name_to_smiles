@@ -5,9 +5,9 @@ from chemspipy import ChemSpider
 from placeholder_name.utils.logging_config import logger
 from placeholder_name.utils.string_utils import filter_latin1_compatible
 
+
 def name_to_smiles_chemspipy(
-    compound_name_list: List[str],
-    chemspider_api_key: str
+    compound_name_list: List[str], chemspider_api_key: str
 ) -> Dict[str, str]:
     """
     Convert chemical names to SMILES using ChemSpiPy.
@@ -21,7 +21,8 @@ def name_to_smiles_chemspipy(
     """
     try:
         cs = ChemSpider(chemspider_api_key)
-    except:
+    except Exception as e:
+        logger.warning(f"Error initializing ChemSpiPy: {e}")
         return {}
 
     chemspipy_name_dict = {}

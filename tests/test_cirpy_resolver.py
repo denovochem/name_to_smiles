@@ -1,8 +1,6 @@
 import os
 import sys
 
-import pytest
-
 # Ensure project root is on sys.path so we can import core modules
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 if PROJECT_ROOT not in sys.path:
@@ -36,7 +34,9 @@ def test_retrieve_cirpy_results_success(monkeypatch):
 def test_retrieve_cirpy_results_exception_returns_empty_string(monkeypatch):
     """If cirpy.resolve raises, retrieve_cirpy_results should return an empty string."""
 
-    def fake_resolve(*args, **kwargs):  # pragma: no cover - behavior validated via return value
+    def fake_resolve(
+        *args, **kwargs
+    ):  # pragma: no cover - behavior validated via return value
         raise RuntimeError("Test error from cirpy")
 
     monkeypatch.setattr(

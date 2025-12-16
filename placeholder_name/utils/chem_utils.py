@@ -1,13 +1,15 @@
 from rdkit import Chem
 from rdkit.Chem.MolStandardize import rdMolStandardize
+from placeholder_name.utils.logging_config import logger
 
 enumerator = rdMolStandardize.TautomerEnumerator()
+
 
 def canonicalize_smiles(
     smiles: str,
     isomeric: bool = True,
     remove_mapping: bool = True,
-    canonicalize_tautomer: bool =True,
+    canonicalize_tautomer: bool = True,
 ) -> str:
     """
     Converts SMILES strings to their canonical form using RDKit.
@@ -27,7 +29,7 @@ def canonicalize_smiles(
             unchanged.
     """
     try:
-        x = smiles.split('.')
+        x = smiles.split(".")
         x = sorted(x)
         frags = []
         for i in x:
@@ -36,10 +38,12 @@ def canonicalize_smiles(
                 m = enumerator.Canonicalize(m)
             if remove_mapping:
                 [a.SetAtomMapNum(0) for a in m.GetAtoms()]
-            canonical_smiles_string = str(Chem.MolToSmiles(m, canonical=True, isomericSmiles=isomeric))
+            canonical_smiles_string = str(
+                Chem.MolToSmiles(m, canonical=True, isomericSmiles=isomeric)
+            )
             frags.append(canonical_smiles_string)
-        canonical_smiles_string = '.'.join(i for i in sorted(frags))
-        return(canonical_smiles_string)
-    except:
+        canonical_smiles_string = ".".join(i for i in sorted(frags))
+        return canonical_smiles_string
+    except Exception as e:
+        logger.warning(f"Could not canonicalize {smiles}: {e}")
         return smiles
-

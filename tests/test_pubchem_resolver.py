@@ -1,8 +1,6 @@
 import os
 import sys
 
-import pytest
-
 # Ensure project root is on sys.path so we can import core modules
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 if PROJECT_ROOT not in sys.path:
@@ -36,9 +34,7 @@ def test_name_to_smiles_pubchem_basic_mapping(monkeypatch):
         captured_args["names"] = names
         captured_args["identifier_type"] = identifier_type
         # Return matching FakeCompound objects
-        return [
-            FakeCompound(f"SMILES_{name}") for name in names
-        ]
+        return [FakeCompound(f"SMILES_{name}") for name in names]
 
     monkeypatch.setattr(
         "placeholder_name.resolvers.pubchem_resolver.pcp.get_compounds",

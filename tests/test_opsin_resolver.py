@@ -1,8 +1,6 @@
 import os
 import sys
 
-import pytest
-
 # Ensure project root is on sys.path so we can import core modules
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 if PROJECT_ROOT not in sys.path:
@@ -18,7 +16,15 @@ def test_name_to_smiles_opsin_success(monkeypatch):
 
     captured_args = {}
 
-    def fake_py2opsin(chemical_name, output_format, failure_analysis, allow_acid, allow_radicals, allow_bad_stereo, wildcard_radicals):
+    def fake_py2opsin(
+        chemical_name,
+        output_format,
+        failure_analysis,
+        allow_acid,
+        allow_radicals,
+        allow_bad_stereo,
+        wildcard_radicals,
+    ):
         # Verify that we pass the expected options through
         captured_args["chemical_name"] = chemical_name
         captured_args["output_format"] = output_format
@@ -119,7 +125,9 @@ def test_name_to_smiles_opsin_strips_newlines(monkeypatch):
     assert result_failures == {}
 
 
-def test_name_to_smiles_opsin_mismatched_lengths_logs_warning_and_returns_empty(monkeypatch):
+def test_name_to_smiles_opsin_mismatched_lengths_logs_warning_and_returns_empty(
+    monkeypatch,
+):
     """If OPSIN returns mismatched lengths, the function should log a warning and return empty dicts."""
 
     def fake_py2opsin(chemical_name, **kwargs):

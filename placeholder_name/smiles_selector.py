@@ -1,26 +1,31 @@
+import random
 from collections import defaultdict
 from typing import Callable, Dict, List, Optional
 
 from rdkit import Chem
 
+
 class SMILESSelector:
-    def __init__(self, 
-        data: Dict[str, Dict], 
-        weight_dict: Dict[str, float], 
-        priority_order: List[str], 
-        custom_strategies: Optional[Dict[str, Callable]] = None
+    """
+    Class used to select the "best" SMILES.
+    """
+
+    def __init__(
+        self,
+        data: Dict[str, Dict],
+        weight_dict: Dict[str, float],
+        priority_order: List[str],
+        custom_strategies: Optional[Dict[str, Callable]] = None,
     ):
         """
-        Initialize with your compound dictionary.
+        Initialize with the compound dictionary.
         Example structure:
         {
-            'MeOH.benzene': {
+            'aspirin': {
                 'smiles': '',
                 'SMILES_source': [],
                 'SMILES_dict': {
-                    'CO.c1ccccc1': ['pubchem_default/pubchem_default', ...],
-                    None: [...],
-                    '': [...]
+                    'CO.c1ccccc1': ['pubchem_default', ...]
                 }
             }
         }
@@ -30,23 +35,26 @@ class SMILESSelector:
         self.priority_order = priority_order
         self.custom_strategies = custom_strategies or {}
 
-    def select_smiles(self, compound_id: str, strategy: str | Callable = 'consensus', **kwargs) -> tuple[Optional[str], List[str]]:
+    def select_smiles(
+        self, compound_id: str, strategy: str | Callable = "consensus", **kwargs
+    ) -> tuple[Optional[str], List[str]]:
         """
         Main entry point. Select best SMILES for given compound using specified strategy.
         `strategy` can be:
           - a string name of built-in or custom strategy
           - a callable function that takes (smiles_dict, **kwargs) and returns (smiles: str, sources: List[str])
         """
-        smiles_dict = self.data[compound_id]['SMILES_dict']
-        
+        smiles_dict = self.data[compound_id]["SMILES_dict"]
+
         # Filter out keys that are not useful (None, empty string, etc.)
         filtered_smiles_dict = {
-            k: v for k, v in smiles_dict.items()
+            k: v
+            for k, v in smiles_dict.items()
             if k and k.strip() and Chem.MolFromSmiles(k)
         }
 
         if not filtered_smiles_dict:
-            return '', []
+            return "", []
 
         # Handle both string and callable strategies
         if isinstance(strategy, str):
@@ -54,26 +62,30 @@ class SMILESSelector:
         elif callable(strategy):
             strategy_fn = strategy
         else:
-            raise TypeError(f"Strategy must be a string or callable, got {type(strategy)}")
+            raise TypeError(
+                f"Strategy must be a string or callable, got {type(strategy)}"
+            )
 
         return strategy_fn(filtered_smiles_dict, **kwargs)
 
     def _get_strategy(self, strategy_name: str) -> Callable:
         strategies = {
-            'consensus': self._strategy_consensus,
-            'ordered': self._strategy_ordered_priority,
-            'weighted': self._strategy_weighted_consensus,
-            'random': self._strategy_random,
-            'shortest_smiles': self._strategy_shortest_smiles,
-            'longest_smiles': self._strategy_longest_smiles,
-            'fewest_fragments': self._strategy_fewest_fragments,
-            'rdkit_standardized': self._strategy_rdkit_standardized
+            "consensus": self._strategy_consensus,
+            "ordered": self._strategy_ordered_priority,
+            "weighted": self._strategy_weighted_consensus,
+            "random": self._strategy_random,
+            "shortest_smiles": self._strategy_shortest_smiles,
+            "longest_smiles": self._strategy_longest_smiles,
+            "fewest_fragments": self._strategy_fewest_fragments,
+            "rdkit_standardized": self._strategy_rdkit_standardized,
         }
 
         strategies.update(self.custom_strategies)
 
         if strategy_name not in strategies:
-            raise ValueError(f"Unknown strategy: {strategy_name}. Available: {list(strategies.keys())}")
+            raise ValueError(
+                f"Unknown strategy: {strategy_name}. Available: {list(strategies.keys())}"
+            )
         return strategies[strategy_name]
 
     def _strategy_consensus(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
@@ -83,18 +95,23 @@ class SMILESSelector:
         """
         counts = {smiles: len(resolvers) for smiles, resolvers in smiles_dict.items()}
         max_count = max(counts.values())
-        top_candidates = [smiles for smiles, count in counts.items() if count == max_count]
+        top_candidates = [
+            smiles for smiles, count in counts.items() if count == max_count
+        ]
         smiles = min(top_candidates)
-        return smiles, smiles_dict.get(smiles, '')
+        return smiles, smiles_dict.get(smiles, "")
 
-    def _strategy_ordered_priority(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+    def _strategy_ordered_priority(
+        self, smiles_dict: Dict[str, List[str]], **kwargs
+    ) -> str:
         """
         Pick the first SMILES that was generated by a resolver in the priority list.
         Priority order example: ['pubchem_default', 'cirpy_default', 'opsin_default']
         """
+
         # Flatten resolver names from compound ones like 'pubchem_default/cirpy_default'
         def extract_base_resolver(resolver_str: str) -> List[str]:
-            parts = resolver_str.split('/')
+            parts = resolver_str.split("/")
             return [part.strip() for part in parts if part.strip()]
 
         # For each SMILES, collect all base resolvers that contributed
@@ -109,83 +126,99 @@ class SMILESSelector:
         for resolver in self.priority_order:
             for smiles, resolvers in resolver_map.items():
                 if resolver in resolvers:
-                    return smiles, smiles_dict.get(smiles, '')
+                    return smiles, smiles_dict.get(smiles, "")
 
         # Fallback: return any SMILES if none matched priority
         smiles = next(iter(smiles_dict.keys()))
-        return smiles, smiles_dict.get(smiles, '')
+        return smiles, smiles_dict.get(smiles, "")
 
-    def _strategy_weighted_consensus(self, smiles_dict: Dict[str, List[str]], default_weight: float = 1.0, **kwargs) -> str:
+    def _strategy_weighted_consensus(
+        self, smiles_dict: Dict[str, List[str]], default_weight: float = 1.0, **kwargs
+    ) -> str:
         """
         Assign weights to resolvers. Sum weights per SMILES. Pick highest total.
         Resolver strings like 'pubchem_default/cirpy_default' get average of both weights.
         """
+
         def extract_base_resolver(resolver_str: str) -> List[str]:
-            return [part.strip() for part in resolver_str.split('/') if part.strip()]
+            return [part.strip() for part in resolver_str.split("/") if part.strip()]
 
         scores = defaultdict(float)
         for smiles, resolver_list in smiles_dict.items():
             for resolver_combo in resolver_list:
                 base_resolvers = extract_base_resolver(resolver_combo)
-                score = sum(self.weight_dict.get(r, default_weight) for r in base_resolvers)/len(base_resolvers)
+                score = sum(
+                    self.weight_dict.get(r, default_weight) for r in base_resolvers
+                ) / len(base_resolvers)
                 scores[smiles] += score
 
         if not scores:
             return next(iter(smiles_dict.keys())), []
 
         max_score = max(scores.values())
-        top_candidates = [smiles for smiles, score in scores.items() if score == max_score]
+        top_candidates = [
+            smiles for smiles, score in scores.items() if score == max_score
+        ]
         smiles = min(top_candidates)
-        return smiles, smiles_dict.get(smiles, '')
-    
+        return smiles, smiles_dict.get(smiles, "")
+
     def _strategy_random(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
         """
         Pick a random SMILES.
         """
         smiles = random.choice(list(smiles_dict.keys()))
-        return smiles, smiles_dict.get(smiles, '')
+        return smiles, smiles_dict.get(smiles, "")
 
-    def _strategy_shortest_smiles(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+    def _strategy_shortest_smiles(
+        self, smiles_dict: Dict[str, List[str]], **kwargs
+    ) -> str:
         """
         Pick the shortest SMILES.
         """
         smiles = min(list(smiles_dict.keys()))
-        return smiles, smiles_dict.get(smiles, '')
-    
-    def _strategy_longest_smiles(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+        return smiles, smiles_dict.get(smiles, "")
+
+    def _strategy_longest_smiles(
+        self, smiles_dict: Dict[str, List[str]], **kwargs
+    ) -> str:
         """
         Pick the longest SMILES.
         """
         smiles = max(list(smiles_dict.keys()))
-        return smiles, smiles_dict.get(smiles, '')
+        return smiles, smiles_dict.get(smiles, "")
 
-    def _strategy_fewest_fragments(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
-        """ 
+    def _strategy_fewest_fragments(
+        self, smiles_dict: Dict[str, List[str]], **kwargs
+    ) -> str:
+        """
         Pick the smiles with the fewest fragments (separated by '.')
         """
-        smiles = min(smiles_dict, key=lambda k: k.count('.'))
-        return smiles, smiles_dict.get(smiles, '')
-    
-    def _strategy_rdkit_standardized(self, smiles_dict: Dict[str, List[str]], **kwargs) -> str:
+        smiles = min(smiles_dict, key=lambda k: k.count("."))
+        return smiles, smiles_dict.get(smiles, "")
+
+    def _strategy_rdkit_standardized(
+        self, smiles_dict: Dict[str, List[str]], **kwargs
+    ) -> str:
         """
         Pick the SMILES that is most standardized by RDKit.
         """
         scores = defaultdict(float)
         for smiles, _ in smiles_dict.items():
-            scores[smiles] += smiles.count('.')
+            scores[smiles] += smiles.count(".")
             mol = Chem.MolFromSmiles(smiles)
             scores[smiles] += Chem.GetFormalCharge(mol)
             for atom in mol.GetAtoms():
-                scores[smiles]+=atom.GetFormalCharge()
+                scores[smiles] += atom.GetFormalCharge()
                 isotope = atom.GetIsotope()
                 if isotope != 0:
-                    scores[smiles]+=1
+                    scores[smiles] += 1
                 num_radicals = atom.getNumRadicalElectrons()
                 if num_radicals > 0:
-                    scores[smiles]+=1
-        
+                    scores[smiles] += 1
+
         min_score = min(scores.values())
-        top_candidates = [smiles for smiles, score in scores.items() if score == min_score]
+        top_candidates = [
+            smiles for smiles, score in scores.items() if score == min_score
+        ]
         smiles = min(top_candidates)
-        return smiles, smiles_dict.get(smiles, '')
-    
+        return smiles, smiles_dict.get(smiles, "")
