@@ -1,0 +1,2865 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Convert chemical names to SMILES">
+      
+      
+      
+      
+        <link rel="prev" href="../name_manipulation/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>API Reference - placeholder_name</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="placeholder_name" class="md-header__button md-logo" aria-label="placeholder_name" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            placeholder_name
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/denovochem/name_to_smiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    denovochem/name_to_smiles
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="placeholder_name" class="md-nav__button md-logo" aria-label="placeholder_name" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    placeholder_name
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/denovochem/name_to_smiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    denovochem/name_to_smiles
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resolvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../smiles_selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Smiles Selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../name_manipulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Name Correction/Editing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#placeholder_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        placeholder_name
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="placeholder_name">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.CIRpyNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIRpyNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CIRpyNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.CIRpyNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemSpiPyResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChemSpiPyResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ChemSpiPyResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemSpiPyResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemicalNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChemicalNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ChemicalNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemicalNameResolver.resolver_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolver_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemicalNameResolver.resolver_weight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolver_weight
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemicalNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ManualNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ManualNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ManualNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ManualNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.OpsinNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpsinNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OpsinNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.OpsinNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.PeptideNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PeptideNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PeptideNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.PeptideNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.PubChemNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PubChemNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PubChemNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.PubChemNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.StructuralFormulaNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StructuralFormulaNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StructuralFormulaNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.StructuralFormulaNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.resolve_compounds_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve_compounds_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#placeholder_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        placeholder_name
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="placeholder_name">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.CIRpyNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIRpyNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CIRpyNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.CIRpyNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemSpiPyResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChemSpiPyResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ChemSpiPyResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemSpiPyResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemicalNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChemicalNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ChemicalNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemicalNameResolver.resolver_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolver_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemicalNameResolver.resolver_weight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolver_weight
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ChemicalNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ManualNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ManualNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ManualNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.ManualNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.OpsinNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpsinNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OpsinNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.OpsinNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.PeptideNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PeptideNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PeptideNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.PeptideNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.PubChemNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PubChemNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PubChemNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.PubChemNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.StructuralFormulaNameResolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StructuralFormulaNameResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StructuralFormulaNameResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.StructuralFormulaNameResolver.name_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        name_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder_name.resolve_compounds_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        resolve_compounds_to_smiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="api-reference">API Reference</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="placeholder_name" class="doc doc-heading">
+            <code>placeholder_name</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>name_to_smiles initialization.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="placeholder_name.CIRpyNameResolver" class="doc doc-heading">
+            <code>CIRpyNameResolver</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ChemicalNameResolver (placeholder_name.main.ChemicalNameResolver)" href="#placeholder_name.ChemicalNameResolver">ChemicalNameResolver</a></code></p>
+
+
+
+        <p>Resolver using Chemical Identity Resolver via CIRPy.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>placeholder_name/main.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CIRpyNameResolver</span><span class="p">(</span><span class="n">ChemicalNameResolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolver using Chemical Identity Resolver via CIRPy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;cirpy&quot;</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical names to SMILES using cirpy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_cirpy</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="placeholder_name.CIRpyNameResolver.name_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">name_to_smiles</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert chemical names to SMILES using cirpy.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert chemical names to SMILES using cirpy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_cirpy</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="placeholder_name.ChemSpiPyResolver" class="doc doc-heading">
+            <code>ChemSpiPyResolver</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ChemicalNameResolver (placeholder_name.main.ChemicalNameResolver)" href="#placeholder_name.ChemicalNameResolver">ChemicalNameResolver</a></code></p>
+
+
+
+        <p>Resolver using chemspipy.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>placeholder_name/main.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ChemSpiPyResolver</span><span class="p">(</span><span class="n">ChemicalNameResolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolver using chemspipy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chemspider_api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;cirpy&quot;</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">chemspider_api_key</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chemspider_api_key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Invalid input: chemspider_api_key must be a string.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chemspider_api_key</span> <span class="o">=</span> <span class="n">chemspider_api_key</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical names to SMILES using ChemSpiPy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_chemspipy</span><span class="p">(</span>
+            <span class="n">compound_name_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chemspider_api_key</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="placeholder_name.ChemSpiPyResolver.name_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">name_to_smiles</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert chemical names to SMILES using ChemSpiPy.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert chemical names to SMILES using ChemSpiPy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_chemspipy</span><span class="p">(</span>
+        <span class="n">compound_name_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chemspider_api_key</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="placeholder_name.ChemicalNameResolver" class="doc doc-heading">
+            <code>ChemicalNameResolver</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="abc.ABC">ABC</span></code></p>
+
+
+
+        <p>Abstract base class for chemical name-to-SMILES resolvers.</p>
+<p>Subclasses must implement the <code>name_to_smiles</code> method.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>placeholder_name/main.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ChemicalNameResolver</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract base class for chemical name-to-SMILES resolvers.</span>
+
+<span class="sd">    Subclasses must implement the `name_to_smiles` method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resolver_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Invalid input: resolver_type must be a string.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolver_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">resolver_type</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resolver_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Invalid input: resolver_name must be a string.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolver_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">resolver_name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resolver_weight</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid input: resolver_weight must be a number between 0-1000.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">resolver_weight</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">resolver_weight</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid input: resolver_weight must be a number between 0-1000.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolver_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">resolver_weight</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolver_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return resolver_name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolver_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolver_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return resolver_weight.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolver_weight</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical names to SMILES strings.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            compound_name_list: List of chemical names.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of:</span>
+<span class="sd">                - Dict mapping successful names to SMILES.</span>
+<span class="sd">                - Dict mapping failed names to error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="placeholder_name.ChemicalNameResolver.resolver_name" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">resolver_name</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return resolver_name.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="placeholder_name.ChemicalNameResolver.resolver_weight" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">resolver_weight</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return resolver_weight.</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="placeholder_name.ChemicalNameResolver.name_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">name_to_smiles</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert chemical names to SMILES strings.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>compound_name_list</code>
+            </td>
+            <td>
+                  <code><span title="typing.List">List</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of chemical names.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Tuple">Tuple</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="str">str</span>], <span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="str">str</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tuple of:
+- Dict mapping successful names to SMILES.
+- Dict mapping failed names to error messages.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert chemical names to SMILES strings.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        compound_name_list: List of chemical names.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of:</span>
+<span class="sd">            - Dict mapping successful names to SMILES.</span>
+<span class="sd">            - Dict mapping failed names to error messages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="placeholder_name.ManualNameResolver" class="doc doc-heading">
+            <code>ManualNameResolver</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ChemicalNameResolver (placeholder_name.main.ChemicalNameResolver)" href="#placeholder_name.ChemicalNameResolver">ChemicalNameResolver</a></code></p>
+
+
+
+        <p>Resolver using manually curated names and corresponding SMILES.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>placeholder_name/main.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ManualNameResolver</span><span class="p">(</span><span class="n">ChemicalNameResolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolver using manually curated names and corresponding SMILES.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resolver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">provided_name_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">resolver_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;manual&quot;</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">provided_name_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">provided_name_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Invalid input: provided_name_dict must be a dictionary.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">provided_name_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Invalid input: keys and values in provided_name_dict must be strings.&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_provided_name_dict</span> <span class="o">=</span> <span class="n">provided_name_dict</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">provided_name_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical names to SMILES using manual name database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">provided_name_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">provided_name_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_provided_name_dict</span>
+        <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_manual</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">,</span> <span class="n">provided_name_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="placeholder_name.ManualNameResolver.name_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">name_to_smiles</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">,</span> <span class="n">provided_name_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert chemical names to SMILES using manual name database.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">provided_name_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert chemical names to SMILES using manual name database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">provided_name_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">provided_name_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_provided_name_dict</span>
+    <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_manual</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">,</span> <span class="n">provided_name_dict</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="placeholder_name.OpsinNameResolver" class="doc doc-heading">
+            <code>OpsinNameResolver</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ChemicalNameResolver (placeholder_name.main.ChemicalNameResolver)" href="#placeholder_name.ChemicalNameResolver">ChemicalNameResolver</a></code></p>
+
+
+
+        <p>Resolver using OPSIN via py2opsin.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>placeholder_name/main.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">OpsinNameResolver</span><span class="p">(</span><span class="n">ChemicalNameResolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolver using OPSIN via py2opsin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resolver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">resolver_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">allow_acid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">allow_radicals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">allow_bad_stereo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">wildcard_radicals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">jar_fpath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;opsin-cli.jar&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;opsin&quot;</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allow_acid</span> <span class="o">=</span> <span class="p">(</span><span class="n">allow_acid</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allow_radicals</span> <span class="o">=</span> <span class="p">(</span><span class="n">allow_radicals</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allow_bad_stereo</span> <span class="o">=</span> <span class="p">(</span><span class="n">allow_bad_stereo</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wildcard_radicals</span> <span class="o">=</span> <span class="n">wildcard_radicals</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical names to SMILES using OPSIN.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resolved_names</span><span class="p">,</span> <span class="n">failure_message_dict</span> <span class="o">=</span> <span class="n">name_to_smiles_opsin</span><span class="p">(</span>
+            <span class="n">compound_name_list</span><span class="p">,</span>
+            <span class="n">allow_acid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_acid</span><span class="p">,</span>
+            <span class="n">allow_radicals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_radicals</span><span class="p">,</span>
+            <span class="n">allow_bad_stereo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_bad_stereo</span><span class="p">,</span>
+            <span class="n">wildcard_radicals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_wildcard_radicals</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="n">failure_message_dict</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="placeholder_name.OpsinNameResolver.name_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">name_to_smiles</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert chemical names to SMILES using OPSIN.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert chemical names to SMILES using OPSIN.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resolved_names</span><span class="p">,</span> <span class="n">failure_message_dict</span> <span class="o">=</span> <span class="n">name_to_smiles_opsin</span><span class="p">(</span>
+        <span class="n">compound_name_list</span><span class="p">,</span>
+        <span class="n">allow_acid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_acid</span><span class="p">,</span>
+        <span class="n">allow_radicals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_radicals</span><span class="p">,</span>
+        <span class="n">allow_bad_stereo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_bad_stereo</span><span class="p">,</span>
+        <span class="n">wildcard_radicals</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_wildcard_radicals</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="n">failure_message_dict</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="placeholder_name.PeptideNameResolver" class="doc doc-heading">
+            <code>PeptideNameResolver</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ChemicalNameResolver (placeholder_name.main.ChemicalNameResolver)" href="#placeholder_name.ChemicalNameResolver">ChemicalNameResolver</a></code></p>
+
+
+
+        <p>Resolver using peptide shorthand-to-IUPAC-like name, then resolved to SMILES
+with OPSIN via py2opsin.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>placeholder_name/main.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PeptideNameResolver</span><span class="p">(</span><span class="n">ChemicalNameResolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolver using peptide shorthand-to-IUPAC-like name, then resolved to SMILES</span>
+<span class="sd">    with OPSIN via py2opsin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;peptide&quot;</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical names to SMILES using peptide name converter and OPSIN.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resolved_names</span><span class="p">,</span> <span class="n">failure_message_dict</span> <span class="o">=</span> <span class="n">name_to_smiles_peptide</span><span class="p">(</span>
+            <span class="n">compound_name_list</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="n">failure_message_dict</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="placeholder_name.PeptideNameResolver.name_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">name_to_smiles</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert chemical names to SMILES using peptide name converter and OPSIN.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert chemical names to SMILES using peptide name converter and OPSIN.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resolved_names</span><span class="p">,</span> <span class="n">failure_message_dict</span> <span class="o">=</span> <span class="n">name_to_smiles_peptide</span><span class="p">(</span>
+        <span class="n">compound_name_list</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="n">failure_message_dict</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="placeholder_name.PubChemNameResolver" class="doc doc-heading">
+            <code>PubChemNameResolver</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ChemicalNameResolver (placeholder_name.main.ChemicalNameResolver)" href="#placeholder_name.ChemicalNameResolver">ChemicalNameResolver</a></code></p>
+
+
+
+        <p>Resolver using PubChem via PubChemPy.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>placeholder_name/main.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PubChemNameResolver</span><span class="p">(</span><span class="n">ChemicalNameResolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolver using PubChem via PubChemPy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;pubchem&quot;</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical names to SMILES using pubchem.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_pubchem</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="placeholder_name.PubChemNameResolver.name_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">name_to_smiles</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert chemical names to SMILES using pubchem.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert chemical names to SMILES using pubchem.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_pubchem</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="placeholder_name.StructuralFormulaNameResolver" class="doc doc-heading">
+            <code>StructuralFormulaNameResolver</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ChemicalNameResolver (placeholder_name.main.ChemicalNameResolver)" href="#placeholder_name.ChemicalNameResolver">ChemicalNameResolver</a></code></p>
+
+
+
+        <p>Resolver using structural chemical formula (e.g. CH3CH2CH2COOH).</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>placeholder_name/main.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">StructuralFormulaNameResolver</span><span class="p">(</span><span class="n">ChemicalNameResolver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolver using structural chemical formula (e.g. CH3CH2CH2COOH).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;structural_formula&quot;</span><span class="p">,</span> <span class="n">resolver_name</span><span class="p">,</span> <span class="n">resolver_weight</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert chemical names to SMILES using structural formula converter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_structural_formula</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="placeholder_name.StructuralFormulaNameResolver.name_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">name_to_smiles</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert chemical names to SMILES using structural formula converter.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">name_to_smiles</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">compound_name_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert chemical names to SMILES using structural formula converter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resolved_names</span> <span class="o">=</span> <span class="n">name_to_smiles_structural_formula</span><span class="p">(</span><span class="n">compound_name_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_names</span><span class="p">,</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="placeholder_name.resolve_compounds_to_smiles" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">resolve_compounds_to_smiles</span><span class="p">(</span><span class="n">compounds_list</span><span class="p">,</span> <span class="n">resolvers_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">smiles_selection_mode</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">,</span> <span class="n">detailed_name_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">split_names_to_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Resolve a list of compound names to their SMILES representations.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>compounds_list</code>
+            </td>
+            <td>
+                  <code><span title="typing.List">List</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of compound names.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>resolvers_list</code>
+            </td>
+            <td>
+                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="ChemicalNameResolver (placeholder_name.main.ChemicalNameResolver)" href="#placeholder_name.ChemicalNameResolver">ChemicalNameResolver</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of ChemicalNameResolver instances.
+Defaults to [].</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>smiles_selection_mode</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The method to select the SMILES representation from multiple resolvers.
+Defaults to 'weighted'.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;weighted&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>detailed_name_dict</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, returns a dictionary with detailed information about each compound.
+Defaults to False.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>batch_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of compounds to process in each batch. Defaults to 500.</p>
+              </div>
+            </td>
+            <td>
+                  <code>500</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>split_names_to_solve</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Whether to split compound names on common delimiters to solve them as separate compounds.
+Can be used to solve otherwise unresolvable compound names such as BH3•THF. Defaults to True.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dict[str, str]: A dictionary mapping each compound to its SMILES representation.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>placeholder_name/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span>
+<span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span>
+<span class="normal">554</span>
+<span class="normal">555</span>
+<span class="normal">556</span>
+<span class="normal">557</span>
+<span class="normal">558</span>
+<span class="normal">559</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span>
+<span class="normal">563</span>
+<span class="normal">564</span>
+<span class="normal">565</span>
+<span class="normal">566</span>
+<span class="normal">567</span>
+<span class="normal">568</span>
+<span class="normal">569</span>
+<span class="normal">570</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
+<span class="normal">584</span>
+<span class="normal">585</span>
+<span class="normal">586</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
+<span class="normal">593</span>
+<span class="normal">594</span>
+<span class="normal">595</span>
+<span class="normal">596</span>
+<span class="normal">597</span>
+<span class="normal">598</span>
+<span class="normal">599</span>
+<span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span>
+<span class="normal">603</span>
+<span class="normal">604</span>
+<span class="normal">605</span>
+<span class="normal">606</span>
+<span class="normal">607</span>
+<span class="normal">608</span>
+<span class="normal">609</span>
+<span class="normal">610</span>
+<span class="normal">611</span>
+<span class="normal">612</span>
+<span class="normal">613</span>
+<span class="normal">614</span>
+<span class="normal">615</span>
+<span class="normal">616</span>
+<span class="normal">617</span>
+<span class="normal">618</span>
+<span class="normal">619</span>
+<span class="normal">620</span>
+<span class="normal">621</span>
+<span class="normal">622</span>
+<span class="normal">623</span>
+<span class="normal">624</span>
+<span class="normal">625</span>
+<span class="normal">626</span>
+<span class="normal">627</span>
+<span class="normal">628</span>
+<span class="normal">629</span>
+<span class="normal">630</span>
+<span class="normal">631</span>
+<span class="normal">632</span>
+<span class="normal">633</span>
+<span class="normal">634</span>
+<span class="normal">635</span>
+<span class="normal">636</span>
+<span class="normal">637</span>
+<span class="normal">638</span>
+<span class="normal">639</span>
+<span class="normal">640</span>
+<span class="normal">641</span>
+<span class="normal">642</span>
+<span class="normal">643</span>
+<span class="normal">644</span>
+<span class="normal">645</span>
+<span class="normal">646</span>
+<span class="normal">647</span>
+<span class="normal">648</span>
+<span class="normal">649</span>
+<span class="normal">650</span>
+<span class="normal">651</span>
+<span class="normal">652</span>
+<span class="normal">653</span>
+<span class="normal">654</span>
+<span class="normal">655</span>
+<span class="normal">656</span>
+<span class="normal">657</span>
+<span class="normal">658</span>
+<span class="normal">659</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">resolve_compounds_to_smiles</span><span class="p">(</span>
+    <span class="n">compounds_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">resolvers_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ChemicalNameResolver</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">smiles_selection_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;weighted&quot;</span><span class="p">,</span>
+    <span class="n">detailed_name_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="n">split_names_to_solve</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolve a list of compound names to their SMILES representations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        compounds_list (List[str]): A list of compound names.</span>
+<span class="sd">        resolvers_list (List[ChemicalNameResolver], optional): A list of ChemicalNameResolver instances.</span>
+<span class="sd">            Defaults to [].</span>
+<span class="sd">        smiles_selection_mode (str, optional): The method to select the SMILES representation from multiple resolvers.</span>
+<span class="sd">            Defaults to &#39;weighted&#39;.</span>
+<span class="sd">        detailed_name_dict (bool, optional): If True, returns a dictionary with detailed information about each compound.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        batch_size (int, optional): The number of compounds to process in each batch. Defaults to 500.</span>
+<span class="sd">        split_names_to_solve (bool, optional): Whether to split compound names on common delimiters to solve them as separate compounds.</span>
+<span class="sd">            Can be used to solve otherwise unresolvable compound names such as BH3•THF. Defaults to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict[str, str]: A dictionary mapping each compound to its SMILES representation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">resolvers_list</span><span class="p">:</span>
+        <span class="n">resolvers_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">PubChemNameResolver</span><span class="p">(</span><span class="s2">&quot;pubchem_default&quot;</span><span class="p">),</span>
+            <span class="n">OpsinNameResolver</span><span class="p">(</span><span class="s2">&quot;opsin_default&quot;</span><span class="p">),</span>
+            <span class="n">ManualNameResolver</span><span class="p">(</span><span class="s2">&quot;manual_default&quot;</span><span class="p">),</span>
+            <span class="n">PeptideNameResolver</span><span class="p">(</span><span class="s2">&quot;peptide_default&quot;</span><span class="p">),</span>
+            <span class="n">StructuralFormulaNameResolver</span><span class="p">(</span><span class="s2">&quot;structural_formula_default&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compounds_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Invalid input: compounds_list must be a string or a non-empty list of strings.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compounds_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">compounds_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid input: compounds_list must be a string or a non-empty list of strings.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">compound</span> <span class="ow">in</span> <span class="n">compounds_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compound</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Invalid input: compounds_list must be a string or a non-empty list of strings.&quot;</span>
+                <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compounds_list</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">compounds_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">compounds_list</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">compounds_list</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">compounds_list</span><span class="p">)):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Removing duplicate compound names from compounds_list.&quot;</span><span class="p">)</span>
+        <span class="n">compounds_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">compounds_list</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resolvers_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">resolvers_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Invalid input: resolvers_list must be a non-empty list of ChemicalNameResolver instances.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">seen_resolvers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">resolver</span> <span class="ow">in</span> <span class="n">resolvers_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resolver</span><span class="p">,</span> <span class="n">ChemicalNameResolver</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid resolver: </span><span class="si">{</span><span class="n">resolver</span><span class="si">}</span><span class="s2"> is not an instance of ChemicalNameResolver.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">resolver</span><span class="o">.</span><span class="n">resolver_name</span> <span class="ow">in</span> <span class="n">seen_resolvers</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate resolver name: </span><span class="si">{</span><span class="n">resolver</span><span class="o">.</span><span class="n">resolver_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">seen_resolvers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resolver</span><span class="o">.</span><span class="n">resolver_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">smiles_selection_mode</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Invalid input: smiles_selection_mode must be a string or function.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">detailed_name_dict</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input: detailed_name_dict must be a bool.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Invalid input: batch_size must be an integer.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">batch_size</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input: batch_size must be an integer between 1-1000.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">split_names_to_solve</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input: split_names_to_solve must be a bool.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Clean compound names (strip, remove/replace forbidden characters, etc.) and return a mapping dict</span>
+    <span class="n">cleaned_compounds_list</span><span class="p">,</span> <span class="n">cleaned_compounds_dict</span> <span class="o">=</span> <span class="n">clean_strings_and_return_mapping</span><span class="p">(</span>
+        <span class="n">compounds_list</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">split_names_to_solve</span><span class="p">:</span>
+        <span class="c1"># Split compound names on delimiters, add split parts to compounds list</span>
+        <span class="c1"># Return mapping between original compound names and split parts</span>
+        <span class="c1"># Necessary to resolve names like H₂O•THF</span>
+        <span class="n">cleaned_compounds_list</span><span class="p">,</span> <span class="n">delimiter_split_dict</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">split_compounds_on_delimiters_and_return_mapping</span><span class="p">(</span><span class="n">cleaned_compounds_list</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Resolve compounds and split compound names with resolvers</span>
+    <span class="n">resolvers_out_dict</span> <span class="o">=</span> <span class="n">resolve_compounds_using_resolvers</span><span class="p">(</span>
+        <span class="n">cleaned_compounds_list</span><span class="p">,</span> <span class="n">resolvers_list</span><span class="p">,</span> <span class="n">batch_size</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Assemble the resolution dictionary</span>
+    <span class="n">compounds_out_dict</span> <span class="o">=</span> <span class="n">assemble_compounds_resolution_dict</span><span class="p">(</span>
+        <span class="n">compounds_list</span><span class="p">,</span> <span class="n">resolvers_out_dict</span><span class="p">,</span> <span class="n">cleaned_compounds_dict</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">split_names_to_solve</span><span class="p">:</span>
+        <span class="c1"># Resolve compounds that were split with split_compounds_on_delimiters_and_return_mapping</span>
+        <span class="n">compounds_out_dict</span> <span class="o">=</span> <span class="n">assemble_split_compounds_resolution_dict</span><span class="p">(</span>
+            <span class="n">compounds_out_dict</span><span class="p">,</span>
+            <span class="n">compounds_list</span><span class="p">,</span>
+            <span class="n">resolvers_out_dict</span><span class="p">,</span>
+            <span class="n">cleaned_compounds_dict</span><span class="p">,</span>
+            <span class="n">delimiter_split_dict</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Get the resolvers weight dict - needed for SMILESSelector</span>
+    <span class="n">resolvers_weight_dict</span> <span class="o">=</span> <span class="n">get_resolvers_weight_dict</span><span class="p">(</span><span class="n">resolvers_list</span><span class="p">)</span>
+    <span class="n">resolvers_priority_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">resolver</span><span class="o">.</span><span class="n">resolver_name</span> <span class="k">for</span> <span class="n">resolver</span> <span class="ow">in</span> <span class="n">resolvers_list</span><span class="p">]</span>
+
+    <span class="c1"># Select &quot;best&quot; SMILES according to some criteria, add to resolution dict</span>
+    <span class="n">compounds_out_dict</span> <span class="o">=</span> <span class="n">select_smiles_with_criteria</span><span class="p">(</span>
+        <span class="n">compounds_out_dict</span><span class="p">,</span>
+        <span class="n">resolvers_weight_dict</span><span class="p">,</span>
+        <span class="n">resolvers_priority_order</span><span class="p">,</span>
+        <span class="n">smiles_selection_mode</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">detailed_name_dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SMILES&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">compounds_out_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="k">return</span> <span class="n">compounds_out_dict</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "search.suggest"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
