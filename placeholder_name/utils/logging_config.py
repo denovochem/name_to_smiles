@@ -46,7 +46,7 @@ ERROR_LOG_FILE.touch()
 
 
 def configure_logging(
-    level: str = None,
+    level: str | None = None,
     log_file: Path = LOG_FILE,
     error_log_file: Path = ERROR_LOG_FILE,
     rotation: str = "10 MB",

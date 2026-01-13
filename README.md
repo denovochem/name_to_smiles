@@ -1,5 +1,6 @@
 # placeholder_name
 [![PyPI Version](https://img.shields.io/pypi/v/PubChemPy?logo=python&logoColor=%23ffffff)](https://pypi.python.org/pypi/PubChemPy)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://gitHub.com/denovochem/name_to_smiles/graphs/commit-activity)
 [![License](https://img.shields.io/pypi/l/PubChemPy)](https://github.com/denovochem/name_to_smiles/blob/main/LICENSE)
 [![Tests](https://img.shields.io/github/actions/workflow/status/denovochem/name_to_smiles/tests.yml?logo=github&logoColor=%23ffffff&label=tests)](https://github.com/denovochem/name_to_smiles/actions/workflows/tests.yml)
 [![Docs](https://img.shields.io/readthedocs/pubchempy?logo=readthedocs&logoColor=%23ffffff)](https://denovochem.github.io/name_to_smiles/)

@@ -1308,6 +1308,8 @@ class StructuralFormulaParser:
         elif fragment_pattern == "O2N":
             return self._build_nitro()
 
+        return None
+
     def _build_phenyl_ring(self) -> int:
         """Build a phenyl (benzene) ring and return the attachment point index."""
         # Add 6 aromatic carbons
@@ -1423,7 +1425,7 @@ class StructuralFormulaParser:
 
         return idx1
 
-    def _build_non_terminal_aldehyde(self) -> int:
+    def _build_non_terminal_aldehyde(self) -> List[int]:
         """Build a carboxylic acid functional group"""
         idx1 = self.graph.add_atom("C", 0)
         idx2 = self.graph.add_atom("O", 0)

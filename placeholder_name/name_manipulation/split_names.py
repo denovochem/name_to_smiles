@@ -34,7 +34,7 @@ def get_smiles_parts_from_name_parts(
     compound: str,
     resolvers_out_dict: Dict[str, Dict[str, str]],
     delimiter_split_dict: Dict[str, List[str]],
-) -> Dict[str, Dict[str, List[str]]]:
+) -> Dict[str, Dict[str, List[str]]] | None:
     """
     Collect chemical name parts and corresponding SMILES and resolver names that generated the SMILES.
 
@@ -49,7 +49,7 @@ def get_smiles_parts_from_name_parts(
     """
     split_names = delimiter_split_dict[compound]
 
-    smiles_parts_dict = {}
+    smiles_parts_dict: Dict[str, Dict[str, List[str]]] = {}
     for part in split_names:
         smiles_parts_dict[part] = {}
         part_found = False
@@ -89,7 +89,7 @@ def get_smiles_resolvers_combinations(
     Returns:
         Dict[str, List[str]]: A dictionary mapping each SMILES string to a list of possible resolver combinations.
     """
-    result = {}
+    result: Dict[str, List[str]] = {}
     for smiles_combo in product(*compound_smiles_list):
         combined_smiles = ".".join(smiles for smiles, _ in smiles_combo)
 
@@ -138,6 +138,6 @@ def resolve_delimiter_split_dict(
         list(smiles_dict.items()) for smiles_dict in smiles_parts_dict.values()
     ]
 
-    result = get_smiles_resolvers_combinations(compound_smiles_list)
+    result: Dict[str, List[str]] = get_smiles_resolvers_combinations(compound_smiles_list)
 
     return result

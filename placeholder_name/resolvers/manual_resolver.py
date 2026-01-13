@@ -50,7 +50,8 @@ def process_name_dict(
 
 
 def name_to_smiles_manual(
-    compound_name_list: List[str], provided_name_dict: Dict[str, str] = None
+    compound_name_list: List[str], 
+    provided_name_dict: Dict[str, str] | None = None,
 ) -> Dict[str, str]:
     """
     Convert a list of compound names to their corresponding SMILES strings using a manual name dictionary.

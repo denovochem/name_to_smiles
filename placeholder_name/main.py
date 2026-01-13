@@ -100,9 +100,9 @@ class OpsinNameResolver(ChemicalNameResolver):
         jar_fpath: str = "opsin-cli.jar",
     ):
         super().__init__("opsin", resolver_name, resolver_weight)
-        self._allow_acid = (allow_acid,)
-        self._allow_radicals = (allow_radicals,)
-        self._allow_bad_stereo = (allow_bad_stereo,)
+        self._allow_acid = allow_acid
+        self._allow_radicals = allow_radicals
+        self._allow_bad_stereo = allow_bad_stereo
         self._wildcard_radicals = wildcard_radicals
 
     def name_to_smiles(
@@ -192,7 +192,7 @@ class ManualNameResolver(ChemicalNameResolver):
     def __init__(
         self,
         resolver_name: str,
-        provided_name_dict: dict = None,
+        provided_name_dict: dict | None = None,
         resolver_weight: float = 10,
     ):
         super().__init__("manual", resolver_name, resolver_weight)
@@ -210,7 +210,7 @@ class ManualNameResolver(ChemicalNameResolver):
         self._provided_name_dict = provided_name_dict
 
     def name_to_smiles(
-        self, compound_name_list: List[str], provided_name_dict: Dict[str, str] = None
+        self, compound_name_list: List[str], provided_name_dict: Dict[str, str] | None = None
     ) -> Tuple[Dict[str, str], Dict[str, str]]:
         """
         Convert chemical names to SMILES using manual name database.
@@ -309,7 +309,7 @@ def split_compounds_on_delimiters_and_return_mapping(
     Returns:
         Tuple[List[str], Dict[str, List[str]]]: A tuple containing the list of split compound names and a dictionary mapping the original compound names to their split parts.
     """
-    delimiter_split_dict = {}
+    delimiter_split_dict: Dict[str, List[str]] = {}
     compounds_split_parts_list = []
     for compound in compounds_list:
         delimiter_split_dict, compound_split_parts = get_delimiter_split_dict(
@@ -496,7 +496,7 @@ def select_smiles_with_criteria(
     resolvers_weight_dict: Dict[str, float],
     resolvers_priority_order: List[str],
     smiles_selection_mode: str,
-) -> None:
+) -> Dict[str, Dict[str, List[str]]]:
     """
     Select SMILES representation for each compound using the specified criteria.
 
@@ -507,7 +507,7 @@ def select_smiles_with_criteria(
         smiles_selection_mode (str): The method to select the SMILES representation from multiple resolvers.
 
     Returns:
-        XXX
+        Dict[str, Dict[str, str]]: Dictionary of compound names to their selected SMILES representations.
     """
     selector = SMILESSelector(
         compounds_out_dict, resolvers_weight_dict, resolvers_priority_order
@@ -529,7 +529,7 @@ def resolve_compounds_to_smiles(
     detailed_name_dict: bool = False,
     batch_size: int = 500,
     split_names_to_solve: bool = True,
-) -> Dict[str, str]:
+) -> Dict[str, Dict[str, Dict[str, List[str]]]]:
     """
     Resolve a list of compound names to their SMILES representations.
 
@@ -546,7 +546,7 @@ def resolve_compounds_to_smiles(
             Can be used to solve otherwise unresolvable compound names such as BH3•THF. Defaults to True.
 
     Returns:
-        Dict[str, str]: A dictionary mapping each compound to its SMILES representation.
+        Dict[str, Dict[str, Dict[str, List[str]]]]: A dictionary mapping each compound to its SMILES representation.
     """
     if not resolvers_list:
         resolvers_list = [
@@ -556,7 +556,9 @@ def resolve_compounds_to_smiles(
             PeptideNameResolver("peptide_default"),
             StructuralFormulaNameResolver("structural_formula_default"),
         ]
-
+    
+    if isinstance(compounds_list, str):
+        compounds_list = [compounds_list]
     if not isinstance(compounds_list, list):
         raise ValueError(
             "Invalid input: compounds_list must be a string or a non-empty list of strings."
@@ -571,8 +573,6 @@ def resolve_compounds_to_smiles(
                 raise ValueError(
                     "Invalid input: compounds_list must be a string or a non-empty list of strings."
                 )
-    if isinstance(compounds_list, str):
-        compounds_list = [compounds_list]
     if len(compounds_list) != len(set(compounds_list)):
         logger.warning("Removing duplicate compound names from compounds_list.")
         compounds_list = list(set(compounds_list))
