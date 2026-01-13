@@ -50,7 +50,7 @@ def process_name_dict(
 
 
 def name_to_smiles_manual(
-    compound_name_list: List[str], 
+    compound_name_list: List[str],
     provided_name_dict: Dict[str, str] | None = None,
 ) -> Dict[str, str]:
     """

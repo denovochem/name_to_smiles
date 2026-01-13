@@ -1,6 +1,6 @@
 import warnings
 from abc import ABC, abstractmethod
-from typing import Callable, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
 from rdkit import RDLogger
 
@@ -29,7 +29,7 @@ configure_logging(level="WARNING")
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 # Disable rdkit warnings
-RDLogger.DisableLog("rdApp.*")
+RDLogger.DisableLog("rdApp.*")  # type: ignore[attr-defined]
 
 
 class ChemicalNameResolver(ABC):
@@ -210,7 +210,9 @@ class ManualNameResolver(ChemicalNameResolver):
         self._provided_name_dict = provided_name_dict
 
     def name_to_smiles(
-        self, compound_name_list: List[str], provided_name_dict: Dict[str, str] | None = None
+        self,
+        compound_name_list: List[str],
+        provided_name_dict: Dict[str, str] | None = None,
     ) -> Tuple[Dict[str, str], Dict[str, str]]:
         """
         Convert chemical names to SMILES using manual name database.
@@ -351,7 +353,7 @@ def resolve_compounds_using_resolvers(
 
 def assemble_compounds_resolution_dict(
     compounds: List[str],
-    resolvers_out_dict: Dict[str, Dict[str, str]],
+    resolvers_out_dict: Dict[str, Dict[str, Dict[str, str]]],
     cleaned_compounds_dict: Dict[str, str],
 ) -> Dict[str, Dict[str, Dict[str, List[str]]]]:
     """
@@ -359,7 +361,7 @@ def assemble_compounds_resolution_dict(
 
     Args:
         compounds (List[str]): A list of compound names to resolve.
-        resolvers_out_dict (Dict[str, Dict[str, str]]): A dictionary mapping each resolver name to its output dictionary, which maps each compound name to its resolved SMILES string and error message.
+        resolvers_out_dict (Dict[str, Dict[str, Dict[str, str]]]): A dictionary mapping each resolver name to its output dictionary, which maps each compound name to its resolved SMILES string and error message.
         cleaned_compounds_dict (Dict[str, str]): A dictionary mapping each compound name to its cleaned version.
 
     Returns:
@@ -418,9 +420,9 @@ def assemble_compounds_resolution_dict(
 
 
 def assemble_split_compounds_resolution_dict(
-    compounds_out_dict: Dict[str, Dict[str, str]],
+    compounds_out_dict: Dict[str, Dict[str, Dict[str, List[str]]]],
     compounds: List[str],
-    resolvers_out_dict: Dict[str, Dict[str, str]],
+    resolvers_out_dict: Dict[str, Dict[str, Dict[str, str]]],
     cleaned_compounds_dict: Dict[str, str],
     delimiter_split_dict: Dict[str, List[str]],
 ) -> Dict[str, Dict[str, Dict[str, List[str]]]]:
@@ -492,22 +494,22 @@ def assemble_split_compounds_resolution_dict(
 
 
 def select_smiles_with_criteria(
-    compounds_out_dict: Dict[str, Dict[str, str]],
+    compounds_out_dict,
     resolvers_weight_dict: Dict[str, float],
     resolvers_priority_order: List[str],
     smiles_selection_mode: str,
-) -> Dict[str, Dict[str, List[str]]]:
+):
     """
     Select SMILES representation for each compound using the specified criteria.
 
     Args:
-        compounds_out_dict (Dict[str, Dict[str, str]]): Dictionary of compound names to their resolved SMILES representations.
+        compounds_out_dict: Dictionary of compound names to their resolved SMILES representations.
         resolvers_weight_dict (Dict[str, float]): Dictionary of resolver names to their weights.
         resolvers_priority_order (List[str]): List of priority order for resolvers
         smiles_selection_mode (str): The method to select the SMILES representation from multiple resolvers.
 
     Returns:
-        Dict[str, Dict[str, str]]: Dictionary of compound names to their selected SMILES representations.
+        Dictionary of compound names to their selected SMILES representations, SMILES source, and info messages.
     """
     selector = SMILESSelector(
         compounds_out_dict, resolvers_weight_dict, resolvers_priority_order
@@ -529,7 +531,7 @@ def resolve_compounds_to_smiles(
     detailed_name_dict: bool = False,
     batch_size: int = 500,
     split_names_to_solve: bool = True,
-) -> Dict[str, Dict[str, Dict[str, List[str]]]]:
+) -> Dict[str, Dict[str, Dict[str, List[str]]]] | Dict[str, str]:
     """
     Resolve a list of compound names to their SMILES representations.
 
@@ -546,7 +548,7 @@ def resolve_compounds_to_smiles(
             Can be used to solve otherwise unresolvable compound names such as BH3•THF. Defaults to True.
 
     Returns:
-        Dict[str, Dict[str, Dict[str, List[str]]]]: A dictionary mapping each compound to its SMILES representation.
+        Dict[str, Dict[str, Dict[str, List[str]]]] | Dict[str, str]: A dictionary mapping each compound to its SMILES representation and resolvers, or a simple dictionary mapping each compound to it's selected SMILES representation.
     """
     if not resolvers_list:
         resolvers_list = [
@@ -556,7 +558,7 @@ def resolve_compounds_to_smiles(
             PeptideNameResolver("peptide_default"),
             StructuralFormulaNameResolver("structural_formula_default"),
         ]
-    
+
     if isinstance(compounds_list, str):
         compounds_list = [compounds_list]
     if not isinstance(compounds_list, list):
@@ -592,7 +594,7 @@ def resolve_compounds_to_smiles(
             raise ValueError(f"Duplicate resolver name: {resolver.resolver_name}.")
         seen_resolvers.append(resolver.resolver_name)
 
-    if not isinstance(smiles_selection_mode, (str, Callable)):
+    if not (isinstance(smiles_selection_mode, str) or callable(smiles_selection_mode)):
         raise ValueError(
             "Invalid input: smiles_selection_mode must be a string or function."
         )

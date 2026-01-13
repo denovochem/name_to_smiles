@@ -1,6 +1,6 @@
 import random
 from collections import defaultdict
-from typing import Callable, Dict, List, Optional, DefaultDict
+from typing import Callable, Dict, List, Optional, DefaultDict, Any
 
 from rdkit import Chem
 
@@ -33,7 +33,7 @@ class SMILESSelector:
         self.data = data
         self.weight_dict = weight_dict
         self.priority_order = priority_order
-        self.custom_strategies = custom_strategies or {}
+        self.custom_strategies: dict[str, Callable[..., Any]] = custom_strategies or {}
 
     def select_smiles(
         self, compound_id: str, strategy: str | Callable = "consensus", **kwargs
@@ -68,8 +68,8 @@ class SMILESSelector:
 
         return strategy_fn(filtered_smiles_dict, **kwargs)
 
-    def _get_strategy(self, strategy_name: str) -> function:
-        strategies = {
+    def _get_strategy(self, strategy_name: str) -> Callable[..., Any]:
+        strategies: dict[str, Callable[..., Any]] = {
             "consensus": self._strategy_consensus,
             "ordered": self._strategy_ordered_priority,
             "weighted": self._strategy_weighted_consensus,
@@ -88,7 +88,9 @@ class SMILESSelector:
             )
         return strategies[strategy_name]
 
-    def _strategy_consensus(self, smiles_dict: Dict[str, List[str]], **kwargs) -> tuple[str, List[str]]:
+    def _strategy_consensus(
+        self, smiles_dict: Dict[str, List[str]], **kwargs
+    ) -> tuple[str, List[str]]:
         """
         Pick the SMILES string returned by the most resolvers.
         Tie-breaker: lexicographical order.
@@ -162,7 +164,9 @@ class SMILESSelector:
         smiles = min(top_candidates)
         return smiles, smiles_dict.get(smiles, [""])
 
-    def _strategy_random(self, smiles_dict: Dict[str, List[str]], **kwargs) -> tuple[str, List[str]]:
+    def _strategy_random(
+        self, smiles_dict: Dict[str, List[str]], **kwargs
+    ) -> tuple[str, List[str]]:
         """
         Pick a random SMILES.
         """

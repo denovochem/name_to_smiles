@@ -32,7 +32,7 @@ def get_delimiter_split_dict(
 
 def get_smiles_parts_from_name_parts(
     compound: str,
-    resolvers_out_dict: Dict[str, Dict[str, str]],
+    resolvers_out_dict: Dict[str, Dict[str, Dict[str, str] | Dict[str, str]]],
     delimiter_split_dict: Dict[str, List[str]],
 ) -> Dict[str, Dict[str, List[str]]] | None:
     """
@@ -40,7 +40,7 @@ def get_smiles_parts_from_name_parts(
 
     Args:
         compound (str): The compound name to resolve.
-        resolvers_out_dict (Dict[str, Dict[str, str]]): A dictionary containing the resolver names as keys and dictionaries as values.
+        resolvers_out_dict (Dict[str, Dict[str, Dict[str, str] | Dict[str, str]]]): A dictionary containing the resolver names as keys and dictionaries as values.
             Each dictionary contains the input compound name as key and the resolved SMILES as value.
         delimiter_split_dict (Dict[str, List[str]]): A dictionary containing the compound name as key and a list of split compound names as value.
 
@@ -48,7 +48,6 @@ def get_smiles_parts_from_name_parts(
         Dict[str, Dict[str, List[str]]]: A dictionary mapping each compound to its SMILES representation.
     """
     split_names = delimiter_split_dict[compound]
-
     smiles_parts_dict: Dict[str, Dict[str, List[str]]] = {}
     for part in split_names:
         smiles_parts_dict[part] = {}
@@ -78,13 +77,13 @@ def get_smiles_parts_from_name_parts(
 
 
 def get_smiles_resolvers_combinations(
-    compound_smiles_list: List[Tuple[str, List[str]]],
+    compound_smiles_list: List[List[Tuple[str, List[str]]]],
 ) -> Dict[str, List[str]]:
     """
     Generate all possible combinations of SMILES strings and their corresponding resolvers.
 
     Args:
-        compound_smiles_list (List[Tuple[str, List[str]]]): A list of tuples containing the SMILES strings and their corresponding resolvers.
+        compound_smiles_list (List[List[Tuple[str, List[str]]]]): A list of lists of tuples containing the SMILES strings and their corresponding resolvers.
 
     Returns:
         Dict[str, List[str]]: A dictionary mapping each SMILES string to a list of possible resolver combinations.
@@ -110,7 +109,7 @@ def get_smiles_resolvers_combinations(
 
 def resolve_delimiter_split_dict(
     compound: str,
-    resolvers_out_dict: Dict[str, Dict[str, str]],
+    resolvers_out_dict: Dict[str, Dict[str, Dict[str, str] | Dict[str, str]]],
     delimiter_split_dict: Dict[str, List[str]],
 ) -> Dict[str, List[str]]:
     """
@@ -118,7 +117,8 @@ def resolve_delimiter_split_dict(
 
     Args:
         compound (str): The compound name to resolve.
-        resolvers_out_dict (Dict[str, Dict[str, str]]): Dictionary of resolver names to their output dictionaries, which map each compound name to its resolved SMILES string and error message.
+        resolvers_out_dict (Dict[str, Dict[str, Dict[str, str] | Dict[str, str]]]): A dictionary containing the resolver names as keys and dictionaries as values.
+            Each dictionary contains the input compound name as key and the resolved SMILES as value
         delimiter_split_dict (Dict[str, List[str]]): Dictionary of compound names to their split parts.
 
     Returns:
@@ -138,6 +138,8 @@ def resolve_delimiter_split_dict(
         list(smiles_dict.items()) for smiles_dict in smiles_parts_dict.values()
     ]
 
-    result: Dict[str, List[str]] = get_smiles_resolvers_combinations(compound_smiles_list)
+    result: Dict[str, List[str]] = get_smiles_resolvers_combinations(
+        compound_smiles_list
+    )
 
     return result

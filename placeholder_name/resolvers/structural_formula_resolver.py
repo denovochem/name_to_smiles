@@ -1282,9 +1282,10 @@ class StructuralFormulaParser:
         elif fragment_pattern == "COCH3":
             # Methyl ester
             return self._build_aldehyde()
-        elif fragment_pattern == "COCH2":
-            # Methyl ester
-            return self._build_non_terminal_aldehyde()
+        ## fragment patterns that have multiple attachment points?
+        # elif fragment_pattern == "COCH2":
+        #     # Methyl ester
+        #     return self._build_non_terminal_aldehyde()
         elif fragment_pattern == "COOCH2CH3":
             # Ethyl ester
             return self._build_ester(n_carbon=2)
@@ -1655,7 +1656,7 @@ class StructuralFormulaConverter:
         self.use_registry = use_registry
         self.last_errors: List[str] = []
 
-    def convert(self, formula: str) -> Optional[str]:
+    def convert(self, formula: str) -> str:
         """
         Convert a structural formula to SMILES.
 
@@ -1663,7 +1664,7 @@ class StructuralFormulaConverter:
             formula: Condensed structural formula
 
         Returns:
-            SMILES string if successful, None otherwise
+            SMILES string if successful, empty string otherwise
         """
         self.last_errors = []
 
@@ -1721,14 +1722,14 @@ class StructuralFormulaConverter:
         """Get errors from last conversion."""
         return list(self.last_errors)
 
-    def batch_convert(self, formulas: List[str]) -> Dict[str, Optional[str]]:
+    def batch_convert(self, formulas: List[str]) -> Dict[str, str]:
         """Convert multiple formulas."""
         return {f: self.convert(f) for f in formulas}
 
 
 def name_to_smiles_structural_formula(
     formulas: List[str], strict: bool = True
-) -> Dict[str, Optional[str]]:
+) -> Dict[str, str]:
     """Convert multiple formulas to SMILES."""
     converter = StructuralFormulaConverter(strict_mode=strict)
     return converter.batch_convert(formulas)

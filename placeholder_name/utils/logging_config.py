@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import sys
-from typing import Any, Dict
+from typing import Any
 
 from loguru import logger
 
@@ -52,7 +52,7 @@ def configure_logging(
     rotation: str = "10 MB",
     retention: str = "30 days",
     serialize: bool = False,
-    **kwargs: Dict[str, Any],
+    **kwargs: Any,
 ) -> None:
     """
     Configure logging for the application with enhanced error reporting.
@@ -137,9 +137,9 @@ def configure_logging(
         )
 
     # Add structured logging if enabled
-    if serialize:
+    if serialize and sys.__stdout__ is not None:
         logger.add(
-            sys.stdout,
+            sys.__stdout__,
             level=level,
             format=DEFAULT_FORMAT,
             serialize=True,

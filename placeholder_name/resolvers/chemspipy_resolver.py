@@ -7,7 +7,7 @@ from placeholder_name.utils.string_utils import filter_latin1_compatible
 
 
 def name_to_smiles_chemspipy(
-    compound_name_list: List[str], 
+    compound_name_list: List[str],
     chemspider_api_key: str,
 ) -> Dict[str, str]:
     """

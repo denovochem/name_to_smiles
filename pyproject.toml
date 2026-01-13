@@ -42,3 +42,7 @@ dependencies = {file = ["requirements.txt"]}
 
 [tool.mypy]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["placeholder_name.name_manipulation.name_correction"]
+ignore_errors = true
