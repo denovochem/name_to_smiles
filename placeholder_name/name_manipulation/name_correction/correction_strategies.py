@@ -15,6 +15,7 @@ from placeholder_name.name_manipulation.name_correction.dataclasses import (
     CorrectionType,
     CorrectorConfig,
 )
+from placeholder_name.name_manipulation.name_correction.regexes import PATTERNS
 from placeholder_name.utils.constants import (
     KEYBOARD_NEIGHBOR_SUBSTITUTIONS,
     OCR_SUBSTITUTIONS,
@@ -24,7 +25,7 @@ from placeholder_name.utils.constants import (
 # Get the directory of the current file
 BASE_DIR = Path(__file__).resolve().parent
 CHEMICAL_NAME_TOKENS_PATH = os.path.abspath(
-    BASE_DIR.parent / "datafiles" / "chemical_name_tokens.json"
+    BASE_DIR.parent.parent / "datafiles" / "chemical_name_tokens.json"
 )
 
 
@@ -90,36 +91,53 @@ class CharacterSubstitutionStrategy(CorrectionStrategy):
         # though standard FlashText maps keyword -> string.
         # Here we map: error_string -> correct_token
 
+        def process_and_add(
+            chemical_name_tokens: List[str],
+            source_dict: Dict[str, List[str]],
+            keyword_processor,
+            max_edits: int,
+            source_type_name: str,
+        ):
+            for chemical_name_token in chemical_name_tokens:
+                generated_errors = self.generate_substitution_dict(
+                    chemical_name_token, source_dict, max_edits=max_edits
+                )
+
+                for error in generated_errors:
+                    if len(error) <= 2:
+                        continue
+                    if error in chemical_name_tokens:
+                        continue
+
+                    # OPTIMIZATION:
+                    # We add the "squashed" (no space) version of the error to the processor.
+                    # We store the correct token as the value.
+                    clean_error_key = error.replace(" ", "")
+                    keyword_processor.add_keyword(clean_error_key, chemical_name_token)
+
+            return keyword_processor
+
         if not substitutions:
             with open(CHEMICAL_NAME_TOKENS_PATH, "rb") as f:
                 chemical_name_tokens = json.load(f)
 
-            # Helper to process a dict and add to FlashText
-            def process_and_add(source_dict, source_type_name):
-                for chemical_name_token in chemical_name_tokens:
-                    generated_errors = self.generate_substitution_dict(
-                        chemical_name_token, source_dict, max_edits=max_edits
-                    )
-
-                    for error in generated_errors:
-                        if len(error) <= 2:
-                            continue
-                        if error in chemical_name_tokens:
-                            continue
-
-                        # OPTIMIZATION:
-                        # We add the "squashed" (no space) version of the error to the processor.
-                        # We store the correct token as the value.
-                        clean_error_key = error.replace(" ", "")
-                        self.keyword_processor.add_keyword(
-                            clean_error_key, chemical_name_token
-                        )
-
             # Process OCR Substitutions
-            process_and_add(OCR_SUBSTITUTIONS, "OCR")
+            self.keyword_processor = process_and_add(
+                chemical_name_tokens,
+                OCR_SUBSTITUTIONS,
+                self.keyword_processor,
+                max_edits,
+                "OCR",
+            )
 
             # Process Typo Substitutions
-            process_and_add(KEYBOARD_NEIGHBOR_SUBSTITUTIONS, "Typo")
+            self.keyword_processor = process_and_add(
+                chemical_name_tokens,
+                KEYBOARD_NEIGHBOR_SUBSTITUTIONS,
+                self.keyword_processor,
+                max_edits,
+                "Typo",
+            )
 
         else:
             # Handle manual substitutions injection
@@ -134,10 +152,6 @@ class CharacterSubstitutionStrategy(CorrectionStrategy):
     def generate_substitution_dict(
         self, word: str, substitutions: Dict[str, List[str]], max_edits: int = 1
     ) -> Set[str]:
-        """
-        Generates all possible string variations.
-        (Kept identical to your original logic)
-        """
         results = set()
         queue = deque([(word, 0)])
         visited = {word}
@@ -342,6 +356,7 @@ class TokenSegmentationStrategy(CorrectionStrategy):
         try:
             with open(CHEMICAL_NAME_TOKENS_PATH, "rb") as f:
                 chemical_tokens = json.load(f)
+            chemical_tokens = [ele for ele in chemical_tokens if len(ele) > 1]
         except (NameError, FileNotFoundError):
             # Fallback for testing if constant not defined
             chemical_tokens = []
@@ -620,71 +635,12 @@ class LocantCorrectionStrategy(CorrectionStrategy):
         # We apply these patterns sequentially to the string.
         # Order matters: Fix characters -> Fix punctuation -> Fix formatting.
 
-        patterns = [
-            # =================================================================
-            # 1. CHARACTER SUBSTITUTION (l/I -> 1, O -> 0)
-            # =================================================================
-            # CASE: 'l' or 'I' acting as '1'
-            # Look for: l/I NOT preceded by a letter.
-            # Followed by: digit, separator, Space, Indicated Hydrogen (H), or Stereochem (R/S)
-            # Example: "l, 2-", "(lS, 2R)", "lH-indole"
-            (
-                r"(?<![a-zA-Z])[lI](?=\s*(?:[,\-\d]|H\b|[RS]\b))",
-                "1",
-                "Locant: 'l/I' → '1'",
-            ),
-            # CASE: 'O' acting as '0'
-            # Look for: O surrounded by digits or separators
-            # Example: "2O,3-"
-            (r"(?<=[\d,])O(?=[\d,\-])", "0", "Locant: 'O' → '0'"),
-            (
-                # Pattern: Matches 'Z' only when surrounded by hyphens,
-                # and preceded specifically by lowercase letters or digits.
-                # Matches: "pyrid-Z-yl", "onyloxy-Z-(", "3-Z-chloro"
-                # Ignores: "(Z)-2-", "N-Z-glycine"
-                r"(?<=[a-z0-9]-)Z(?=-)",
-                "2",
-                "Locant: 'Z' → '2' (e.g., 'pyrid-Z-yl')",
-            ),
-            # =================================================================
-            # 2. PUNCTUATION CORRECTION (. -> ,)
-            # =================================================================
-            # CASE: Dots acting as Commas in Locants or Stereochem
-            # Look for: dot preceded by Digit, 'R', or 'S'. Followed by Digit.
-            # Example: "1.2-dichloro", "(1S.2R)"
-            # Note: We use negative lookahead (?!.*]) strictly if you deal with Bicyclo[2.2.2]
-            # but for general names, this pattern is usually safe.
-            (
-                r"(?<=[\dRS])\.(?=\s*\d)(?![^\[]*\])",
-                ",",
-                "Locant: '.' → ',' (ignoring [x.y.z] descriptors)",
-            ),
-            # =================================================================
-            # 3. MISSING SEPARATORS (12-di -> 1,2-di)
-            # =================================================================
-            # CASE: Missing comma between digits before a Multiplier
-            # Logic: If we see two digits followed by a hyphen and a multiplier (di, tri, bis),
-            # it is almost certainly a list of positions, not carbon #12.
-            # Example: "12-dichlorobenzene" -> "1,2-dichlorobenzene"
-            (
-                r"(?<!\d)(\d)(\d)\s*-(?=\s*(?:di|tri|tetra|penta|hexa|bis|tris|tetrakis))",
-                r"\1,\2-",
-                "Locant: Insert missing comma '12-di' → '1,2-di'",
-            ),
-            # =================================================================
-            # 4. FORMATTING / WHITESPACE
-            # =================================================================
-            # CASE: Cleanup spaces inside locants
-            # Example: "1, 2-di" -> "1,2-di"
-            (r"(?<=,)\s+(?=[\dRS])", "", "Locant: Remove space after comma"),
-        ]
-
         # In this implementation, we apply the corrections sequentially
         # to build one final "Clean" string, yielding each step.
 
         current_text = text
 
-        for pattern, replacement, desc in patterns:
+        for pattern, replacement, desc in PATTERNS:
             # We use a loop to catch all instances of one error type (e.g. multiple 'l's)
             # before moving to the next pattern type.
 

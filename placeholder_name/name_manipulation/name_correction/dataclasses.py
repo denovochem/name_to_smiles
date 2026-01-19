@@ -19,6 +19,7 @@ class CorrectorConfig:
         enable_bracket_balancing: Enable bracket matching correction
         custom_substitutions: Additional user-defined substitution rules
         custom_rules: Additional user-defined correction rules
+        enable_external_validation: Enable external validation of candidates
     """
 
     max_candidates: int = 100
@@ -31,6 +32,7 @@ class CorrectorConfig:
     enable_bracket_balancing: bool = False
     custom_substitutions: Dict[str, List[str]] = field(default_factory=dict)
     custom_rules: List[CorrectionRule] = field(default_factory=list)
+    enable_external_validation: bool = True
 
 
 @dataclass

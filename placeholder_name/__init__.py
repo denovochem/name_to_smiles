@@ -12,6 +12,7 @@ from .main import (
 )
 
 from .name_manipulation.name_correction.name_corrector import ChemNameCorrector
+from .name_manipulation.name_correction.dataclasses import CorrectorConfig
 
 __all__ = [
     "resolve_compounds_to_smiles",
@@ -23,6 +24,7 @@ __all__ = [
     "StructuralFormulaNameResolver",
     "CIRpyNameResolver",
     "ChemNameCorrector",
+    "CorrectorConfig",
 ]
 
 __version__ = "0.0.1"

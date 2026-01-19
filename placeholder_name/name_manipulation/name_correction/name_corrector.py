@@ -15,7 +15,10 @@ from placeholder_name.name_manipulation.name_correction.dataclasses import (
 from placeholder_name.name_manipulation.name_correction.scoring import (
     ChemicalNameScorer,
 )
-from placeholder_name.name_manipulation.name_correction.validators import Validator
+from placeholder_name.name_manipulation.name_correction.validators import (
+    Validator,
+    OPSINValidator,
+)
 
 
 class ChemNameCorrector:
@@ -69,6 +72,10 @@ class ChemNameCorrector:
         else:
             self.strategies = self._create_default_strategies()
 
+        self.validator = None
+        if self.config.enable_external_validation:
+            self.validator = OPSINValidator()
+
     def _create_default_strategies(self) -> List[CorrectionStrategy]:
         """Create the default set of correction strategies based on config."""
         strategies: List[CorrectionStrategy] = []
@@ -119,19 +126,15 @@ class ChemNameCorrector:
         return False
 
     def correct(
-        self,
-        name: str,
-        validator: Optional[Validator] = None,
-        validate_all: bool = False,
+        self, name: str, use_validator: bool = True, validate_all: bool = False
     ) -> List[CorrectionCandidate]:
         """
         Correct a chemical name and return ranked candidates.
 
         Args:
             name: The chemical name to correct
-            validator: Optional external validator for candidates
-            validate_all: If True, validate all candidates; if False,
-                         stop after first valid candidate
+            use_validator: Whether to use external validator
+            validate_all: Whether to validate all candidates or just the top ones
 
         Returns:
             List of CorrectionCandidate objects, sorted by score (descending)
@@ -160,30 +163,41 @@ class ChemNameCorrector:
         # Limit to max candidates
         limited_candidates = sorted_candidates[: self.config.max_candidates]
 
-        # Optionally validate with external tool
-        if validator is not None:
-            limited_candidates = self._validate_candidates(
-                limited_candidates, validator, validate_all
+        if use_validator:
+            self._validate_candidates_batch(
+                {name: limited_candidates}, self.validator, validate_all
+            )
+
+            limited_candidates = sorted(
+                limited_candidates, key=lambda c: c.score, reverse=True
             )
 
         return limited_candidates
 
     def correct_batch(
-        self, names: List[str], validator: Optional[Validator] = None
+        self, names: List[str], use_validator: bool = True, validate_all: bool = False
     ) -> Dict[str, List[CorrectionCandidate]]:
         """
         Correct multiple chemical names.
 
         Args:
             names: List of chemical names to correct
-            validator: Optional external validator
+            use_validator: Whether to use external validator
+            validate_all: Whether to validate all candidates or just the top ones
 
         Returns:
             Dictionary mapping original names to their candidates
         """
         results = {}
         for name in names:
-            results[name] = self.correct(name, validator)
+            results[name] = self.correct(name, use_validator=False)
+
+        if use_validator:
+            self._validate_candidates_batch(results, self.validator, validate_all)
+
+        for name in names:
+            results[name] = sorted(results[name], key=lambda c: c.score, reverse=True)
+
         return results
 
     def _generate_all_candidates(self, name: str) -> List[CorrectionCandidate]:
@@ -241,39 +255,49 @@ class ChemNameCorrector:
 
         return list(seen.values())
 
-    def _validate_candidates(
+    def _validate_candidates_batch(
         self,
-        candidates: List[CorrectionCandidate],
-        validator: Validator,
+        candidates: Dict[str, List[CorrectionCandidate]],
+        validator: Optional[Validator],
         validate_all: bool,
-    ) -> List[CorrectionCandidate]:
+    ) -> None:
         """Validate candidates using external validator."""
-        validated_candidates = []
+        if not validator:
+            return
 
-        for candidate in candidates:
-            is_valid, result = validator.validate(candidate.name)
+        all_candidate_names = []
+        original_name_candidate_name_map = {}
+        candidate_name_candidate_object_map = {}
+        for original_name, candidates_list in candidates.items():
+            original_name_candidate_name_map[original_name] = [
+                candidate.name for candidate in candidates_list
+            ]
+            candidate_name_candidate_object_map.update(
+                {candidate.name: candidate for candidate in candidates_list}
+            )
+            all_candidate_names.extend(
+                [candidate.name for candidate in candidates_list]
+            )
+
+        validator_outputs = validator.batch_validate(all_candidate_names)
+
+        for candidate_name, (is_valid, result) in validator_outputs.items():
+            candidate = candidate_name_candidate_object_map[candidate_name]
             candidate.validated = True
+            candidate.validation_result = result
 
             if is_valid:
-                candidate.validation_result = result
                 # Boost score for valid candidates
                 candidate.score = min(1.0, candidate.score + 0.3)
-                validated_candidates.append(candidate)
 
-                if not validate_all:
-                    # Add remaining unvalidated candidates
-                    remaining_idx = candidates.index(candidate) + 1
-                    validated_candidates.extend(candidates[remaining_idx:])
-                    break
             else:
                 # Lower score for invalid candidates
                 candidate.score = max(0.0, candidate.score - 0.2)
-                validated_candidates.append(candidate)
 
-        return sorted(validated_candidates, key=lambda c: c.score, reverse=True)
+        return
 
     def get_best_candidate(
-        self, name: str, validator: Optional[Validator] = None
+        self, name: str, use_validator: bool = True
     ) -> Optional[CorrectionCandidate]:
         """
         Get the single best correction candidate.
@@ -285,7 +309,7 @@ class ChemNameCorrector:
         Returns:
             Best candidate, or None if no candidates found
         """
-        candidates = self.correct(name, validator)
+        candidates = self.correct(name, use_validator)
         return candidates[0] if candidates else None
 
     def explain_corrections(self, candidate: CorrectionCandidate) -> str:

@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 import shutil
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 import warnings
 
 from rdkit import RDLogger
 
+from placeholder_name.name_manipulation.name_correction.name_corrector import (
+    ChemNameCorrector,
+)
 from placeholder_name.name_manipulation.split_names import (
     get_delimiter_split_dict,
     resolve_delimiter_split_dict,
@@ -23,6 +26,8 @@ from placeholder_name.resolvers.structural_formula_resolver import (
 from placeholder_name.smiles_selector import SMILESSelector
 from placeholder_name.utils.chem_utils import canonicalize_smiles
 from placeholder_name.utils.logging_config import configure_logging, logger
+
+corrector = ChemNameCorrector()
 
 # Configure loguru logging
 configure_logging(level="WARNING")
@@ -525,7 +530,11 @@ def resolve_compounds_to_smiles(
     smiles_selection_mode: str = "weighted",
     detailed_name_dict: bool = False,
     batch_size: int = 500,
+    normalize_unicode: bool = True,
     split_names_to_solve: bool = True,
+    resolve_peptide_shorthand: bool = True,
+    attempt_name_correction: bool = True,
+    name_correction_config: Optional[bool] = None,
 ) -> Dict[str, Dict[str, Dict[str, List[str]]]] | Dict[str, str]:
     """
     Resolve a list of compound names to their SMILES representations.
@@ -539,8 +548,13 @@ def resolve_compounds_to_smiles(
         detailed_name_dict (bool, optional): If True, returns a dictionary with detailed information about each compound.
             Defaults to False.
         batch_size (int, optional): The number of compounds to process in each batch. Defaults to 500.
+        normalize_unicode (bool, optional): Whether to normalize Unicode characters in compound names. Defaults to True.
         split_names_to_solve (bool, optional): Whether to split compound names on common delimiters to solve them as separate compounds.
             Can be used to solve otherwise unresolvable compound names such as BH3•THF. Defaults to True.
+        resolve_peptide_shorthand (bool, optional): Whether to resolve peptide shorthand notation. Defaults to True.
+        attempt_name_correction (bool, optional): Whether to attempt to correct compound names that are misspelled or contain typos.
+            Defaults to True.
+        name_correction_config (bool, optional): Configuration for name correction. Defaults to None.
 
     Returns:
         Dict[str, Dict[str, Dict[str, List[str]]]] | Dict[str, str]: A dictionary mapping each compound to its SMILES representation and resolvers, or a simple dictionary mapping each compound to it's selected SMILES representation.
@@ -604,10 +618,17 @@ def resolve_compounds_to_smiles(
     if not isinstance(split_names_to_solve, bool):
         raise ValueError("Invalid input: split_names_to_solve must be a bool.")
 
-    # Clean compound names (strip, remove/replace forbidden characters, etc.) and return a mapping dict
-    cleaned_compounds_list, cleaned_compounds_dict = (
-        normalize_unicode_and_return_mapping(compounds_list)
-    )
+    if not isinstance(normalize_unicode, bool):
+        raise ValueError("Invalid input: normalize_unicode must be a bool.")
+
+    if normalize_unicode:
+        # Clean compound names (strip, remove/replace forbidden characters, etc.) and return a mapping dict
+        cleaned_compounds_list, cleaned_compounds_dict = (
+            normalize_unicode_and_return_mapping(compounds_list)
+        )
+    else:
+        cleaned_compounds_list = compounds_list
+        cleaned_compounds_dict = {compound: compound for compound in compounds_list}
 
     if split_names_to_solve:
         # Split compound names on delimiters, add split parts to compounds list
@@ -648,6 +669,32 @@ def resolve_compounds_to_smiles(
         resolvers_priority_order,
         smiles_selection_mode,
     )
+
+    if name_correction_config:
+        # TODO: Implement name correction with config
+        pass
+
+    if attempt_name_correction:
+        names_to_correct = []
+        for k, v in compounds_out_dict.items():
+            v["name_correction_info"] = {}
+            if not v.get("SMILES", ""):
+                names_to_correct.append(k)
+        corrected_names = corrector.correct_batch(names_to_correct)
+        for name, correction_candidates in corrected_names.items():
+            if name not in compounds_out_dict:
+                continue
+            compound_correction_dict = {}
+            compound_correction_dict["top_5"] = [
+                candidate.name for candidate in correction_candidates[:5]
+            ]
+            print([candidate.score for candidate in correction_candidates[:5]])
+            for candidate in correction_candidates:
+                if candidate.validation_result:
+                    resolved_smiles = candidate.validation_result
+                    compounds_out_dict[name]["SMILES"] = resolved_smiles
+                    break
+            compounds_out_dict[name]["name_correction_info"] = compound_correction_dict
 
     if not detailed_name_dict:
         return {k: v.get("SMILES", "") for k, v in compounds_out_dict.items()}

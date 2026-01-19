@@ -1,10 +1,21 @@
 from __future__ import annotations
+import json
+import os
+from pathlib import Path
 import re
 from typing import ClassVar, Dict, Optional
+from Levenshtein import ratio as levenshtein_ratio
 
 from placeholder_name.name_manipulation.name_correction.dataclasses import (
     CorrectionCandidate,
     CorrectorConfig,
+)
+from placeholder_name.name_manipulation.name_correction.regexes import PATTERNS
+
+# Get the directory of the current file
+BASE_DIR = Path(__file__).resolve().parent
+CHEMICAL_NAME_TOKENS_PATH = os.path.abspath(
+    BASE_DIR.parent.parent / "datafiles" / "chemical_name_tokens.json"
 )
 
 
@@ -24,25 +35,11 @@ class ChemicalNameScorer:
     # Weights for different scoring components
     WEIGHTS: ClassVar[Dict[str, float]] = {
         "bracket_balance": 0.20,
-        "locant_validity": 0.15,
-        "stereochemistry_validity": 0.10,
         "correction_penalty": 0.20,
-        "character_plausibility": 0.10,
-        "length_similarity": 0.25,
+        "levenshtein_similarity": 0.25,
+        "number_of_chemical_morphemes": 0.15,
+        "number_of_regex_matches": 0.20,
     }
-
-    # Precompiled regex patterns
-    LOCANT_PATTERN: ClassVar[re.Pattern] = re.compile(r"^\d+[,\d]*-|,\d+-|-\d+,")
-
-    STEREOCHEM_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^\(R\)-|^\(S\)-|^\(E\)-|^\(Z\)-|^D-|^L-|^DL-|^rac-|^rel-|"
-        r"\(R\)|\(S\)|\(E\)|\(Z\)|"
-        r"-\(R\)-|-\(S\)-|-\(E\)-|-\(Z\)-"
-    )
-
-    VALID_CHARS_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^[a-zA-Z0-9\-\(\)\[\]\{\},\.\'\"\s]+$"
-    )
 
     def __init__(self, config: Optional[CorrectorConfig] = None):
         """
@@ -52,6 +49,15 @@ class ChemicalNameScorer:
             config: Optional corrector configuration
         """
         self.config = config or CorrectorConfig()
+
+        with open(CHEMICAL_NAME_TOKENS_PATH, "rb") as f:
+            self.chemical_morpheme_list = json.load(f)
+
+        self.chemical_morpheme_list = [
+            ele for ele in self.chemical_morpheme_list if len(ele) > 1
+        ]
+        self.original_name_num_morphemes: Optional[int] = None
+        self.original_name_num_regex_matches: Optional[int] = None
 
     def score(self, candidate: CorrectionCandidate) -> CorrectionCandidate:
         """
@@ -65,18 +71,31 @@ class ChemicalNameScorer:
         """
         components: Dict[str, float] = {}
 
+        if not self.original_name_num_morphemes:
+            self.original_name_num_morphemes = self._get_number_of_chemical_morphemes(
+                candidate.original_name
+            )
+
+        if not self.original_name_num_regex_matches:
+            self.original_name_num_regex_matches = self._get_number_of_regex_matches(
+                candidate.original_name
+            )
+
         # Calculate individual components
         components["bracket_balance"] = self._score_bracket_balance(candidate.name)
-        components["locant_validity"] = self._score_locants(candidate.name)
-        components["stereochemistry_validity"] = self._score_stereochemistry(
-            candidate.name
-        )
         components["correction_penalty"] = self._score_correction_count(
             candidate.num_corrections
         )
-        components["character_plausibility"] = self._score_characters(candidate.name)
-        components["length_similarity"] = self._score_length_similarity(
+        components["levenshtein_similarity"] = self._score_levenshtein_similarity(
             candidate.name, candidate.original_name
+        )
+        components["number_of_chemical_morphemes"] = self._score_chemical_morphemes(
+            self._get_number_of_chemical_morphemes(candidate.name),
+            self.original_name_num_morphemes,
+        )
+        components["number_of_regex_matches"] = self._score_regex_matches(
+            self._get_number_of_regex_matches(candidate.name),
+            self.original_name_num_regex_matches,
         )
 
         # Calculate weighted sum
@@ -85,7 +104,70 @@ class ChemicalNameScorer:
         candidate.score = total_score
         candidate.score_components = components
 
+        self.original_name_num_regex_matches = None
+        self.original_name_num_morphemes = None
+
         return candidate
+
+    def _get_number_of_chemical_morphemes(self, name: str) -> int:
+        """
+        Get the number of chemical morphemes in the name.
+        """
+        num_morphemes = sum(
+            1 for morpheme in self.chemical_morpheme_list if morpheme in name
+        )
+
+        if not num_morphemes:
+            return 0
+
+        return num_morphemes
+
+    def _score_chemical_morphemes(
+        self,
+        corrected_name_num_morphemes: int,
+        original_name_num_morphemes: Optional[int],
+    ) -> float:
+        """
+        Score based on the number of chemical morphemes in the name.
+        """
+        if not original_name_num_morphemes:
+            return 0
+
+        return (
+            corrected_name_num_morphemes / original_name_num_morphemes
+            if original_name_num_morphemes > 0
+            else 0
+        )
+
+    def _get_number_of_regex_matches(self, name: str) -> int:
+        """
+        Get the number of regex matches in the name.
+        """
+        num_regex_matches = sum(
+            1 for pattern, _, _ in PATTERNS if re.search(pattern, name)
+        )
+
+        if not num_regex_matches:
+            return 0
+
+        return num_regex_matches
+
+    def _score_regex_matches(
+        self,
+        corrected_name_num_regex_matches: int,
+        original_name_num_regex_matches: Optional[int],
+    ) -> float:
+        """
+        Score based on the number of regex matches in the name.
+        """
+        if not original_name_num_regex_matches:
+            return 0
+
+        return 1 - (
+            corrected_name_num_regex_matches / original_name_num_regex_matches
+            if original_name_num_regex_matches > 0
+            else 0
+        )
 
     def _score_bracket_balance(self, name: str) -> float:
         """
@@ -123,39 +205,6 @@ class ChemicalNameScorer:
 
         return len(stack) == 0
 
-    def _score_locants(self, name: str) -> float:
-        """Score based on valid locant patterns."""
-        # Check for proper locant formatting (e.g., "2,3-" or "1-")
-        locant_matches = re.findall(r"\d+[,\d]*-", name)
-
-        if not locant_matches:
-            return 0.5  # Neutral score if no locants
-
-        score = 0.7
-
-        for match in locant_matches:
-            # Check if locant numbers are reasonable (1-99 typically)
-            numbers = re.findall(r"\d+", match)
-            for num_str in numbers:
-                num = int(num_str)
-                if 1 <= num <= 50:
-                    score += 0.05
-                elif num > 100:
-                    score -= 0.1
-
-        return max(0.0, min(1.0, score))
-
-    def _score_stereochemistry(self, name: str) -> float:
-        """Score based on stereochemistry notation validity."""
-        # Look for stereochemistry patterns
-        stereo_matches = self.STEREOCHEM_PATTERN.findall(name)
-
-        if not stereo_matches:
-            return 0.5  # Neutral if no stereochemistry
-
-        # Valid stereochemistry patterns boost score
-        return min(1.0, 0.7 + len(stereo_matches) * 0.1)
-
     def _score_correction_count(self, num_corrections: int) -> float:
         """
         Score based on number of corrections (fewer is better).
@@ -173,44 +222,6 @@ class ChemicalNameScorer:
         else:
             return max(0.1, 1.0 - num_corrections * 0.15)
 
-    def _score_characters(self, name: str) -> float:
-        """Score based on character plausibility for chemical names."""
-        if not name:
-            return 0.0
-
-        # Check for valid character set
-        if not self.VALID_CHARS_PATTERN.match(name):
-            return 0.3
-
-        # Calculate letter/digit ratio (chemical names are mostly letters)
-        letters = sum(1 for c in name if c.isalpha())
-        total = len(name)
-
-        if total == 0:
-            return 0.0
-
-        letter_ratio = letters / total
-
-        # Ideal ratio is mostly letters with some digits
-        if 0.6 <= letter_ratio <= 0.95:
-            return 0.9
-        elif 0.4 <= letter_ratio < 0.6:
-            return 0.6
-        elif letter_ratio > 0.95:
-            return 0.8
-        else:
-            return 0.4
-
-    def _score_length_similarity(self, corrected: str, original: str) -> float:
-        """Score based on length similarity to original."""
-        if not original:
-            return 0.5
-
-        len_diff = abs(len(corrected) - len(original))
-        max_len = max(len(corrected), len(original))
-
-        if max_len == 0:
-            return 1.0
-
-        similarity = 1.0 - (len_diff / max_len)
-        return max(0.0, similarity)
+    def _score_levenshtein_similarity(self, corrected: str, original: str) -> float:
+        """Score based on Levenshtein similarity to original."""
+        return levenshtein_ratio(corrected, original)
