@@ -6,6 +6,9 @@ import warnings
 from rdkit import RDLogger
 
 from placeholder_name.name_manipulation.manipulate_names import correct_names
+from placeholder_name.name_manipulation.name_correction.dataclasses import (
+    CorrectorConfig,
+)
 from placeholder_name.name_manipulation.split_names import (
     get_delimiter_split_dict,
     resolve_delimiter_split_dict,
@@ -551,7 +554,7 @@ def resolve_compounds_to_smiles(
     split_names_to_solve: bool = True,
     resolve_peptide_shorthand: bool = True,
     attempt_name_correction: bool = True,
-    name_correction_config: Optional[bool] = None,
+    name_correction_config: Optional[CorrectorConfig] = None,
 ) -> Dict[str, Dict[str, Dict[str, List[str]]]] | Dict[str, str]:
     """
     Resolve a list of compound names to their SMILES representations.

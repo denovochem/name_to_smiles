@@ -758,7 +758,11 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="CC(C)(C)c1ccnc(-c2cc(C(C)(C)C)ccn2)c1",
         denticity=2,
         charge=0,
-        aliases=("4,4'-di-tert-butyl-2,2'-bipyridine", "di-tert-butylbipyridine", "dtbpy"),
+        aliases=(
+            "4,4'-di-tert-butyl-2,2'-bipyridine",
+            "di-tert-butylbipyridine",
+            "dtbpy",
+        ),
         description="4,4'-Di-tert-butyl-2,2'-bipyridine",
     ),
     "phen": LigandInfo(
@@ -1221,13 +1225,13 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         aliases=("trifluoroacetylacetonate",),
         description="Trifluoroacetylacetonate",
     ),
-    "dbm": LigandInfo(
-        smiles="C(C1=CC=CC=C1)(=O)CC(C1=CC=CC=C1)=O",
-        denticity=2,
-        charge=-1,
-        aliases=("dibenzoylmethanate",),
-        description="Dibenzoylmethanate",
-    ),
+    # "dbm": LigandInfo(
+    #     smiles="C(C1=CC=CC=C1)(=O)CC(C1=CC=CC=C1)=O",
+    #     denticity=2,
+    #     charge=-1,
+    #     aliases=("dibenzoylmethanate",),
+    #     description="Dibenzoylmethanate",
+    # ),
     "thd": LigandInfo(
         smiles="CC(C)(C(CC(C(C)(C)C)=O)=O)C",
         denticity=2,

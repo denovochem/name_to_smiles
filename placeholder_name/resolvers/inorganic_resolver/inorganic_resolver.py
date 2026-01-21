@@ -10,7 +10,7 @@ from placeholder_name.resolvers.inorganic_resolver.inorganic_resolver_tokens imp
     METAL_DATABASE,
     MetalInfo,
 )
-from placeholder_name.utils.logging_config import logger
+# from placeholder_name.utils.logging_config import logger
 
 
 @dataclass
@@ -266,19 +266,26 @@ class ComplexNameParser:
         if len(potential_metal_symbols) > 1:
             raise ParserError(f"Multiple potential metal symbols found in: {name}")
 
-        best_idx = 1e10
+        best_idx = None
         best_metal_symbol = ""
         for metal_symbol, idx in potential_metal_symbols.items():
+            if best_idx is None:
+                best_idx = idx
+                best_metal_symbol = metal_symbol
+                continue
             if idx < best_idx:
                 best_metal_symbol = metal_symbol
                 best_idx = idx
                 continue
             if idx == best_idx:
-                if len(metal_symbol) < best_metal_symbol:
+                if len(metal_symbol) < len(best_metal_symbol):
                     continue
                 best_metal_symbol = metal_symbol
 
         if not best_metal_symbol:
+            raise ParserError(f"Could not identify metal in: {name}")
+
+        if not best_idx:
             raise ParserError(f"Could not identify metal in: {name}")
 
         return best_metal_symbol, name[:best_idx] + name[

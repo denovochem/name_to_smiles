@@ -1,14 +1,14 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
-from placeholder_name.name_manipulation.name_correction.name_corrector import (
-    ChemNameCorrector,
-)
 from placeholder_name.name_manipulation.name_correction.dataclasses import (
     CorrectorConfig,
 )
+from placeholder_name.name_manipulation.name_correction.name_corrector import (
+    ChemNameCorrector,
+)
 from placeholder_name.name_manipulation.peptide_shorthand_handler import (
-    peptide_shorthand_to_iupac,
     looks_like_peptide_shorthand,
+    peptide_shorthand_to_iupac,
 )
 
 
@@ -19,7 +19,7 @@ def correct_names(
     compounds_out_dict: Dict[str, Dict[str, Dict[str, List[str]]]],
     name_correction_config: Optional[CorrectorConfig] = None,
     resolve_peptide_shorthand: Optional[bool] = False,
-) -> Dict[str, Dict[str, Dict[str, List[str]]]]:
+) -> Dict[str, Dict[str, Any]]:
     """
     Correct chemical names using ChemNameCorrector and optionally resolve peptide shorthand.
 
@@ -45,7 +45,7 @@ def correct_names(
     for name, correction_candidates in corrected_names.items():
         if name not in compounds_out_dict:
             continue
-        compound_correction_dict = {}
+        compound_correction_dict: Dict[str, Any] = {}
 
         if resolve_peptide_shorthand and looks_like_peptide_shorthand(name):
             try:

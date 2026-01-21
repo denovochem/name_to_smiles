@@ -78,7 +78,7 @@ class SMILESSelector:
             "longest_smiles": self._strategy_longest_smiles,
             "fewest_fragments": self._strategy_fewest_fragments,
             "rdkit_standardized": self._strategy_rdkit_standardized,
-            "highest_symmetry": self._strategy_highest_symmetry,
+            "highest_symmetry": self._strategy_highest_symmetry_smiles,
         }
 
         strategies.update(self.custom_strategies)

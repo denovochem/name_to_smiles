@@ -11,6 +11,7 @@ from placeholder_name.name_manipulation.name_correction.correction_strategies im
 from placeholder_name.name_manipulation.name_correction.dataclasses import (
     CorrectionCandidate,
     CorrectorConfig,
+    Correction,
 )
 from placeholder_name.name_manipulation.name_correction.scoring import (
     ChemicalNameScorer,
@@ -205,7 +206,7 @@ class ChemNameCorrector:
         candidates: List[CorrectionCandidate] = []
 
         # Apply each strategy
-        current_texts: List[Tuple[str, List[CorrectionCandidate]]] = [
+        current_texts: List[Tuple[str, List[Correction]]] = [
             (name, [])
         ]  # (text, corrections)
         for strategy in self.strategies:
