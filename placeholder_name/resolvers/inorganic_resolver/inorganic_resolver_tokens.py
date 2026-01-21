@@ -1,15 +1,6 @@
-from __future__ import annotations
-
-import re
-from abc import ABC, abstractmethod
+from typing import Dict, Tuple
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Dict, List, Optional, Tuple
-
-
-# =============================================================================
-# DATA STRUCTURES
-# =============================================================================
 
 
 class LigandType(Enum):
@@ -67,62 +58,6 @@ class MetalInfo:
     atomic_number: int
 
 
-@dataclass
-class ParsedLigand:
-    """
-    Represents a ligand as parsed from a complex name.
-
-    Attributes:
-        name: The ligand identifier as it appears in the name
-        count: Number of this ligand coordinated to the metal
-        modifiers: Any prefix/suffix modifiers (e.g., "dF(CF3)" in "dF(CF3)ppy")
-    """
-
-    name: str
-    count: int = 1
-    modifiers: List[str] = field(default_factory=list)
-
-    def __repr__(self) -> str:
-        return f"ParsedLigand(name='{self.name}', count={self.count})"
-
-
-@dataclass
-class ParsedComplex:
-    """
-    Complete parsed representation of a coordination complex.
-
-    Attributes:
-        metal: Metal symbol (e.g., "Ir", "Rh")
-        ligands: List of ParsedLigand objects
-        complex_charge: Overall charge of the complex ion
-        multiplicity: Number of formula units (e.g., 2 for dimers like [IrCl(cod)]2)
-        counter_ions: List of (ion_name, count) tuples
-    """
-
-    metal: str
-    ligands: List[ParsedLigand]
-    complex_charge: int = 0
-    multiplicity: int = 1
-    counter_ions: List[Tuple[str, int]] = field(default_factory=list)
-
-    def __repr__(self) -> str:
-        return (
-            f"ParsedComplex(metal='{self.metal}', "
-            f"ligands={self.ligands}, "
-            f"charge={self.complex_charge}, "
-            f"mult={self.multiplicity}, "
-            f"counter_ions={self.counter_ions})"
-        )
-
-
-# =============================================================================
-# DATABASES / DICTIONARIES
-# =============================================================================
-
-# -----------------------------------------------------------------------------
-# Ligand Database
-# -----------------------------------------------------------------------------
-
 LIGAND_DATABASE: Dict[str, LigandInfo] = {
     # -------------------------------------------------------------------------
     # Monodentate Neutral Ligands
@@ -145,7 +80,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="c1ccncc1",
         denticity=1,
         charge=0,
-        aliases=("pyridine",),
+        aliases=("pyridine", "Py"),
         description="Pyridine",
     ),
     "NH3": LigandInfo(
@@ -166,7 +101,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="CC#N",
         denticity=1,
         charge=0,
-        aliases=("acetonitrile", "NCMe"),
+        aliases=("acetonitrile", "NCMe", "CH3CN"),
         description="Acetonitrile",
     ),
     "PMe3": LigandInfo(
@@ -234,7 +169,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="IMes carbene",
     ),
     "IPr": LigandInfo(
-        smiles="",
+        smiles="CC(C)c1cccc(C(C)C)c1N2[C]N(C=C2)c3c(cccc3C(C)C)C(C)C",
         denticity=1,
         charge=0,
         aliases=("1,3-bis(2,6-diisopropylphenyl)imidazol-2-ylidene",),
@@ -248,35 +183,35 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="Saturated IMes carbene",
     ),
     "SIPr": LigandInfo(
-        smiles="",
+        smiles="CC(C)C1=C(C(=CC=C1)C(C)C)N2CC[N+](=[C-]2)C3=C(C=CC=C3C(C)C)C(C)C",
         denticity=1,
         charge=0,
         aliases=("1,3-bis(2,6-diisopropylphenyl)imidazolidin-2-ylidene",),
         description="Saturated IPr carbene",
     ),
     "ICy": LigandInfo(
-        smiles="",
+        smiles="C1(CCCCC1)N1[C]N(C=C1)C1CCCCC1",
         denticity=1,
         charge=0,
         aliases=("1,3-dicyclohexylimidazol-2-ylidene",),
         description="ICy carbene",
     ),
     "ItBu": LigandInfo(
-        smiles="",
+        smiles="C(C)(C)(C)N1[C]N(C=C1)C(C)(C)C",
         denticity=1,
         charge=0,
         aliases=("1,3-di-tert-butylimidazol-2-ylidene",),
         description="ItBu carbene",
     ),
     "IMe": LigandInfo(
-        smiles="",
+        smiles="CN1[C]N(C=C1)C",
         denticity=1,
         charge=0,
         aliases=("1,3-dimethylimidazol-2-ylidene",),
         description="IMe carbene",
     ),
     "IAd": LigandInfo(
-        smiles="",
+        smiles="C12(CC3CC(CC(C1)C3)C2)N2[C]N(C=C2)C23CC1CC(CC(C2)C1)C3",
         denticity=1,
         charge=0,
         aliases=("1,3-bis(adamantyl)imidazol-2-ylidene",),
@@ -287,7 +222,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="C1CCOC1",
         denticity=1,
         charge=0,
-        aliases=("tetrahydrofuran",),
+        aliases=("tetrahydrofuran", "thf"),
         description="Tetrahydrofuran",
     ),
     "Et2O": LigandInfo(
@@ -341,21 +276,21 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="tert-Butyl isocyanide",
     ),
     "CNXyl": LigandInfo(
-        smiles="",
+        smiles="CC1=C(C(=CC=C1)C)[N+]#[C-]",
         denticity=1,
         charge=0,
         aliases=("2,6-xylylisocyanide", "2,6-dimethylphenylisocyanide"),
         description="2,6-Xylyl isocyanide",
     ),
     "CNPh": LigandInfo(
-        smiles="",
+        smiles="O=C=Nc1ccccc1",
         denticity=1,
         charge=0,
         aliases=("phenylisocyanide",),
         description="Phenyl isocyanide",
     ),
     "CNMe": LigandInfo(
-        smiles="",
+        smiles="[C-]#[N+]C",
         denticity=1,
         charge=0,
         aliases=("methylisocyanide",),
@@ -363,7 +298,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Carbene ligands (non-NHC)
     "CHPh": LigandInfo(
-        smiles="",
+        smiles="[CH]C1=CC=CC=C1",
         denticity=1,
         charge=0,
         aliases=("benzylidene", "phenylcarbene"),
@@ -386,31 +321,35 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="Dinitrogen",
     ),
     "NO": LigandInfo(
-        smiles="",
+        smiles="N=O",
         denticity=1,
         charge=0,
         aliases=("nitrosyl",),
         description="Nitrosyl (neutral counting)",
     ),
     "CS": LigandInfo(
-        smiles="",
+        smiles="C=S",
         denticity=1,
         charge=0,
         aliases=("thiocarbonyl",),
         description="Thiocarbonyl",
     ),
     "SO2": LigandInfo(
-        smiles="",
+        smiles="O=S=O",
         denticity=1,
         charge=0,
         aliases=("sulfurdioxide",),
         description="Sulfur dioxide",
     ),
     "O2": LigandInfo(
-        smiles="", denticity=1, charge=0, aliases=("dioxygen",), description="Dioxygen"
+        smiles="O=O",
+        denticity=1,
+        charge=0,
+        aliases=("dioxygen",),
+        description="Dioxygen",
     ),
     "H2": LigandInfo(
-        smiles="",
+        smiles="H-H",
         denticity=1,
         charge=0,
         aliases=("dihydrogen",),
@@ -541,24 +480,24 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="Phenyl",
     ),
     "Bn": LigandInfo(
-        smiles="[CH2-]C1=CC=CC=C1", 
-        denticity=1, 
-        charge=-1, 
-        aliases=("benzyl",), 
-        description="Benzyl"
-    ),
-    "vinyl": LigandInfo(
-        smiles="", 
-        denticity=1, 
-        charge=-1, 
-        aliases=("ethenyl",), 
-        description="Vinyl"
-    ),
-    "allyl": LigandInfo(
-        smiles="",
+        smiles="[CH2-]C1=CC=CC=C1",
         denticity=1,
         charge=-1,
-        aliases=("η1-allyl", "propenyl"),
+        aliases=("benzyl",),
+        description="Benzyl",
+    ),
+    "vinyl": LigandInfo(
+        smiles="[C-]=C",
+        denticity=1,
+        charge=-1,
+        aliases=("ethenyl",),
+        description="Vinyl",
+    ),
+    "allyl": LigandInfo(
+        smiles="[CH-]C=C",
+        denticity=1,
+        charge=-1,
+        aliases=("η1-allyl", "propenyl", "C3H5"),
         description="Allyl (σ-bound)",
     ),
     "Np": LigandInfo(
@@ -569,7 +508,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="Neopentyl",
     ),
     "Mes": LigandInfo(
-        smiles="",
+        smiles="[c-]1c(C)cc(C)cc1C",
         denticity=1,
         charge=-1,
         aliases=("mesityl", "2,4,6-trimethylphenyl"),
@@ -577,14 +516,14 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Silyls
     "SiMe3": LigandInfo(
-        smiles="",
+        smiles="C[Si-](C)C",
         denticity=1,
         charge=-1,
         aliases=("trimethylsilyl", "TMS"),
         description="Trimethylsilyl",
     ),
     "SiPh3": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)[Si-](C1=CC=CC=C1)C1=CC=CC=C1",
         denticity=1,
         charge=-1,
         aliases=("triphenylsilyl",),
@@ -592,42 +531,42 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Amides
     "NMe2": LigandInfo(
-        smiles="",
+        smiles="C[N-]C",
         denticity=1,
         charge=-1,
         aliases=("dimethylamido",),
         description="Dimethylamide",
     ),
     "NEt2": LigandInfo(
-        smiles="",
+        smiles="CC[N-]CC",
         denticity=1,
         charge=-1,
         aliases=("diethylamido",),
         description="Diethylamide",
     ),
     "NiPr2": LigandInfo(
-        smiles="",
+        smiles="C(C)(C)[N-]C(C)C",
         denticity=1,
         charge=-1,
         aliases=("diisopropylamido",),
         description="Diisopropylamide",
     ),
     "NPh2": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)[N-]C1=CC=CC=C1",
         denticity=1,
         charge=-1,
         aliases=("diphenylamido",),
         description="Diphenylamide",
     ),
     "NTMS2": LigandInfo(
-        smiles="",
+        smiles="C[Si](C)(C)[N-][Si](C)(C)C",
         denticity=1,
         charge=-1,
         aliases=("bis(trimethylsilyl)amido", "HMDS", "N(SiMe3)2"),
         description="Bis(trimethylsilyl)amide",
     ),
     "NHPh": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)[NH-]",
         denticity=1,
         charge=-1,
         aliases=("anilido", "phenylamido"),
@@ -635,21 +574,21 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Other common anionic
     "SCN": LigandInfo(
-        smiles="",
+        smiles="[S-]C#N",
         denticity=1,
         charge=-1,
         aliases=("thiocyanato", "thiocyanate"),
         description="Thiocyanate (S-bound)",
     ),
     "NCS": LigandInfo(
-        smiles="",
+        smiles="SC#[N-]",
         denticity=1,
         charge=-1,
         aliases=("isothiocyanato", "isothiocyanate"),
         description="Isothiocyanate (N-bound)",
     ),
     "N3": LigandInfo(
-        smiles="",
+        smiles="[N-]=[N+]=[N-]",
         denticity=1,
         charge=-1,
         aliases=("azido", "azide"),
@@ -663,49 +602,49 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="Nitrite (N-bound nitro)",
     ),
     "ONO": LigandInfo(
-        smiles="",
+        smiles="N(=O)[O-]",
         denticity=1,
         charge=-1,
         aliases=("nitrito-O",),
         description="Nitrite (O-bound nitrito)",
     ),
     "SH": LigandInfo(
-        smiles="",
+        smiles="[SH-]",
         denticity=1,
         charge=-1,
         aliases=("mercapto", "sulfhydryl", "thiolato"),
         description="Hydrosulfide/Thiolate",
     ),
     "SPh": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)[S-]",
         denticity=1,
         charge=-1,
         aliases=("thiophenolate", "phenylthiolato"),
         description="Thiophenolate",
     ),
     "SMe": LigandInfo(
-        smiles="",
+        smiles="[S-]C",
         denticity=1,
         charge=-1,
         aliases=("methylthiolate", "methanethiolato"),
         description="Methylthiolate",
     ),
     "StBu": LigandInfo(
-        smiles="",
+        smiles="[S-]C(C)(C)C",
         denticity=1,
         charge=-1,
         aliases=("tert-butylthiolate",),
         description="tert-Butylthiolate",
     ),
     "OCN": LigandInfo(
-        smiles="",
+        smiles="[O-]C#N",
         denticity=1,
         charge=-1,
         aliases=("cyanato", "cyanate"),
         description="Cyanate",
     ),
     "NCO": LigandInfo(
-        smiles="",
+        smiles="[N-]=C=O",
         denticity=1,
         charge=-1,
         aliases=("isocyanato", "isocyanate"),
@@ -713,28 +652,28 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Carboxylates
     "OBz": LigandInfo(
-        smiles="",
+        smiles="C(C1=CC=CC=C1)(=O)[O-]",
         denticity=1,
         charge=-1,
         aliases=("benzoato", "benzoate"),
         description="Benzoate",
     ),
     "OPiv": LigandInfo(
-        smiles="",
+        smiles="CC(C(=O)[O-])(C)C",
         denticity=1,
         charge=-1,
         aliases=("pivalato", "pivalate", "trimethylacetate"),
         description="Pivalate",
     ),
     "O2CCF3": LigandInfo(
-        smiles="",
+        smiles="FC(C(=O)[O-])(F)F",
         denticity=1,
         charge=-1,
         aliases=("trifluoroacetato", "trifluoroacetate", "TFA"),
         description="Trifluoroacetate",
     ),
     "formate": LigandInfo(
-        smiles="",
+        smiles="C(=O)[O-]",
         denticity=1,
         charge=-1,
         aliases=("formato", "HCO2"),
@@ -742,28 +681,28 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Oxo and related
     "O": LigandInfo(
-        smiles="",
+        smiles="[O-2]",
         denticity=1,
         charge=-2,
         aliases=("oxo", "oxide", "oxido"),
         description="Oxo",
     ),
     "S": LigandInfo(
-        smiles="",
+        smiles="[S-2]",
         denticity=1,
         charge=-2,
         aliases=("sulfido", "sulfide"),
         description="Sulfido",
     ),
     "Se": LigandInfo(
-        smiles="",
+        smiles="[Se-2]",
         denticity=1,
         charge=-2,
         aliases=("selenido", "selenide"),
         description="Selenido",
     ),
     "Te": LigandInfo(
-        smiles="",
+        smiles="[Te-2]",
         denticity=1,
         charge=-2,
         aliases=("tellurido", "telluride"),
@@ -799,7 +738,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Borohydrides
     "BH4": LigandInfo(
-        smiles="",
+        smiles="[BH4-]",
         denticity=1,
         charge=-1,
         aliases=("borohydride", "tetrahydroborate"),
@@ -819,7 +758,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="CC(C)(C)c1ccnc(-c2cc(C(C)(C)C)ccn2)c1",
         denticity=2,
         charge=0,
-        aliases=("4,4'-di-tert-butyl-2,2'-bipyridine", "di-tert-butylbipyridine"),
+        aliases=("4,4'-di-tert-butyl-2,2'-bipyridine", "di-tert-butylbipyridine", "dtbpy"),
         description="4,4'-Di-tert-butyl-2,2'-bipyridine",
     ),
     "phen": LigandInfo(
@@ -840,7 +779,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="C1=CCCC=CCC1",
         denticity=2,
         charge=0,
-        aliases=("1,5-cyclooctadiene", "cyclooctadiene"),
+        aliases=("1,5-cyclooctadiene", "cyclooctadiene", "COD"),
         description="1,5-Cyclooctadiene (η⁴)",
     ),
     "nbd": LigandInfo(
@@ -887,7 +826,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="4,4'-Dicarboxy-2,2'-bipyridine",
     ),
     "dCEbpy": LigandInfo(
-        smiles="",
+        smiles="C1(C2=NC=CC(C(OCC)=O)=C2)=NC=CC(C(OCC)=O)=C1",
         denticity=2,
         charge=0,
         aliases=("4,4'-dicarboxyethyl-2,2'-bipyridine",),
@@ -1024,14 +963,14 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="DM-SEGPHOS",
     ),
     "DIFLUORPHOS": LigandInfo(
-        smiles="", 
-        denticity=2, 
-        charge=0, 
-        aliases=(), 
-        description="DIFLUORPHOS"
+        smiles="FC1(F)Oc2ccc(P(c3ccccc3)c4ccccc4)c(c2O1)c5c6OC(F)(F)Oc6ccc5P(c7ccccc7)c8ccccc8",
+        denticity=2,
+        charge=0,
+        aliases=(),
+        description="DIFLUORPHOS",
     ),
     "MeO-BIPHEP": LigandInfo(
-        smiles="",
+        smiles="COC1=CC=CC(=C1C1=C(C=CC=C1OC)P(C1=CC=CC=C1)C1=CC=CC=C1)P(C1=CC=CC=C1)C1=CC=CC=C1",
         denticity=2,
         charge=0,
         aliases=("6,6'-dimethoxy-2,2'-bis(diphenylphosphino)-1,1'-biphenyl",),
@@ -1039,18 +978,22 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Josiphos-type ligands
     "Josiphos": LigandInfo(
-        smiles="", denticity=2, charge=0, aliases=(), description="Josiphos"
+        smiles="[Fe].[CH]1[CH][CH][CH][CH]1.C[C@@H]([C]2[CH][CH][CH][C]2P(c3ccccc3)c4ccccc4)P(C5CCCCC5)C6CCCCC6",
+        denticity=2,
+        charge=0,
+        aliases=(),
+        description="Josiphos",
     ),
     # Other chiral ligands
     "CHIRAPHOS": LigandInfo(
-        smiles="",
+        smiles="P(c1ccccc1)(c2ccccc2)[C@H]([C@@H](P(c3ccccc3)c4ccccc4)C)C",
         denticity=2,
         charge=0,
         aliases=("2,3-bis(diphenylphosphino)butane",),
         description="CHIRAPHOS",
     ),
     "DIOP": LigandInfo(
-        smiles="",
+        smiles="CC1(O[C@H]([C@@H](O1)CP(c2ccccc2)c3ccccc3)CP(c4ccccc4)c5ccccc5)C",
         denticity=2,
         charge=0,
         aliases=(
@@ -1074,35 +1017,35 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Diamines
     "tmeda": LigandInfo(
-        smiles="",
+        smiles="CN(C)CCN(C)C",
         denticity=2,
         charge=0,
         aliases=("N,N,N',N'-tetramethylethylenediamine", "TMEDA"),
         description="TMEDA",
     ),
     "dach": LigandInfo(
-        smiles="",
+        smiles="C1CCC(C(C1)N)N",
         denticity=2,
         charge=0,
         aliases=("1,2-diaminocyclohexane", "chxn"),
         description="1,2-Diaminocyclohexane",
     ),
     "dpen": LigandInfo(
-        smiles="",
+        smiles="N[C@H]([C@@H](N)c1ccccc1)c2ccccc2",
         denticity=2,
         charge=0,
         aliases=("1,2-diphenylethylenediamine",),
         description="1,2-Diphenylethylenediamine",
     ),
     "pn": LigandInfo(
-        smiles="",
+        smiles="CC(N)CN",
         denticity=2,
         charge=0,
         aliases=("1,2-diaminopropane", "propylenediamine"),
         description="1,2-Diaminopropane",
     ),
     "bn": LigandInfo(
-        smiles="",
+        smiles="NC(C)C(N)C",
         denticity=2,
         charge=0,
         aliases=("2,3-diaminobutane", "2,3-butanediamine"),
@@ -1110,7 +1053,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Diimine ligands
     "DAB": LigandInfo(
-        smiles="",
+        smiles="N=CC=N",
         denticity=2,
         charge=0,
         aliases=("1,4-diazabutadiene",),
@@ -1124,7 +1067,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="N,N'-Diaryl-1,4-diazabutadiene",
     ),
     "dpp-BIAN": LigandInfo(
-        smiles="",
+        smiles="C(C)(C)C1=C(C(=CC=C1)C(C)C)C=1C(=C2C(C(C=3C=CC=C(C1)C32)=N)=N)C3=C(C=CC=C3C(C)C)C(C)C",
         denticity=2,
         charge=0,
         aliases=("bis(2,6-diisopropylphenyl)acenaphthenequinonediimine",),
@@ -1132,7 +1075,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Mixed P,N donors
     "PHOX": LigandInfo(
-        smiles="",
+        smiles="CC(C)(C)[C@@H]1N=C(C2=CC=CC=C2P(C3=CC=CC=C3)C4=CC=CC=C4)OC1",
         denticity=2,
         charge=0,
         aliases=("phosphinooxazoline",),
@@ -1140,7 +1083,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Schiff bases (common in coordination chemistry)
     "salen-H2": LigandInfo(
-        smiles="",
+        smiles="C(C=1C(O)=CC=CC1)=NCCN=CC=1C(O)=CC=CC1",
         denticity=2,
         charge=0,
         aliases=("N,N'-bis(salicylidene)ethylenediamine",),
@@ -1158,7 +1101,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="COCCOC",
         denticity=2,
         charge=0,
-        aliases=("1,2-dimethoxyethane", "glyme"),
+        aliases=("1,2-dimethoxyethane", "glyme", "DME"),
         description="1,2-Dimethoxyethane",
     ),
     "diglyme": LigandInfo(
@@ -1203,8 +1146,15 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="Fc1cc(F)c([c-]1)-c1ccccn1",
         denticity=2,
         charge=-1,
-        aliases=("difluorophenylpyridine",),
+        aliases=("difluorophenylpyridine", "dFppy", "dF-ppy"),
         description="Difluorophenylpyridinate",
+    ),
+    "dF(CF3)ppy": LigandInfo(
+        smiles="FC1=C(C=CC(=C1)F)C1=NC=C(C=C1)C(F)(F)F",
+        denticity=2,
+        charge=-1,
+        aliases=("2-(2,4-Difluorophenyl)-5-(trifluoromethyl)pyridine", "dFCF3ppy"),
+        description="2-(2,4-Difluorophenyl)-5-(trifluoromethyl)pyridine",
     ),
     "pic": LigandInfo(
         smiles="[O-]C(=O)c1ccccn1",
@@ -1215,42 +1165,42 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Cyclometalating C^N ligands
     "bzq": LigandInfo(
-        smiles="",
+        smiles="N1=CC=CC2=CC=C3C(=C12)C=CC=C3",
         denticity=2,
         charge=-1,
         aliases=("benzo[h]quinoline", "7,8-benzoquinoline"),
         description="Benzo[h]quinolinate",
     ),
     "thpy": LigandInfo(
-        smiles="",
+        smiles="[S-]1C(=CC=C1)C1=NC=CC=C1",
         denticity=2,
         charge=-1,
         aliases=("2-(2-thienyl)pyridine", "thienylpyridine"),
         description="2-(2-Thienyl)pyridinate",
     ),
     "piq": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)C1=NC=CC2=CC=CC=C12",
         denticity=2,
         charge=-1,
         aliases=("1-phenylisoquinoline", "phenylisoquinoline"),
         description="1-Phenylisoquinolinate",
     ),
     "mppy": LigandInfo(
-        smiles="",
+        smiles="CC1=CC=C(C=C1)C1=NC=CC=C1",
         denticity=2,
         charge=-1,
         aliases=("2-(4-methylphenyl)pyridine", "4-methyl-2-phenylpyridine"),
         description="2-(4-Methylphenyl)pyridinate",
     ),
     "btp": LigandInfo(
-        smiles="",
+        smiles="S1C(=CC2=C1C=CC=C2)C2=NC=CC=C2",
         denticity=2,
         charge=-1,
         aliases=("2-benzothienylpyridine",),
         description="2-Benzothienylpyridinate",
     ),
     "pbpy": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)C1=CC=CC(=N1)C1=NC=CC=C1",
         denticity=2,
         charge=-1,
         aliases=("6-phenyl-2,2'-bipyridine",),
@@ -1258,42 +1208,42 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Beta-diketonates
     "hfac": LigandInfo(
-        smiles="",
+        smiles="FC(F)(F)C(=O)CC(=O)C(F)(F)F",
         denticity=2,
         charge=-1,
         aliases=("hexafluoroacetylacetonate", "1,1,1,5,5,5-hexafluoroacetylacetonate"),
         description="Hexafluoroacetylacetonate",
     ),
     "tfac": LigandInfo(
-        smiles="",
+        smiles="CC(=O)CC(=O)C(F)(F)F",
         denticity=2,
         charge=-1,
         aliases=("trifluoroacetylacetonate",),
         description="Trifluoroacetylacetonate",
     ),
     "dbm": LigandInfo(
-        smiles="",
+        smiles="C(C1=CC=CC=C1)(=O)CC(C1=CC=CC=C1)=O",
         denticity=2,
         charge=-1,
         aliases=("dibenzoylmethanate",),
         description="Dibenzoylmethanate",
     ),
     "thd": LigandInfo(
-        smiles="",
+        smiles="CC(C)(C(CC(C(C)(C)C)=O)=O)C",
         denticity=2,
         charge=-1,
         aliases=("2,2,6,6-tetramethyl-3,5-heptanedionate", "tmhd", "dpm"),
         description="2,2,6,6-Tetramethyl-3,5-heptanedionate",
     ),
     "fod": LigandInfo(
-        smiles="",
+        smiles="FC(C(CC(C(C)(C)C)=O)=O)(C(C(F)(F)F)(F)F)F",
         denticity=2,
         charge=-1,
         aliases=("6,6,7,7,8,8,8-heptafluoro-2,2-dimethyl-3,5-octanedionate",),
         description="FOD",
     ),
     "trop": LigandInfo(
-        smiles="",
+        smiles="C1=CC=C(C(=O)C=C1)O",
         denticity=2,
         charge=-1,
         aliases=("tropolonate",),
@@ -1392,35 +1342,35 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # S,S chelates
     "S2CNMe2": LigandInfo(
-        smiles="",
+        smiles="CN(C([S-])=S)C",
         denticity=2,
         charge=-1,
         aliases=("dimethyldithiocarbamate", "Me2dtc"),
         description="Dimethyldithiocarbamate",
     ),
     "S2CNEt2": LigandInfo(
-        smiles="",
+        smiles="C(C)N(C([S-])=S)CC",
         denticity=2,
         charge=-1,
         aliases=("diethyldithiocarbamate", "Et2dtc", "dtc"),
         description="Diethyldithiocarbamate",
     ),
     "S2COEt": LigandInfo(
-        smiles="",
+        smiles="C(C)OC(=S)[S-]",
         denticity=2,
         charge=-1,
         aliases=("ethylxanthate", "xanthate"),
         description="Ethyl xanthate",
     ),
     "S2PPh2": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)P(=S)([S-])C1=CC=CC=C1",
         denticity=2,
         charge=-1,
         aliases=("diphenylphosphinodithioate", "dtp"),
         description="Diphenylphosphinodithioate",
     ),
     "bdt": LigandInfo(
-        smiles="",
+        smiles="C=1(C(=CC=CC1)[S-])[S-]",
         denticity=2,
         charge=-2,
         aliases=("1,2-benzenedithiolate", "benzene-1,2-dithiolate"),
@@ -1434,21 +1384,21 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="Maleonitriledithiolate",
     ),
     "dmit": LigandInfo(
-        smiles="",
+        smiles="S=C1SC(=C(S1)[S-])[S-]",
         denticity=2,
         charge=-2,
         aliases=("2-thioxo-1,3-dithiole-4,5-dithiolate",),
         description="dmit",
     ),
     "edt": LigandInfo(
-        smiles="",
+        smiles="C(C[S-])[S-]",
         denticity=2,
         charge=-2,
         aliases=("ethane-1,2-dithiolate", "1,2-ethanedithiolate"),
         description="Ethane-1,2-dithiolate",
     ),
     "tdt": LigandInfo(
-        smiles="",
+        smiles="CC1=CC(=C(C=C1)[S-])[S-]",
         denticity=2,
         charge=-2,
         aliases=("toluene-3,4-dithiolate",),
@@ -1517,21 +1467,21 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # PyBOX
     "PyBOX": LigandInfo(
-        smiles="",
+        smiles="C1N=C(OC1)C1=NC(=CC=C1)C=1OCC(N1)",
         denticity=3,
         charge=0,
         aliases=("pyridinebisoxazoline", "pybox"),
         description="2,6-Bis(oxazolinyl)pyridine",
     ),
     "iPr-PyBOX": LigandInfo(
-        smiles="",
+        smiles="C(C)(C)C1N=C(OC1)C1=NC(=CC=C1)C=1OCC(N1)C(C)C",
         denticity=3,
         charge=0,
         aliases=(),
         description="2,6-Bis(4-isopropyl-2-oxazolinyl)pyridine",
     ),
     "Ph-PyBOX": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)C1N=C(OC1)C1=NC(=CC=C1)C=1OCC(N1)C1=CC=CC=C1",
         denticity=3,
         charge=0,
         aliases=(),
@@ -1591,18 +1541,25 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Other
     "bpa": LigandInfo(
-        smiles="",
+        smiles="N1=C(C=CC=C1)CNCC1=NC=CC=C1",
         denticity=3,
         charge=0,
         aliases=("bis(2-pyridylmethyl)amine",),
         description="Bis(2-pyridylmethyl)amine",
     ),
     "bpea": LigandInfo(
-        smiles="",
+        smiles="N1=C(C=CC=C1)CN(CC1=NC=CC=C1)CC",
         denticity=3,
         charge=0,
         aliases=("N,N-bis(2-pyridylmethyl)ethylamine",),
         description="N,N-Bis(2-pyridylmethyl)ethylamine",
+    ),
+    "dap": LigandInfo(
+        smiles="CC(=O)c1cccc(n1)C(=O)C",
+        denticity=3,
+        charge=0,
+        aliases=("2,6-Diacetylpyridine",),
+        description="2,6-Diacetylpyridine",
     ),
     # -------------------------------------------------------------------------
     # Tridentate Anionic Ligands
@@ -1691,35 +1648,35 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     # -------------------------------------------------------------------------
     # Porphyrins (crucial ligand class)
     "TPP": LigandInfo(
-        smiles="",
+        smiles="C1(=CC=CC=C1)C=1C2=CC=C(N2)C(=C2C=CC(C(=C3C=CC(=C(C=4C=CC1N4)C4=CC=CC=C4)N3)C3=CC=CC=C3)=N2)C2=CC=CC=C2",
         denticity=4,
         charge=-2,
         aliases=("tetraphenylporphyrin", "5,10,15,20-tetraphenylporphyrin"),
         description="Tetraphenylporphyrin",
     ),
     "OEP": LigandInfo(
-        smiles="",
+        smiles="C(C)C1=C2NC(=C1CC)C=C1C(=C(C(=N1)C=C1C(=C(C(N1)=CC=1C(=C(C(N1)=C2)CC)CC)CC)CC)CC)CC",
         denticity=4,
         charge=-2,
         aliases=("octaethylporphyrin", "2,3,7,8,12,13,17,18-octaethylporphyrin"),
         description="Octaethylporphyrin",
     ),
     "TMP": LigandInfo(
-        smiles="",
+        smiles="C1(=C(C(=CC(=C1)C)C)C1=C2C=CC(C(=C3C=CC(=C(C=4C=CC(=C(C5=CC=C1N5)C5=C(C=C(C=C5C)C)C)N4)C4=C(C=C(C=C4C)C)C)N3)C3=C(C=C(C=C3C)C)C)=N2)C",
         denticity=4,
         charge=-2,
         aliases=("tetramesitylporphyrin",),
         description="Tetramesitylporphyrin",
     ),
     "por": LigandInfo(
-        smiles="",
+        smiles="C12=CC=C(N1)C=C1C=CC(=N1)C=C1C=CC(N1)=CC=1C=CC(N1)=C2",
         denticity=4,
         charge=-2,
         aliases=("porphyrin", "porphyrinato"),
         description="Porphyrin (generic)",
     ),
     "TPFPP": LigandInfo(
-        smiles="",
+        smiles="FC1=C(C(=C(C(=C1C1=C2C=CC(C(=C3C=CC(=C(C=4C=CC(=C(C5=CC=C1N5)C5=C(C(=C(C(=C5F)F)F)F)F)N4)C4=C(C(=C(C(=C4F)F)F)F)F)N3)C3=C(C(=C(C(=C3F)F)F)F)F)=N2)F)F)F)F",
         denticity=4,
         charge=-2,
         aliases=("tetrakis(pentafluorophenyl)porphyrin",),
@@ -1834,7 +1791,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         smiles="c1cc(ccc1C(C)C)C",
         denticity=6,
         charge=0,
-        aliases=("η6-p-cymene", "4-isopropyltoluene"),
+        aliases=("η6-p-cymene", "4-isopropyltoluene", "p-cym", "p-Cym"),
         description="p-Cymene (η⁶)",
     ),
     "mesitylene": LigandInfo(
@@ -1866,29 +1823,29 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
         description="Trimethylbenzene (η⁶)",
     ),
     # Allyl (η³)
-    "allyl": LigandInfo(
-        smiles="",
+    "η3-allyl": LigandInfo(
+        smiles="[CH-]C=C",
         denticity=3,
         charge=-1,
         aliases=("η3-allyl", "η3-C3H5"),
         description="Allyl (η³)",
     ),
     "methallyl": LigandInfo(
-        smiles="",
+        smiles="[CH-]C(C)=C",
         denticity=3,
         charge=-1,
         aliases=("η3-2-methylallyl", "η3-methallyl"),
         description="Methallyl (η³)",
     ),
     "crotyl": LigandInfo(
-        smiles="",
+        smiles="[CH-]C=CC",
         denticity=3,
         charge=-1,
         aliases=("η3-crotyl", "η3-1-methylallyl"),
         description="Crotyl (η³)",
     ),
     "cinnamyl": LigandInfo(
-        smiles="",
+        smiles="[CH-]C=CC1=CC=CC=C1",
         denticity=3,
         charge=-1,
         aliases=("η3-cinnamyl", "η3-3-phenylallyl"),
@@ -1896,7 +1853,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Tropylium and related
     "C7H7": LigandInfo(
-        smiles="",
+        smiles="[C-]1=CC=CC=CC1",
         denticity=7,
         charge=1,
         aliases=("tropylium", "cycloheptatrienyl"),
@@ -1911,7 +1868,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Indenyl
     "Ind": LigandInfo(
-        smiles="",
+        smiles="[C-]1C=CC2=CC=CC=C12",
         denticity=5,
         charge=-1,
         aliases=("indenyl", "η5-indenyl"),
@@ -1919,7 +1876,7 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
     # Fluorenyl
     "Flu": LigandInfo(
-        smiles="",
+        smiles="[C-]1=CC=CC=2C3=CC=CC=C3CC12",
         denticity=5,
         charge=-1,
         aliases=("fluorenyl", "η5-fluorenyl"),
@@ -1950,10 +1907,6 @@ LIGAND_DATABASE: Dict[str, LigandInfo] = {
     ),
 }
 
-
-# -----------------------------------------------------------------------------
-# Counter Ion Database
-# -----------------------------------------------------------------------------
 
 COUNTER_ION_DATABASE: Dict[str, LigandInfo] = {
     "PF6": LigandInfo(
@@ -2022,13 +1975,13 @@ COUNTER_ION_DATABASE: Dict[str, LigandInfo] = {
         description="Tetraphenylborate",
     ),
     "Al(OC(CF3)3)4": LigandInfo(
-        smiles="",
+        smiles="C(C(F)(F)F)(C(F)(F)F)(C(F)(F)F)O[Al-](OC(C(F)(F)F)(C(F)(F)F)C(F)(F)F)(OC(C(F)(F)F)(C(F)(F)F)C(F)(F)F)OC(C(F)(F)F)(C(F)(F)F)C(F)(F)F",
         charge=-1,
         aliases=("perfluoro-tert-butoxide aluminate",),
         description="Perfluoro-tert-butoxide aluminate",
     ),
     "BAr4F": LigandInfo(
-        smiles="",
+        smiles="FC(C=1C=C(C=C(C1)C(F)(F)F)[B-](C1=CC(=CC(=C1)C(F)(F)F)C(F)(F)F)(C1=CC(=CC(=C1)C(F)(F)F)C(F)(F)F)C1=CC(=CC(=C1)C(F)(F)F)C(F)(F)F)(F)F",
         charge=-1,
         aliases=("tetrakis(3,5-bis(trifluoromethyl)phenyl)borate", "BArF"),
         description="BArF",
@@ -2076,10 +2029,16 @@ COUNTER_ION_DATABASE: Dict[str, LigandInfo] = {
         description="Tosylate",
     ),
     "ReO4": LigandInfo(
-        smiles="O=[Re](O)(O)(O)(O)", charge=-1, aliases=("perrhenate",), description="Perrhenate"
+        smiles="O=[Re](O)(O)(O)(O)",
+        charge=-1,
+        aliases=("perrhenate",),
+        description="Perrhenate",
     ),
     "IO4": LigandInfo(
-        smiles="O[I](O)(O)(O)O", charge=-1, aliases=("periodate",), description="Periodate"
+        smiles="O[I](O)(O)(O)O",
+        charge=-1,
+        aliases=("periodate",),
+        description="Periodate",
     ),
     "BH4": LigandInfo(
         smiles="[BH4-]",
@@ -2106,7 +2065,7 @@ COUNTER_ION_DATABASE: Dict[str, LigandInfo] = {
         description="Tetrachloroferrate",
     ),
     "CuCl2": LigandInfo(
-        smiles="",
+        smiles="Cl[Cu-]Cl",
         charge=-1,
         aliases=("dichlorocuprate",),
         description="Dichlorocuprate",
@@ -2118,7 +2077,7 @@ COUNTER_ION_DATABASE: Dict[str, LigandInfo] = {
         description="Trichlorozincate",
     ),
     "GaCl4": LigandInfo(
-        smiles="",
+        smiles="Cl[Ga-](Cl)(Cl)Cl",
         charge=-1,
         aliases=("tetrachlorogallate",),
         description="Tetrachlorogallate",
@@ -2161,16 +2120,22 @@ COUNTER_ION_DATABASE: Dict[str, LigandInfo] = {
         description="Tetraphenylphosphonium",
     ),
     "PPN": LigandInfo(
-        smiles="",
+        smiles="C1=CC=C(C=C1)P(=N[P+](C2=CC=CC=C2)(C3=CC=CC=C3)C4=CC=CC=C4)(C5=CC=CC=C5)C6=CC=CC=C6",
         charge=1,
         aliases=("bis(triphenylphosphine)iminium", "Ph3P=N=PPh3"),
         description="Bis(triphenylphosphine)iminium",
     ),
     "Cp2Fe": LigandInfo(
-        smiles="", charge=1, aliases=("ferrocenium", "Fc+"), description="Ferrocenium"
+        smiles="ferrocenium",
+        charge=1,
+        aliases=("ferrocenium", "Fc+"),
+        description="Ferrocenium",
     ),
     "Cp2Co": LigandInfo(
-        smiles="", charge=1, aliases=("cobaltocenium",), description="Cobaltocenium"
+        smiles="C1C=CC=C1.[CH-]1C=CC=C1.[Co+2]",
+        charge=1,
+        aliases=("cobaltocenium",),
+        description="Cobaltocenium",
     ),
     "H3O": LigandInfo(
         smiles="", charge=1, aliases=("hydronium", "oxonium"), description="Hydronium"
@@ -2179,20 +2144,19 @@ COUNTER_ION_DATABASE: Dict[str, LigandInfo] = {
         smiles="[NH4+]", charge=1, aliases=("ammonium",), description="Ammonium"
     ),
     "pyH": LigandInfo(
-        smiles="", charge=1, aliases=("pyridinium",), description="Pyridinium"
+        smiles="[NH+]1=CC=CC=C1",
+        charge=1,
+        aliases=("pyridinium",),
+        description="Pyridinium",
     ),
     "DMAH": LigandInfo(
-        smiles="",
+        smiles="C[NH+](C1=CC=CC=C1)C",
         charge=1,
         aliases=("dimethylanilinium",),
         description="Dimethylanilinium",
     ),
 }
 
-
-# -----------------------------------------------------------------------------
-# Metal Database
-# -----------------------------------------------------------------------------
 
 METAL_DATABASE: Dict[str, MetalInfo] = {
     # Group 6
@@ -2221,786 +2185,3 @@ METAL_DATABASE: Dict[str, MetalInfo] = {
     # Group 12
     "Zn": MetalInfo("Zn", "Zinc", (2,), 30),
 }
-
-
-# =============================================================================
-# PARSER
-# =============================================================================
-
-
-class ParserError(Exception):
-    """Custom exception for parsing errors."""
-
-    pass
-
-
-class ComplexNameParser:
-    """
-    Parser for inorganic/organometallic complex names.
-
-    Handles names in common formats such as:
-        - [Metal(Ligand)n(Ligand2)m]charge
-        - [Metal(Ligand)n]multiplicity
-        - [Metal(Ligand)n]CounterIon
-
-    Examples:
-        >>> parser = ComplexNameParser()
-        >>> result = parser.parse("[IrCl(cod)]2")
-        >>> print(result.metal)
-        'Ir'
-    """
-
-    def __init__(
-        self,
-        ligand_db: Optional[Dict[str, LigandInfo]] = None,
-        metal_db: Optional[Dict[str, MetalInfo]] = None,
-        counter_ion_db: Optional[Dict[str, LigandInfo]] = None,
-    ) -> None:
-        """
-        Initialize the parser with chemical databases.
-
-        Args:
-            ligand_db: Dictionary mapping ligand abbreviations to LigandInfo.
-                      Uses LIGAND_DATABASE if None.
-            metal_db: Dictionary mapping metal symbols to MetalInfo.
-                     Uses METAL_DATABASE if None.
-            counter_ion_db: Dictionary mapping counter ion names to LigandInfo.
-                           Uses COUNTER_ION_DATABASE if None.
-        """
-        self.ligand_db = ligand_db if ligand_db is not None else LIGAND_DATABASE
-        self.metal_db = metal_db if metal_db is not None else METAL_DATABASE
-        self.counter_ion_db = (
-            counter_ion_db if counter_ion_db is not None else COUNTER_ION_DATABASE
-        )
-
-    def parse(self, name: str) -> ParsedComplex:
-        """
-        Parse an inorganic complex name into its components.
-
-        Args:
-            name: The complex name string (e.g., "[IrCl(cod)]2")
-
-        Returns:
-            ParsedComplex object containing all parsed components
-
-        Raises:
-            ParserError: If the name cannot be parsed
-        """
-        original_name = name.strip()
-        working_name = original_name
-
-        # Step 1: Extract trailing multiplicity (e.g., "]2" at end)
-        multiplicity, working_name = self._extract_multiplicity(working_name)
-
-        # Step 2: Extract counter ions (after the complex brackets)
-        counter_ions, working_name = self._extract_counter_ions(working_name)
-
-        # Step 3: Extract complex charge (e.g., "]+" or "]2-")
-        complex_charge, working_name = self._extract_charge(working_name)
-
-        # Step 4: Remove outer brackets
-        working_name = self._strip_brackets(working_name)
-
-        # Step 5: Extract metal symbol
-        metal, ligand_string = self._extract_metal(working_name)
-
-        # Step 6: Parse ligands
-        ligands = self._parse_ligand_string(ligand_string)
-
-        return ParsedComplex(
-            metal=metal,
-            ligands=ligands,
-            complex_charge=complex_charge,
-            multiplicity=multiplicity,
-            counter_ions=counter_ions,
-        )
-
-    def _extract_multiplicity(self, name: str) -> Tuple[int, str]:
-        """
-        Extract multiplicity from end of name (e.g., "]2").
-
-        Args:
-            name: Complex name string
-
-        Returns:
-            Tuple of (multiplicity, remaining_string)
-        """
-        # Pattern: ends with ]<number> where number is the multiplicity
-        match = re.search(r"\](\d+)$", name)
-        if match:
-            multiplicity = int(match.group(1))
-            # Keep the closing bracket, remove the number
-            return multiplicity, name[: match.start() + 1]
-        return 1, name
-
-    def _extract_counter_ions(self, name: str) -> Tuple[List[Tuple[str, int]], str]:
-        """
-        Extract counter ions from after the complex brackets.
-
-        Args:
-            name: Complex name string
-
-        Returns:
-            Tuple of (list of (ion_name, count) tuples, remaining_string)
-        """
-        counter_ions: List[Tuple[str, int]] = []
-
-        # Find where the complex ends (after closing bracket)
-        if not name.endswith("]"):
-            # Look for content after the last ]
-            match = re.search(r"\]([A-Za-z0-9()]+)$", name)
-            if match:
-                counter_string = match.group(1)
-                remaining = name[: match.start() + 1]
-
-                # Try to match known counter ions
-                for ion_name in sorted(
-                    self.counter_ion_db.keys(), key=len, reverse=True
-                ):
-                    # Look for the ion with optional count
-                    ion_pattern = rf"({re.escape(ion_name)})(\d*)"
-                    ion_match = re.search(ion_pattern, counter_string)
-                    if ion_match:
-                        count = int(ion_match.group(2)) if ion_match.group(2) else 1
-                        counter_ions.append((ion_name, count))
-                        counter_string = counter_string.replace(
-                            ion_match.group(0), "", 1
-                        )
-
-                return counter_ions, remaining
-
-        return counter_ions, name
-
-    def _extract_charge(self, name: str) -> Tuple[int, str]:
-        """
-        Extract complex charge notation (e.g., "]+" or "]2-").
-
-        Args:
-            name: Complex name string
-
-        Returns:
-            Tuple of (charge, remaining_string)
-        """
-        # Pattern: ]<optional_number><+/->
-        match = re.search(r"\](\d*)([+-])$", name)
-        if match:
-            charge_magnitude = int(match.group(1)) if match.group(1) else 1
-            charge_sign = 1 if match.group(2) == "+" else -1
-            charge = charge_magnitude * charge_sign
-            return charge, name[: match.start() + 1]
-        return 0, name
-
-    def _strip_brackets(self, name: str) -> str:
-        """
-        Remove outer square brackets from complex name.
-
-        Args:
-            name: Complex name string
-
-        Returns:
-            String with outer brackets removed
-        """
-        name = name.strip()
-        if name.startswith("[") and name.endswith("]"):
-            return name[1:-1]
-        return name
-
-    def _extract_metal(self, name: str) -> Tuple[str, str]:
-        """
-        Extract metal symbol from beginning of name.
-
-        Args:
-            name: Complex name string (without outer brackets)
-
-        Returns:
-            Tuple of (metal_symbol, remaining_ligand_string)
-
-        Raises:
-            ParserError: If no known metal is found
-        """
-        # Try metals sorted by length (longest first) to handle cases like
-        # "Ir" vs "I" (iodine)
-        for metal_symbol in sorted(self.metal_db.keys(), key=len, reverse=True):
-            if name.startswith(metal_symbol):
-                return metal_symbol, name[len(metal_symbol) :]
-
-        raise ParserError(f"Could not identify metal in: {name}")
-
-    def _parse_ligand_string(self, ligand_str: str) -> List[ParsedLigand]:
-        """
-        Parse the ligand portion of a complex name.
-
-        Handles:
-            - Parenthesized ligands: (cod), (ppy)2
-            - Direct ligands: Cl, Cl2
-            - Complex nested names: dF(CF3)ppy
-
-        Args:
-            ligand_str: String containing ligand specifications
-
-        Returns:
-            List of ParsedLigand objects
-        """
-        ligands: List[ParsedLigand] = []
-        i = 0
-
-        while i < len(ligand_str):
-            # Skip whitespace
-            if ligand_str[i].isspace():
-                i += 1
-                continue
-
-            # Handle parenthesized ligands
-            if ligand_str[i] == "(":
-                ligand_name, count, new_i = self._parse_parenthesized_ligand(
-                    ligand_str, i
-                )
-                ligands.append(ParsedLigand(name=ligand_name, count=count))
-                i = new_i
-            else:
-                # Try to match a known ligand
-                matched, new_i = self._try_match_known_ligand(ligand_str, i, ligands)
-                if matched:
-                    i = new_i
-                else:
-                    # Extract unknown token
-                    token, new_i = self._extract_unknown_token(ligand_str, i)
-                    if token:
-                        name, count = self._split_name_and_count(token)
-                        ligands.append(ParsedLigand(name=name, count=count))
-                    i = new_i
-
-        return ligands
-
-    def _parse_parenthesized_ligand(
-        self, ligand_str: str, start: int
-    ) -> Tuple[str, int, int]:
-        """
-        Parse a parenthesized ligand expression.
-
-        Args:
-            ligand_str: Full ligand string
-            start: Index of opening parenthesis
-
-        Returns:
-            Tuple of (ligand_name, count, new_position)
-        """
-        # Find matching closing parenthesis
-        depth = 1
-        j = start + 1
-        while j < len(ligand_str) and depth > 0:
-            if ligand_str[j] == "(":
-                depth += 1
-            elif ligand_str[j] == ")":
-                depth -= 1
-            j += 1
-
-        ligand_name = ligand_str[start + 1 : j - 1]
-
-        # Check for count after closing parenthesis
-        count = 1
-        if j < len(ligand_str) and ligand_str[j].isdigit():
-            count_str = ""
-            while j < len(ligand_str) and ligand_str[j].isdigit():
-                count_str += ligand_str[j]
-                j += 1
-            count = int(count_str)
-
-        return ligand_name, count, j
-
-    def _try_match_known_ligand(
-        self, ligand_str: str, start: int, ligands: List[ParsedLigand]
-    ) -> Tuple[bool, int]:
-        """
-        Try to match a known ligand at the current position.
-
-        Args:
-            ligand_str: Full ligand string
-            start: Current position
-            ligands: List to append matched ligand to
-
-        Returns:
-            Tuple of (matched: bool, new_position: int)
-        """
-        remaining = ligand_str[start:]
-
-        # Sort by length (longest first) to match greedily
-        for lig_name in sorted(self.ligand_db.keys(), key=len, reverse=True):
-            if remaining.startswith(lig_name):
-                j = start + len(lig_name)
-
-                # Check for count after ligand
-                count = 1
-                if j < len(ligand_str) and ligand_str[j].isdigit():
-                    count_str = ""
-                    while j < len(ligand_str) and ligand_str[j].isdigit():
-                        count_str += ligand_str[j]
-                        j += 1
-                    count = int(count_str)
-
-                ligands.append(ParsedLigand(name=lig_name, count=count))
-                return True, j
-
-        return False, start
-
-    def _extract_unknown_token(self, ligand_str: str, start: int) -> Tuple[str, int]:
-        """
-        Extract an unknown token until a delimiter is reached.
-
-        Args:
-            ligand_str: Full ligand string
-            start: Current position
-
-        Returns:
-            Tuple of (token, new_position)
-        """
-        j = start
-        delimiters = "()[]"
-
-        while j < len(ligand_str) and ligand_str[j] not in delimiters:
-            j += 1
-
-        token = ligand_str[start:j] if j > start else ""
-        return token, max(j, start + 1)
-
-    def _split_name_and_count(self, token: str) -> Tuple[str, int]:
-        """
-        Split a token into name and trailing count.
-
-        Args:
-            token: Token string (e.g., "Cl2")
-
-        Returns:
-            Tuple of (name, count)
-        """
-        match = re.match(r"^(.+?)(\d+)$", token)
-        if match:
-            return match.group(1), int(match.group(2))
-        return token, 1
-
-
-# =============================================================================
-# SMILES BUILDER
-# =============================================================================
-
-
-class SMILESBuilderError(Exception):
-    """Custom exception for SMILES building errors."""
-
-    pass
-
-
-class SMILESBuilder:
-    """
-    Builds SMILES strings from parsed complex data.
-
-    Note:
-        SMILES has inherent limitations for representing coordination
-        compounds. This builder produces a valid SMILES that captures
-        the molecular components but may not represent the true
-        bonding topology or stereochemistry.
-
-    Example:
-        >>> builder = SMILESBuilder()
-        >>> parsed = ParsedComplex(metal="Ir", ligands=[...], ...)
-        >>> smiles = builder.build(parsed)
-    """
-
-    def __init__(
-        self,
-        ligand_db: Optional[Dict[str, LigandInfo]] = None,
-        metal_db: Optional[Dict[str, MetalInfo]] = None,
-        counter_ion_db: Optional[Dict[str, LigandInfo]] = None,
-    ) -> None:
-        """
-        Initialize the SMILES builder with chemical databases.
-
-        Args:
-            ligand_db: Ligand database. Uses LIGAND_DATABASE if None.
-            metal_db: Metal database. Uses METAL_DATABASE if None.
-            counter_ion_db: Counter ion database. Uses COUNTER_ION_DATABASE if None.
-        """
-        self.ligand_db = ligand_db if ligand_db is not None else LIGAND_DATABASE
-        self.metal_db = metal_db if metal_db is not None else METAL_DATABASE
-        self.counter_ion_db = (
-            counter_ion_db if counter_ion_db is not None else COUNTER_ION_DATABASE
-        )
-
-    def build(self, parsed: ParsedComplex) -> str:
-        """
-        Build a SMILES string from a parsed complex.
-
-        Args:
-            parsed: ParsedComplex object
-
-        Returns:
-            SMILES string representation
-
-        Raises:
-            SMILESBuilderError: If SMILES cannot be constructed
-        """
-        # Calculate metal oxidation state
-        metal_charge = self._calculate_metal_charge(parsed)
-
-        # Build metal center SMILES
-        metal_smiles = self._format_metal_smiles(parsed.metal, metal_charge)
-
-        # Build ligand SMILES
-        ligand_smiles_list = self._build_ligand_smiles(parsed.ligands)
-
-        # Combine into single complex unit
-        complex_parts = [metal_smiles] + ligand_smiles_list
-        single_unit_smiles = ".".join(complex_parts)
-
-        # Handle multiplicity (dimers, etc.)
-        if parsed.multiplicity > 1:
-            full_smiles = ".".join([single_unit_smiles] * parsed.multiplicity)
-        else:
-            full_smiles = single_unit_smiles
-
-        # Add counter ions
-        for ion_name, ion_count in parsed.counter_ions:
-            ion_smiles = self._get_counter_ion_smiles(ion_name)
-            for _ in range(ion_count):
-                full_smiles += "." + ion_smiles
-
-        return full_smiles
-
-    def _calculate_metal_charge(self, parsed: ParsedComplex) -> int:
-        """
-        Calculate the formal oxidation state of the metal center.
-
-        Uses charge balance:
-            metal_charge = complex_charge - sum(ligand_charges)
-
-        Args:
-            parsed: ParsedComplex object
-
-        Returns:
-            Calculated metal oxidation state
-        """
-        # Sum up ligand charges
-        total_ligand_charge = 0
-        for ligand in parsed.ligands:
-            if ligand.name in self.ligand_db:
-                lig_info = self.ligand_db[ligand.name]
-                total_ligand_charge += lig_info.charge * ligand.count
-
-        # Determine complex charge
-        if parsed.counter_ions:
-            # If counter ions present, calculate complex charge from them
-            counter_ion_charge = 0
-            for ion_name, ion_count in parsed.counter_ions:
-                if ion_name in self.counter_ion_db:
-                    counter_ion_charge += (
-                        self.counter_ion_db[ion_name].charge * ion_count
-                    )
-            # Overall compound is neutral: complex_charge + counter_ion_charge = 0
-            complex_charge = -counter_ion_charge
-        else:
-            complex_charge = parsed.complex_charge
-
-        # Adjust for multiplicity
-        complex_charge_per_unit = complex_charge // parsed.multiplicity
-
-        # Calculate metal charge
-        metal_charge = complex_charge_per_unit - total_ligand_charge
-
-        return metal_charge
-
-    def _format_metal_smiles(self, symbol: str, charge: int) -> str:
-        """
-        Format a metal symbol with charge as SMILES.
-
-        Args:
-            symbol: Metal element symbol
-            charge: Formal charge
-
-        Returns:
-            SMILES representation (e.g., "[Ir+3]")
-        """
-        if charge == 0:
-            return f"[{symbol}]"
-        elif charge > 0:
-            if charge == 1:
-                return f"[{symbol}+]"
-            else:
-                return f"[{symbol}+{charge}]"
-        else:  # charge < 0
-            if charge == -1:
-                return f"[{symbol}-]"
-            else:
-                return f"[{symbol}{charge}]"
-
-    def _build_ligand_smiles(self, ligands: List[ParsedLigand]) -> List[str]:
-        """
-        Build SMILES strings for all ligands.
-
-        Args:
-            ligands: List of ParsedLigand objects
-
-        Returns:
-            List of SMILES strings
-        """
-        smiles_list: List[str] = []
-
-        for ligand in ligands:
-            lig_smiles = self._get_ligand_smiles(ligand.name)
-            # Add SMILES for each copy of the ligand
-            for _ in range(ligand.count):
-                smiles_list.append(lig_smiles)
-
-        return smiles_list
-
-    def _get_ligand_smiles(self, name: str) -> str:
-        """
-        Get SMILES for a ligand by name.
-
-        Attempts:
-            1. Direct lookup in database
-            2. Search aliases
-            3. Match as suffix (for modified ligands)
-
-        Args:
-            name: Ligand name/abbreviation
-
-        Returns:
-            SMILES string
-
-        Raises:
-            SMILESBuilderError: If ligand not found
-        """
-        # Direct lookup
-        if name in self.ligand_db:
-            return self.ligand_db[name].smiles
-
-        # Check aliases
-        for lig_name, info in self.ligand_db.items():
-            if name in info.aliases:
-                return info.smiles
-
-        # Try to match as a modified ligand (e.g., "dF(CF3)ppy" -> use "ppy")
-        for base_name in sorted(self.ligand_db.keys(), key=len, reverse=True):
-            if name.endswith(base_name):
-                # Found base ligand with modifications
-                # TODO: In future, handle modifications properly
-                return self.ligand_db[base_name].smiles
-
-        raise SMILESBuilderError(f"Unknown ligand: '{name}'")
-
-    def _get_counter_ion_smiles(self, name: str) -> str:
-        """
-        Get SMILES for a counter ion by name.
-
-        Args:
-            name: Counter ion name
-
-        Returns:
-            SMILES string
-
-        Raises:
-            SMILESBuilderError: If counter ion not found
-        """
-        if name in self.counter_ion_db:
-            return self.counter_ion_db[name].smiles
-
-        # Check aliases
-        for ion_name, info in self.counter_ion_db.items():
-            if name in info.aliases:
-                return info.smiles
-
-        raise SMILESBuilderError(f"Unknown counter ion: '{name}'")
-
-
-# =============================================================================
-# MAIN CONVERTER CLASS
-# =============================================================================
-
-
-class InorganicNameToSMILES:
-    """
-    Main converter class for inorganic/organometallic names to SMILES.
-
-    This class provides a high-level interface for converting coordination
-    complex names to SMILES notation.
-
-    Example:
-        >>> converter = InorganicNameToSMILES()
-        >>> smiles = converter.convert("[IrCl(cod)]2")
-        >>> print(smiles)
-        '[Ir+].[Cl-].C1=CCCC=CCC1.[Ir+].[Cl-].C1=CCCC=CCC1'
-    """
-
-    def __init__(
-        self,
-        ligand_db: Optional[Dict[str, LigandInfo]] = None,
-        metal_db: Optional[Dict[str, MetalInfo]] = None,
-        counter_ion_db: Optional[Dict[str, LigandInfo]] = None,
-    ) -> None:
-        """
-        Initialize the converter with optional custom databases.
-
-        Args:
-            ligand_db: Custom ligand database (optional)
-            metal_db: Custom metal database (optional)
-            counter_ion_db: Custom counter ion database (optional)
-        """
-        self.ligand_db = ligand_db if ligand_db is not None else LIGAND_DATABASE
-        self.metal_db = metal_db if metal_db is not None else METAL_DATABASE
-        self.counter_ion_db = (
-            counter_ion_db if counter_ion_db is not None else COUNTER_ION_DATABASE
-        )
-
-        self.parser = ComplexNameParser(
-            self.ligand_db, self.metal_db, self.counter_ion_db
-        )
-        self.builder = SMILESBuilder(self.ligand_db, self.metal_db, self.counter_ion_db)
-
-    def convert(self, name: str) -> str:
-        """
-        Convert an inorganic complex name to SMILES.
-
-        Args:
-            name: The complex name (e.g., "[IrCl(cod)]2")
-
-        Returns:
-            SMILES string representation
-
-        Raises:
-            ParserError: If the name cannot be parsed
-            SMILESBuilderError: If SMILES cannot be constructed
-        """
-        parsed = self.parser.parse(name)
-        return self.builder.build(parsed)
-
-    def convert_with_details(self, name: str) -> Tuple[str, ParsedComplex]:
-        """
-        Convert and return both SMILES and parsed structure.
-
-        Args:
-            name: The complex name
-
-        Returns:
-            Tuple of (SMILES string, ParsedComplex object)
-        """
-        parsed = self.parser.parse(name)
-        smiles = self.builder.build(parsed)
-        return smiles, parsed
-
-    def add_ligand(
-        self,
-        name: str,
-        smiles: str,
-        denticity: int = 1,
-        charge: int = 0,
-        aliases: Optional[Tuple[str, ...]] = None,
-        description: str = "",
-    ) -> None:
-        """
-        Add a new ligand to the database.
-
-        Args:
-            name: Ligand abbreviation (e.g., "dppe")
-            smiles: SMILES representation
-            denticity: Number of coordination sites
-            charge: Formal charge of the ligand
-            aliases: Alternative names
-            description: Human-readable description
-        """
-        self.ligand_db[name] = LigandInfo(
-            smiles=smiles,
-            denticity=denticity,
-            charge=charge,
-            aliases=aliases if aliases else tuple(),
-            description=description,
-        )
-
-    def add_counter_ion(
-        self,
-        name: str,
-        smiles: str,
-        charge: int = -1,
-        aliases: Optional[Tuple[str, ...]] = None,
-        description: str = "",
-    ) -> None:
-        """
-        Add a new counter ion to the database.
-
-        Args:
-            name: Counter ion abbreviation
-            smiles: SMILES representation
-            charge: Formal charge (usually -1)
-            aliases: Alternative names
-            description: Human-readable description
-        """
-        self.counter_ion_db[name] = LigandInfo(
-            smiles=smiles,
-            charge=charge,
-            aliases=aliases if aliases else tuple(),
-            description=description,
-        )
-
-    def list_available_ligands(self) -> List[str]:
-        """Return list of available ligand abbreviations."""
-        return list(self.ligand_db.keys())
-
-    def list_available_metals(self) -> List[str]:
-        """Return list of available metal symbols."""
-        return list(self.metal_db.keys())
-
-    def list_available_counter_ions(self) -> List[str]:
-        """Return list of available counter ion abbreviations."""
-        return list(self.counter_ion_db.keys())
-
-
-# =============================================================================
-# TESTING / DEMONSTRATION
-# =============================================================================
-
-
-def run_tests() -> None:
-    """Run demonstration tests for the converter."""
-    converter = InorganicNameToSMILES()
-
-    test_cases = [
-        "[IrCl(cod)]2",
-        "[RhCp*Cl2]2",
-        "[Ir(ppy)2(bpy)]PF6",
-        "[Pd(PPh3)4]",
-        "[PtCl2(en)]",
-        "[Ru(bpy)3]2+",
-        "[Fe(CO)5]",
-    ]
-
-    print("=" * 70)
-    print("Inorganic Name to SMILES Converter - Test Results")
-    print("=" * 70)
-
-    for name in test_cases:
-        print(f"\n{'─' * 70}")
-        print(f"Input: {name}")
-        print("─" * 70)
-
-        try:
-            smiles, parsed = converter.convert_with_details(name)
-
-            print(f"  Metal:        {parsed.metal}")
-            print(
-                f"  Ligands:      {[(lig.name, lig.count) for lig in parsed.ligands]}"
-            )
-            print(f"  Multiplicity: {parsed.multiplicity}")
-            print(f"  Charge:       {parsed.complex_charge}")
-            print(f"  Counter ions: {parsed.counter_ions}")
-            print(f"  SMILES:       {smiles}")
-
-        except (ParserError, SMILESBuilderError) as e:
-            print(f"  ERROR: {type(e).__name__}: {e}")
-
-    print("\n" + "=" * 70)
-    print("Available ligands:", converter.list_available_ligands())
-    print("Available metals:", converter.list_available_metals())
-    print("=" * 70)
-
-
-if __name__ == "__main__":
-    run_tests()

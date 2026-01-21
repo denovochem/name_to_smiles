@@ -118,3 +118,5 @@ todo.txt
 
 # vscode settings
 .vscode/
+
+unresolved_names.json

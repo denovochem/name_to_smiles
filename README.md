@@ -15,8 +15,9 @@ This library can use the following existing name-to-SMILES resolvers:
 
 
 This library also implements the following new resolvers:
-- Manually curated dataset of common names not correctly resolved by other resolvers (e.g. NaH)
+- Manually curated dataset of common names not correctly resolved by other resolvers (e.g. 'NaH')
 - Structural formula resolver (e.g. 'CH3CH2CH2COOH')
+- Inorganic shorthand resolver (e.g. '[Cp*RhCl2]2')
 
 
 The following string editing/manipulation strategies may be applied to compounds to assist with name-to-SMILES resolution:

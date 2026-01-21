@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
 import shutil
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
 import warnings
 
 from rdkit import RDLogger
 
-from placeholder_name.name_manipulation.manipulate_names import (
-    correct_names,
-)
+from placeholder_name.name_manipulation.manipulate_names import correct_names
 from placeholder_name.name_manipulation.split_names import (
     get_delimiter_split_dict,
     resolve_delimiter_split_dict,
@@ -17,10 +15,13 @@ from placeholder_name.name_manipulation.unicode_normalization import (
 )
 from placeholder_name.resolvers.chemspipy_resolver import name_to_smiles_chemspipy
 from placeholder_name.resolvers.cirpy_resolver import name_to_smiles_cirpy
+from placeholder_name.resolvers.inorganic_resolver.inorganic_resolver import (
+    name_to_smiles_inorganic_shorthand,
+)
 from placeholder_name.resolvers.manual_resolver import name_to_smiles_manual
 from placeholder_name.resolvers.opsin_resolver import name_to_smiles_opsin
 from placeholder_name.resolvers.pubchem_resolver import name_to_smiles_pubchem
-from placeholder_name.resolvers.structural_formula_resolver import (
+from placeholder_name.resolvers.strutural_formula_resolver.structural_formula_resolver import (
     name_to_smiles_structural_formula,
 )
 from placeholder_name.smiles_selector import SMILESSelector
@@ -243,6 +244,24 @@ class StructuralFormulaNameResolver(ChemicalNameResolver):
         Convert chemical names to SMILES using structural formula converter.
         """
         resolved_names = name_to_smiles_structural_formula(compound_name_list)
+        return resolved_names, {}
+
+
+class InorganicShorthandNameResolver(ChemicalNameResolver):
+    """
+    Resolver using inorganic shorthand (e.g. [Cp*RhCl2]2).
+    """
+
+    def __init__(self, resolver_name: str, resolver_weight: float = 2):
+        super().__init__("inorganic_shorthand", resolver_name, resolver_weight)
+
+    def name_to_smiles(
+        self, compound_name_list: List[str]
+    ) -> Tuple[Dict[str, str], Dict[str, str]]:
+        """
+        Convert chemical names to SMILES using inorganic shorthand converter.
+        """
+        resolved_names = name_to_smiles_inorganic_shorthand(compound_name_list)
         return resolved_names, {}
 
 
@@ -563,6 +582,7 @@ def resolve_compounds_to_smiles(
             OpsinNameResolver("opsin_default"),
             ManualNameResolver("manual_default"),
             StructuralFormulaNameResolver("structural_formula_default"),
+            InorganicShorthandNameResolver("inorganic_shorthand_default"),
         ]
 
     if isinstance(compounds_list, str):

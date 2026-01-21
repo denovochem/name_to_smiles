@@ -8,6 +8,7 @@ from .main import (
     OpsinNameResolver,
     PubChemNameResolver,
     StructuralFormulaNameResolver,
+    InorganicShorthandNameResolver,
     resolve_compounds_to_smiles,
 )
 
@@ -23,6 +24,7 @@ __all__ = [
     "PubChemNameResolver",
     "StructuralFormulaNameResolver",
     "CIRpyNameResolver",
+    "InorganicShorthandNameResolver",
     "ChemNameCorrector",
     "CorrectorConfig",
 ]

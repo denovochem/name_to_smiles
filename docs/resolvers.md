@@ -4,6 +4,7 @@ placeholder_name uses a variety of resolvers to convert chemical names to SMILES
 - OpsinNameResolver('opsin_default', resolver_weight=3),
 - ManualNameResolver('manual_default', resolver_weight=10),
 - StructuralFormulaNameResolver('structural_formula_default', resolver_weight=2)
+- InorganicShorthandNameResolver('inorganic_shorthand_default', resolver_weight=2)
 
 ## Passing Resolvers to resolve_compounds_to_smiles:
 
@@ -174,6 +175,25 @@ structural_formula_resolver = StructuralFormulaNameResolver(
 resolved_smiles = resolve_compounds_to_smiles(
     ['CH3CH2CH2COOH'], 
     [structural_formula_resolver]
+)
+```
+
+## InorganicShorthandNameResolver
+This resolver converts inorganic chemical formulas (e.g. '[Cp*RhCl2]2') to SMILES.
+
+Default weight for 'weighted' SMILES selection method: 2
+
+```
+from placeholder_name import InorganicShorthandNameResolver
+
+inorganic_shorthand_resolver = InorganicShorthandNameResolver(
+    resolver_name='inorganic_shorthand', 
+    resolver_weight=2
+)
+
+resolved_smiles = resolve_compounds_to_smiles(
+    ['[Cp*RhCl2]2'], 
+    [inorganic_shorthand_resolver]
 )
 ```
 
