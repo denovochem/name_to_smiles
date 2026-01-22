@@ -34,6 +34,7 @@ where = ["."]
 
 [tool.setuptools.package-data]
 cholla_chem = [
+    "datafiles/*.json",
     "datafiles/name_dicts/*.json",
 ]
 
