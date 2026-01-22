@@ -10,6 +10,7 @@ from placeholder_name.name_manipulation.peptide_shorthand_handler import (
     looks_like_peptide_shorthand,
     peptide_shorthand_to_iupac,
 )
+from placeholder_name.utils.logging_config import logger
 
 
 corrector = ChemNameCorrector()
@@ -56,11 +57,14 @@ def correct_names(
                 compound_correction_dict["name_manipulation_method"] = (
                     "peptide_shorthand_expansion"
                 )
-            except Exception:
-                pass
 
-            all_compound_correction_dict[name] = compound_correction_dict
-            continue
+                all_compound_correction_dict[name] = compound_correction_dict
+
+                continue
+
+            except Exception as e:
+                logger.info(f"Could not resolve peptide shorthand: {e}")
+                pass
 
         compound_correction_dict["top_5"] = [
             [candidate.name, candidate.score] for candidate in correction_candidates[:5]
@@ -72,6 +76,10 @@ def correct_names(
                 compound_correction_dict["selected_name"] = candidate.name
                 compound_correction_dict["name_manipulation_method"] = "name_correction"
                 break
+            else:
+                compound_correction_dict["SMILES"] = ""
+                compound_correction_dict["selected_name"] = ""
+                compound_correction_dict["name_manipulation_method"] = "name_correction"
         all_compound_correction_dict[name] = compound_correction_dict
 
     return all_compound_correction_dict

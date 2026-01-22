@@ -198,7 +198,7 @@ resolved_smiles = resolve_compounds_to_smiles(
 ```
 
 ## Custom Resolvers
-This library also supports using custom resolvers. To use a custom resolver import the base class ChemicalNameResolver, and create a subclass with the format shown below. The name_to_smiles method is used to resolve compound names to SMILES. In this example, the method resolves names using a simple lookup dictionary, but it can be also used to call an API, use other name-to-SMILES libraries, run an algorithm, etc. This method must return a tuple of dictionaries, where the first dictionary maps chemical names (strings) to SMILES (strings). The second dictionary returns information (e.g. errors in the resolution process) to the detailed_name_dict by mapping chemical names (strings) to some message (strings).
+This library also supports using custom resolvers. To use a custom resolver, import the base class ChemicalNameResolver, and create a subclass with the format shown below. The name_to_smiles method is used to resolve compound names to SMILES. In this example, the method resolves names using a simple lookup dictionary, but it can be also used to call an API, use other name-to-SMILES libraries, run an algorithm, etc. This method must return a tuple of dictionaries, where the first dictionary maps chemical names (strings) to SMILES (strings). The second dictionary returns information (e.g. errors in the resolution process) to the detailed_name_dict by mapping chemical names (strings) to some message (strings).
 
 ```
 from placeholder_name import resolve_compounds_to_smiles

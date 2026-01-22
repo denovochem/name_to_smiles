@@ -22,7 +22,7 @@ This library also implements the following new resolvers:
 
 The following string editing/manipulation strategies may be applied to compounds to assist with name-to-SMILES resolution:
 - Splitting compounds on common delimiters (useful for mixtures of compounds, e.g. 'BH3•THF')
-- Peptide shorthand expansion (e.g. 'cyclo(Asp-Arg-Val-Tyr-Ile-His-Pro-Phe)' -> 'XXX')
+- Peptide shorthand expansion (e.g. 'cyclo(Asp-Arg-Val-Tyr-Ile-His-Pro-Phe)' -> 'cyclo(l-aspartyl-l-arginyl-l-valyl-l-tyrosyl-l-isoleucyl-l-histidyl-l-prolyl-l-phenylalanyl)')
 - Name correction for OCR errors, typos, pagination errors, etc. 
 
 

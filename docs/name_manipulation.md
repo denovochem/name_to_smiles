@@ -2,7 +2,7 @@
 
 This package contains utilities that automatically attempt to transform or correct input names if the initial name-to-SMILES conversion fails. At the moment there are two major capabilities:
 
-- Peptide shorthand expansion (e.g. `Boc-Ala-Gly-OMe` → an IUPAC-like peptide name)
+- Peptide shorthand expansion (e.g. `Boc-Ala-Gly-OMe` → `tert-butoxycarbonyl-l-alanyl-glycine methyl ester`)
 - Chemical name correction (primarily aimed at OCR/typo artifacts, with validation via OPSIN)
 
 
@@ -11,7 +11,7 @@ This package contains utilities that automatically attempt to transform or corre
 Applied when a chemical name looks like peptide shorthand, typically containing amino-acid abbreviations delimited by hyphens, such as:
 
 - `Ala-Gly-Ser`
-- `Boc-Asp(OtBu)-Lys(Boc)-OMe`
+- `Boc-Asp-Lys(Boc)-OMe`
 - `cyclo(Ala-Gly-Ser)` or `cyclo[Ala-Gly-Ser]`
 
 ## Chemical name correction
