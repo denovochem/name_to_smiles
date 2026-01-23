@@ -1,0 +1,992 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Convert chemical names to SMILES">
+      
+      
+      
+      
+        <link rel="prev" href="../getting_started/">
+      
+      
+        <link rel="next" href="../smiles_selection/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Resolvers - ChollaChem</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#passing-resolvers-to-resolve_compounds_to_smiles" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ChollaChem" class="md-header__button md-logo" aria-label="ChollaChem" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ChollaChem
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Resolvers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/denovochem/cholla_chem" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    denovochem/cholla_chem
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ChollaChem" class="md-nav__button md-logo" aria-label="ChollaChem" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ChollaChem
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/denovochem/cholla_chem" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    denovochem/cholla_chem
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolvers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#passing-resolvers-to-resolve_compounds_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Passing Resolvers to resolve_compounds_to_smiles:
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opsinnameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpsinNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pubchemnameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PubChemNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cirpynameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIRpyNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chemspipynameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChemSpiPyNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manualnameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ManualNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structuralformulanameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StructuralFormulaNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inorganicshorthandnameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InorganicShorthandNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-resolvers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Resolvers
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../smiles_selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Smiles Selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../name_manipulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Name Correction/Editing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#passing-resolvers-to-resolve_compounds_to_smiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Passing Resolvers to resolve_compounds_to_smiles:
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opsinnameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpsinNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pubchemnameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PubChemNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cirpynameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CIRpyNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chemspipynameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChemSpiPyNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manualnameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ManualNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structuralformulanameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StructuralFormulaNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inorganicshorthandnameresolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InorganicShorthandNameResolver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-resolvers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Resolvers
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Resolvers</h1>
+
+<p>Cholla uses a variety of resolvers to convert chemical names to SMILES. Resolvers can be initialized and passed to the function resolve_compounds_to_smiles as a list to customize how compounds are resolved to SMILES. If no resolvers are passed, the following default resolvers will be used:</p>
+<ul>
+<li>PubChemNameResolver('pubchem_default', resolver_weight=2),</li>
+<li>OpsinNameResolver('opsin_default', resolver_weight=3),</li>
+<li>ManualNameResolver('manual_default', resolver_weight=10),</li>
+<li>StructuralFormulaNameResolver('structural_formula_default', resolver_weight=2)</li>
+<li>InorganicShorthandNameResolver('inorganic_shorthand_default', resolver_weight=2)</li>
+</ul>
+<h2 id="passing-resolvers-to-resolve_compounds_to_smiles">Passing Resolvers to resolve_compounds_to_smiles:</h2>
+<p>Initialize resolvers with a name (required), and resolver_weight (optional):
+<div class="highlight"><pre><span></span><code>from cholla_chem import resolve_compounds_to_smiles
+from cholla_chem import (
+    OpsinNameResolver, 
+    PubChemNameResolver, 
+    CIRpyNameResolver
+)
+
+opsin_resolver = OpsinNameResolver(
+    resolver_name=&#39;opsin&#39;, 
+    resolver_weight=4
+)
+pubchem_resolver =  PubChemNameResolver(
+    resolver_name=&#39;pubchem&#39;, 
+    resolver_weight=3
+)
+cirpy_resolver = CIRpyNameResolver(
+    resolver_name=&#39;cirpy&#39;, 
+    resolver_weight=2
+)
+
+resolved_smiles = resolve_compounds_to_smiles(
+    [&#39;2-acetyloxybenzoic acid&#39;],
+    [opsin_resolver, pubchem_resolver, cirpy_resolver],
+    detailed_name_dict=True
+)
+
+&quot;{&#39;2-acetyloxybenzoic acid&#39;: {
+    &#39;SMILES&#39;: &#39;CC(=O)Oc1ccccc1C(=O)O&#39;,
+    &#39;SMILES_source&#39;: [&#39;opsin&#39;, &#39;pubchem&#39;, &#39;cirpy&#39;],
+    &#39;SMILES_dict&#39;: {
+        &#39;CC(=O)Oc1ccccc1C(=O)O&#39;: [&#39;opsin&#39;, &#39;pubchem&#39;, &#39;cirpy&#39;]
+    },
+    &#39;info_messages&#39;: {}
+}}&quot;
+</code></pre></div></p>
+<h2 id="opsinnameresolver">OpsinNameResolver</h2>
+<p>This resolver uses a fork of the <a href="https://github.com/denovochem/py2opsin">py2opsin</a> library that returns the error message from OPSIN if a name cannot be resolved. This resolver can be configured with the following arguments:</p>
+<p>Arguments:</p>
+<ul>
+<li>allow_acid (bool, optional): Allow interpretation of acids. Defaults to False.</li>
+<li>allow_radicals (bool, optional): Enable radical interpretation. Defaults to False.</li>
+<li>allow_bad_stereo (bool, optional): Allow OPSIN to ignore uninterpreatable stereochem. Defaults to False.</li>
+<li>wildcard_radicals (bool, optional): Output radicals as wildcards. Defaults to False.</li>
+</ul>
+<p>Default weight for 'weighted' SMILES selection method: 3</p>
+<div class="highlight"><pre><span></span><code>from cholla_chem import OpsinNameResolver
+
+opsin_resolver = OpsinNameResolver(
+    resolver_name=&#39;opsin&#39;,
+    resolver_weight=3,
+    allow_acid=False,
+    allow_radicals: True,
+    allow_bad_stereo: False,
+    wildcard_radicals: False
+)
+
+resolved_smiles = resolve_compounds_to_smiles(
+    [&#39;2-acetyloxybenzoic acid&#39;], 
+    [opsin_resolver]
+)
+</code></pre></div>
+<h2 id="pubchemnameresolver">PubChemNameResolver</h2>
+<p>This resolver uses a fork of the <a href="https://github.com/denovochem/PubChemPy">PubChemPy</a> library which implements batching with the Power User Gateway XML schema to significantly speedup SMILES resolutions.</p>
+<p>Default weight for 'weighted' SMILES selection method: 2</p>
+<div class="highlight"><pre><span></span><code>from cholla_chem import PubChemNameResolver
+
+pubchem_resolver = PubChemNameResolver(
+    resolver_name=&#39;pubchem&#39;, 
+    resolver_weight=2
+)
+
+resolved_smiles = resolve_compounds_to_smiles([&#39;acetone&#39;], [pubchem_resolver])
+</code></pre></div>
+<h2 id="cirpynameresolver">CIRpyNameResolver</h2>
+<p>This resolver uses the python library <a href="https://github.com/mcs07/CIRpy">CIRpy</a>, a Python interface for the Chemical Identifier Resolver (CIR) by the CADD Group at the NCI/NIH.</p>
+<p>Default weight for 'weighted' SMILES selection method: 1</p>
+<div class="highlight"><pre><span></span><code>from cholla_chem import CIRpyNameResolver
+
+cirpy_resolver = CIRpyNameResolver(
+    resolver_name=&#39;cirpy&#39;, 
+    resolver_weight=1
+)
+
+resolved_smiles = resolve_compounds_to_smiles([&#39;acetone&#39;], [cirpy_resolver])
+</code></pre></div>
+<h2 id="chemspipynameresolver">ChemSpiPyNameResolver</h2>
+<p>This resolver uses the python library <a href="https://github.com/mcs07/ChemSpiPy">ChemSpiPy</a>, a Python interface for the ChemSpider API by the RSC. This resolver must be initialized with a ChemSpider API key, which can be obtained <a href="https://developer.rsc.org/getting-started">here</a>.</p>
+<p>Default weight for 'weighted' SMILES selection method: 3</p>
+<div class="highlight"><pre><span></span><code>from cholla_chem import ChemSpiPyNameResolver
+
+chemspider_resolver = ChemSpiPyNameResolver(
+    resolver_name=&#39;chemspider&#39;, 
+    resolver_weight=3,
+    chemspider_api_key=&#39;CHEMSPIDER_API_KEY&#39;
+)
+
+resolved_smiles = resolve_compounds_to_smiles([&#39;acetone&#39;], [chemspider_resolver])
+</code></pre></div>
+<h2 id="manualnameresolver">ManualNameResolver</h2>
+<p>This resolver uses a dataset of manually curated names and their corresponding SMILES, especially focused on common names that are incorrectly resolved by other resolvers (e.g. 'NaH').</p>
+<p>Default weight for 'weighted' SMILES selection method: 10</p>
+<div class="highlight"><pre><span></span><code>from cholla_chem import ManualNameResolver
+
+manual_resolver = ManualNameResolver(
+    resolver_name=&#39;manual&#39;, 
+    resolver_weight=10
+)
+
+resolved_smiles = resolve_compounds_to_smiles(
+    [&#39;NaH&#39;], 
+    [manual_resolver]
+)
+</code></pre></div>
+<p>ManualNameResolver can also be initialized with a custom dictionary mapping chemical names to SMILES:
+<div class="highlight"><pre><span></span><code>from cholla_chem import ManualNameResolver
+
+custom_name_dict = {&#39;Foobar&#39;: &#39;c1ccccc1&#39;}
+
+manual_resolver = ManualNameResolver(
+    resolver_name=&#39;manual&#39;, 
+    resolver_weight=10,
+    provided_name_dict=custom_name_dict
+)
+
+resolved_smiles = resolve_compounds_to_smiles([&#39;Foobar&#39;], [manual_resolver])
+</code></pre></div></p>
+<h2 id="structuralformulanameresolver">StructuralFormulaNameResolver</h2>
+<p>This resolver converts simple structural chemical formulas (e.g. 'CH3CH2CH2COOH') to SMILES.</p>
+<p>Default weight for 'weighted' SMILES selection method: 2</p>
+<div class="highlight"><pre><span></span><code>from cholla_chem import StructuralFormulaNameResolver
+
+structural_formula_resolver = StructuralFormulaNameResolver(
+    resolver_name=&#39;structural_formula&#39;, 
+    resolver_weight=2
+)
+
+resolved_smiles = resolve_compounds_to_smiles(
+    [&#39;CH3CH2CH2COOH&#39;], 
+    [structural_formula_resolver]
+)
+</code></pre></div>
+<h2 id="inorganicshorthandnameresolver">InorganicShorthandNameResolver</h2>
+<p>This resolver converts inorganic chemical formulas (e.g. '[Cp*RhCl2]2') to SMILES.</p>
+<p>Default weight for 'weighted' SMILES selection method: 2</p>
+<div class="highlight"><pre><span></span><code>from cholla_chem import InorganicShorthandNameResolver
+
+inorganic_shorthand_resolver = InorganicShorthandNameResolver(
+    resolver_name=&#39;inorganic_shorthand&#39;, 
+    resolver_weight=2
+)
+
+resolved_smiles = resolve_compounds_to_smiles(
+    [&#39;[Cp*RhCl2]2&#39;], 
+    [inorganic_shorthand_resolver]
+)
+</code></pre></div>
+<h2 id="custom-resolvers">Custom Resolvers</h2>
+<p>This library also supports using custom resolvers. To use a custom resolver, import the base class ChemicalNameResolver, and create a subclass with the format shown below. The name_to_smiles method is used to resolve compound names to SMILES. In this example, the method resolves names using a simple lookup dictionary, but it can be also used to call an API, use other name-to-SMILES libraries, run an algorithm, etc. This method must return a tuple of dictionaries, where the first dictionary maps chemical names (strings) to SMILES (strings). The second dictionary returns information (e.g. errors in the resolution process) to the detailed_name_dict by mapping chemical names (strings) to some message (strings).</p>
+<div class="highlight"><pre><span></span><code>from cholla_chem import resolve_compounds_to_smiles
+from cholla_chem import ChemicalNameResolver
+
+class MyCustomResolver(ChemicalNameResolver):
+    &quot;&quot;&quot;
+    My custom resolver.
+    &quot;&quot;&quot;
+
+    def __init__(self, resolver_name: str, resolver_weight: float = 1):
+        super().__init__(&quot;example&quot;, resolver_name, resolver_weight)
+
+    def name_to_smiles(
+        self,
+        compound_name_list: List[str]
+    ) -&gt; Tuple[Dict[str, str], Dict[str, str]]:
+        &quot;&quot;&quot;
+        Lookup chemical names from a dict.
+        &quot;&quot;&quot;
+        lookup_dict = {
+            &#39;benzene&#39;: &#39;c1ccccc1&#39;
+        }
+
+        resolved_names_dict = {}
+        info_messages_dict = {}
+        for compound_name in compound_name_list:
+            resolved_smiles = lookup_dict.get(compound_name, &#39;&#39;)
+            resolved_names_dict[compound_name] = resolved_smiles
+            if not resolved_smiles:
+                info_messages_dict[compound_name] = &#39;Some info message.&#39;
+
+        return resolved_names_dict, info_messages_dict
+
+my_custom_resolver = MyCustomResolver(
+    resolver_name=&#39;example&#39;, 
+    resolver_weight=1
+)
+
+resolved_smiles = resolve_compounds_to_smiles(
+    [&#39;benzene&#39;, &#39;aspirin&#39;], 
+    [my_custom_resolver], 
+    detailed_name_dict=True
+)
+
+&quot;{&#39;benzene&#39;: {
+    &#39;SMILES&#39;: &#39;c1ccccc1&#39;,
+    &#39;SMILES_source&#39;: [&#39;example&#39;],
+    &#39;SMILES_dict&#39;: {
+        &#39;c1ccccc1&#39;: [&#39;example&#39;]
+    },
+    &#39;info_messages&#39;: {}
+},
+&#39;aspirin&#39;: {
+    &#39;SMILES&#39;: &#39;&#39;,
+    &#39;SMILES_source&#39;: [],
+    &#39;SMILES_dict&#39;: {},
+    &#39;info_messages&#39;: {
+        &#39;example&#39;: &#39;Some info message.&#39;
+    }
+}}&quot;
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "search.suggest"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
