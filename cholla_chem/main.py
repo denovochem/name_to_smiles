@@ -696,27 +696,30 @@ def resolve_compounds_to_smiles(
         corrected_names_dict = correct_names(
             compounds_out_dict, name_correction_config, resolve_peptide_shorthand
         )
-        corrected_names_dict_list = [
-            ele["selected_name"] for ele in list(corrected_names_dict.values())
-        ]
-        corrected_names_original_names_mapping_dict = {
-            v["selected_name"]: k for k, v in list(corrected_names_dict.items())
-        }
-        corrected_compounds_out_dict = resolve_compounds_to_smiles(
-            compounds_list=corrected_names_dict_list,
-            resolvers_list=resolvers_list,
-            smiles_selection_mode=smiles_selection_mode,
-            detailed_name_dict=True,  # Need detailed name dict
-            batch_size=batch_size,
-            normalize_unicode=normalize_unicode,
-            split_names_to_solve=split_names_to_solve,
-            resolve_peptide_shorthand=False,  # Prevent recursion
-            attempt_name_correction=False,  # Prevent recursion
-        )
-        for k, v in corrected_names_original_names_mapping_dict.items():
-            if k in corrected_compounds_out_dict:
-                compounds_out_dict[v] = corrected_compounds_out_dict[k]
-                compounds_out_dict[v]["name_correction_info"] = corrected_names_dict[v]
+        if corrected_names_dict:
+            corrected_names_dict_list = [
+                ele["selected_name"] for ele in list(corrected_names_dict.values())
+            ]
+            corrected_names_original_names_mapping_dict = {
+                v["selected_name"]: k for k, v in list(corrected_names_dict.items())
+            }
+            corrected_compounds_out_dict = resolve_compounds_to_smiles(
+                compounds_list=corrected_names_dict_list,
+                resolvers_list=resolvers_list,
+                smiles_selection_mode=smiles_selection_mode,
+                detailed_name_dict=True,  # Need detailed name dict
+                batch_size=batch_size,
+                normalize_unicode=normalize_unicode,
+                split_names_to_solve=split_names_to_solve,
+                resolve_peptide_shorthand=False,  # Prevent recursion
+                attempt_name_correction=False,  # Prevent recursion
+            )
+            for k, v in corrected_names_original_names_mapping_dict.items():
+                if k in corrected_compounds_out_dict:
+                    compounds_out_dict[v] = corrected_compounds_out_dict[k]
+                    compounds_out_dict[v]["name_correction_info"] = (
+                        corrected_names_dict[v]
+                    )
 
     if not detailed_name_dict:
         return {k: v.get("SMILES", "") for k, v in compounds_out_dict.items()}

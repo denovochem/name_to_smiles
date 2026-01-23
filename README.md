@@ -39,7 +39,7 @@ pip install git+https://github.com/denovochem/cholla_chem.git
 ## Basic usage
 Resolve chemical names to SMILES by passing a string or a list of strings:
 ```pycon
-from ChollaChem.core import resolve_compounds_to_smiles
+from cholla_chem import resolve_compounds_to_smiles
 
 resolved_smiles = resolve_compounds_to_smiles(['aspirin'])
 
@@ -48,7 +48,7 @@ resolved_smiles = resolve_compounds_to_smiles(['aspirin'])
 
 See detailed information including which resolver returned which SMILES with detailed_name_dict=True:
 ```pycon
-from ChollaChem.core import resolve_compounds_to_smiles
+from cholla_chem import resolve_compounds_to_smiles
 
 resolved_smiles = resolve_compounds_to_smiles(
     ['2-acetyloxybenzoic acid'], 
@@ -70,8 +70,8 @@ Many aspects of the name-to-SMILES resolution process can be customized, includi
 
 In this example, we resolve chemical names with OPSIN, PubChem, and CIRPy, and use a custom consensus weighting approach to pick the best SMILES:
 ```pycon
-from ChollaChem.core import resolve_compounds_to_smiles
-from ChollaChem.core.name_resolvers import OpsinNameResolver, PubChemNameResolver, CIRpyNameResolver
+from cholla_chem import resolve_compounds_to_smiles
+from cholla_chem.name_resolvers import OpsinNameResolver, PubChemNameResolver, CIRpyNameResolver
 
 opsin_resolver = OpsinNameResolver(
     resolver_name='opsin', 

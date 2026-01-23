@@ -1,6 +1,6 @@
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 from typing import Any
 
 from loguru import logger
@@ -29,11 +29,11 @@ LOG_LEVELS = {
     "development": "DEBUG",
     "testing": "INFO",
     "production": "WARNING",
-    "default": "production",
+    "default": "WARNING",
 }
 
 # Default log directory - using absolute path to project root
-PROJECT_ROOT = Path(__file__).parent.parent  # Go up three dirs
+PROJECT_ROOT = Path(__file__).parent.parent.parent  # Go up three dirs
 LOG_DIR = PROJECT_ROOT / "logs"
 LOG_DIR.mkdir(parents=True, exist_ok=True)  # Ensure log directory exists
 

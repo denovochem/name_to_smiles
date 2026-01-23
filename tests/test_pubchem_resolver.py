@@ -19,7 +19,7 @@ def test_name_to_smiles_pubchem_basic_mapping(monkeypatch):
         return names
 
     monkeypatch.setattr(
-        "cholla_chemubchem_resolver.filter_latin1_compatible",
+        "cholla_chem.resolvers.pubchem_resolver.filter_latin1_compatible",
         fake_filter_latin1_compatible,
         raising=True,
     )
@@ -62,7 +62,7 @@ def test_name_to_smiles_pubchem_handles_none_results(monkeypatch):
         return names
 
     monkeypatch.setattr(
-        "coreubchem_resolver.filter_latin1_compatible",
+        "cholla_chem.resolvers.pubchem_resolver.filter_latin1_compatible",
         fake_filter_latin1_compatible,
         raising=True,
     )
