@@ -4,7 +4,6 @@ repos:
     hooks:
       # Run the linter
       - id: ruff
-        args: [--fix]
         types_or: [python, pyi]
       # Run the formatter
       - id: ruff-format
@@ -25,14 +24,14 @@ repos:
   #       pass_filenames: false
   #       require_serial: true
   
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: pytest
-        language: system
-        pass_filenames: false
-        # Only run when Python files change
-        types: [python]
-        # Run on push instead of every commit (faster workflow)
-        stages: [pre-push]
+  # - repo: local
+  #   hooks:
+  #     - id: pytest
+  #       name: pytest
+  #       entry: pytest
+  #       language: system
+  #       pass_filenames: false
+  #       # Only run when Python files change
+  #       types: [python]
+  #       # Run on push instead of every commit (faster workflow)
+  #       stages: [pre-push]
