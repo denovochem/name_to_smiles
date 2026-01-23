@@ -1,3 +1,4 @@
 include requirements.txt
 include README.md
-include core/datafiles/name_dicts/*.json
+include cholla_chem/datafiles/name_dicts/*.json
+include cholla_chem/datafiles/*.json

@@ -1,22 +1,22 @@
 from __future__ import annotations
+from importlib import resources
 import json
-import os
-from pathlib import Path
 import re
-from typing import ClassVar, Dict, Optional
-from Levenshtein import ratio as levenshtein_ratio
+from typing import ClassVar, Dict, List, Optional
 
+from Levenshtein import ratio as levenshtein_ratio
 from cholla_chem.name_manipulation.name_correction.dataclasses import (
     CorrectionCandidate,
     CorrectorConfig,
 )
 from cholla_chem.name_manipulation.name_correction.regexes import PATTERNS
 
-# Get the directory of the current file
-BASE_DIR = Path(__file__).resolve().parent
-CHEMICAL_NAME_TOKENS_PATH = os.path.abspath(
-    BASE_DIR.parent.parent / "datafiles" / "chemical_name_tokens.json"
-)
+
+def load_chemical_name_tokens() -> List[str]:
+    """Load chemical name tokens from package data using importlib.resources."""
+    # Open the file as text from within the package
+    with resources.open_text("cholla_chem.datafiles", "chemical_name_tokens.json") as f:
+        return json.load(f)
 
 
 class ChemicalNameScorer:
@@ -50,8 +50,7 @@ class ChemicalNameScorer:
         """
         self.config = config or CorrectorConfig()
 
-        with open(CHEMICAL_NAME_TOKENS_PATH, "rb") as f:
-            self.chemical_morpheme_list = json.load(f)
+        self.chemical_morpheme_list = load_chemical_name_tokens()
 
         self.chemical_morpheme_list = [
             ele for ele in self.chemical_morpheme_list if len(ele) > 1
