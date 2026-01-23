@@ -1,0 +1,38 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      # Run the linter
+      - id: ruff
+        args: [--fix]
+        types_or: [python, pyi]
+      # Run the formatter
+      - id: ruff-format
+        types_or: [python, pyi]
+  
+  # - repo: local
+  #   hooks:
+  #     - id: mypy
+  #       name: mypy
+  #       entry: mypy
+  #       language: system
+  #       args: [
+  #         ".",
+  #         "--ignore-missing-imports",
+  #         "--explicit-package-bases"
+  #       ]
+  #       types: [python]
+  #       pass_filenames: false
+  #       require_serial: true
+  
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest
+        language: system
+        pass_filenames: false
+        # Only run when Python files change
+        types: [python]
+        # Run on push instead of every commit (faster workflow)
+        stages: [pre-push]
